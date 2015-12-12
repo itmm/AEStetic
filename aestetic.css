@@ -1,0 +1,13 @@
+.hidden {
+	display: none;
+}
+.bytes {
+	font-family: monospace;
+	padding: 4px;
+	background-color: rgba(0, 0, 0, .1);
+	margin: 8px;
+}
+.bytes div {
+	display: inline-block;
+	padding: 0 8px 0 0;
+}
