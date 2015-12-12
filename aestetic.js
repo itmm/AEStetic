@@ -217,8 +217,8 @@ window.addEventListener('load', function () {
 			$computation.appendChild($h);
 
 			for (i = 0; i < 16; ++i) {
-				block[i] = state.sbox[block[i]];
 				dependent[i].push('sbox-' + block[i]);
+				block[i] = state.sbox[block[i]];
 			}
 			add_tmp('after S-Box:', block, 'r-' + round + '-sbox-');
 			for (i = 0; i < 16; ++i) {
