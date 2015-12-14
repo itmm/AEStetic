@@ -1,3 +1,6 @@
+.hidden {
+	display: none;
+}
 .bytes {
 	font-family: monospace;
 	padding: 4px;

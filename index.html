@@ -13,25 +13,33 @@
   </head>
   <body>
     <header class="bar bar-nav"><h1 class="title">AEStetic</h1></header>
-    <div class="content content-padded">
+    <div class="content">
+        <div class="content-padded">
       <p>Inspect the encryption of AES step by step. Tap on each byte to see the bytes it depends on.</p>
-        <h2>S-Box</h2>
-        <p>Used S-Box:</p>
-        <div class="bytes" id="sbox"></div>
-        <h2>Permutation</h2>
-        <p>Used Permutation:</p>
-        <div class="bytes" id="permute"></div>
-        <h2>Key</h2>
-        <p>Used Key:</p>
+      </div>
+      <ul class="table-view">
+        <li class="table-view-divider">Configuration</li>
+        <li class="table-view-cell">Rounds:
+            <span id="rounds-label"></span>
+        </li>
+        <li class="table-view-cell">S-Box
+            <button class="btn" id="toggle-sbox"><span class="icon icon-bars"></span></button></li>
+        <div class="bytes hidden" id="sbox"></div>
+        <li class="table-view-cell">Permutation
+            <button class="btn" id="toggle-permute"><span class="icon icon-bars"></span></button></li>
+        <div class="bytes hidden" id="permute"></div>
+        <li class="table-view-divider">Key</li>
         <div class="bytes" id="key"></div>
-        <p>Expanded Key:</p>
-        <div class="bytes" id="expanded-key"></div>
-        <h2>Input</h2>
-        <p>Input:</p>
+        <li class="table-view-cell">Expanded Key
+            <button class="btn" id="toggle-expanded-key"><span class="icon icon-bars"></span></button></li>
+        <div class="bytes hidden" id="expanded-key"></div>
+        <li class="table-view-divider">Input</li>
         <div class="bytes" id="input"></div>
-        <div id="computation"></div>
-        <h2>Output</h2>
-        <div class="bytes" id="input">
+        <li class="table-view-divider" id="rounds">Rounds</li>
+        <li class="table-view-divider" id="rounds-end">Output</li>
+        <div class="bytes" id="output"></div>
+        <li class="table-view-divider" id="rounds-end">Reference</li>
+        <div class="bytes">
           <div>
             <span>8e</span> <span>a2</span> <span>b7</span> <span>ca</span>
             <span>51</span> <span>67</span> <span>45</span> <span>bf</span>
@@ -41,6 +49,7 @@
             <span>4b</span> <span>49</span> <span>60</span> <span>89</span>
           </div>
         </div>
+      </ul>
         <button class="btn btn-block" id="dec-rounds">less rounds</button>
         <button class="btn btn-block" id="inc-rounds">more rounds</button>
     </div>

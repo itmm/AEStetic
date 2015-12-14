@@ -118,6 +118,10 @@ window.addEventListener('load', function () {
 			return result & 0xff;
 		}
 
+		var $label = $('rounds-label');
+		removeChilds($label);
+		$label.appendChild(newTxt(state.rounds));
+
 		writeBytes($('sbox'), state.sbox, 'sbox-');
 		writeBytes($('permute'), state.permute, 'permute-');
 		writeBytes($('key'), state.key, 'key-');
@@ -178,8 +182,11 @@ window.addEventListener('load', function () {
 			addDepends('expanded-key-' + i, dependent[i]);
 		}
 
-		var $computation = $('computation');
-		removeChilds($computation);
+		var $computation = $('rounds'); var $computation_end = $('rounds-end');
+		var $parent = $computation.parentNode;
+		while ($computation.nextSibling != $computation_end) {
+			$parent.removeChild($computation.nextSibling);
+		}
 
 		var block = Array(16);
 		var temp = Array(16);
@@ -189,28 +196,52 @@ window.addEventListener('load', function () {
 			dependent[i] = ['input-' + i, 'expanded-key-' + i];
 		}
 
-		function add_tmp(name, block, prefix) {
-			var $p = newTag('p');
-			$p.appendChild(newTxt(name));
-			$computation.appendChild($p);
+		function add_tmp(name, block, prefix, $container) {
+			var $li = newTag('li');
+			$li.classList.add('table-view-cell');
+			$li.appendChild(newTxt(name));
+			$container.appendChild($li);
 			var $d = newTag('div');
 			$d.classList.add('bytes');
 			writeBytes($d, block, prefix);
-			$computation.appendChild($d);
+			$container.appendChild($d);
 		}
 
 		for (var round = 1; round <= state.rounds; ++round) {
 			var rnd = 'r-' + round;
-			var $h = document.createElement('h3');
-			$h.appendChild(document.createTextNode('round ' + round));
-			$computation.appendChild($h);
+			var $li = newTag('li');
+			$li.classList.add('table-view-cell');
+			$li.appendChild(newTxt('round ' + round));
+			var $btn = newTag('button');
+			$btn.classList.add('btn');
+			var $spn = newTag('span');
+			$spn.classList.add('icon');
+			$spn.classList.add('icon-bars');
+			$btn.appendChild($spn);
+			$li.appendChild($btn);
+
+			$parent.insertBefore($li, $computation_end);
+
+			$li = newTag('li');
+			$li.classList.add('table-view-cell');
+			$li.classList.add('hidden');
+			$parent.insertBefore($li, $computation_end);			
+			var $container = newTag('ul');
+			$li.appendChild($container);
+
+			(function($btn, $container) {
+				$btn.addEventListener('click', function(evt) {
+					toggleDiv(this, $container);
+					evt.preventDefault();
+				});
+			})($btn, $li);
 
 			for (i = 0; i < 16; ++i) {
 				dependent[i].push('sbox-' + block[i]);
 				block[i] = state.sbox[block[i]];
 			}
 			var rnd_sbox = rnd + '-sbox-';
-			add_tmp('after S-Box:', block, rnd_sbox);
+			add_tmp('after S-Box:', block, rnd_sbox, $container);
 			for (i = 0; i < 16; ++i) {
 				addDepends(rnd_sbox + i, dependent[i]);
 				dependent[i] = [rnd_sbox + i];
@@ -222,7 +253,7 @@ window.addEventListener('load', function () {
 				dependent2[i].push('permute-' + i);
 			}
 			var rnd_permute = rnd + '-permute-';
-			add_tmp('after permutation:', temp, rnd_permute);
+			add_tmp('after permutation:', temp, rnd_permute, $container);
 			for (i = 0; i < 16; ++i) {
 				addDepends(rnd_permute + i, dependent2[i]);
 				dependent[i] = [rnd_permute + i];
@@ -251,7 +282,7 @@ window.addEventListener('load', function () {
 					dependent2[4 * j + 3] = dependent2[4 * j];
 				}
 				var rnd_mult = rnd + '-mult-';
-				add_tmp('after mult:', temp, rnd_mult);
+				add_tmp('after mult:', temp, rnd_mult, $container);
 				for (i = 0; i < 16; ++i) {
 					addDepends(rnd_mult + i, dependent2[i]);
 					dependent[i] = [rnd_mult + i];
@@ -263,16 +294,39 @@ window.addEventListener('load', function () {
 				dependent[i].push('expanded-key-' + (16 * round + i));
 			}
 			var rnd_key = rnd + '-key-';
-			add_tmp('after mix with key:', block, rnd_key);
+			add_tmp('after mix with key:', block, rnd_key, $container);
 			for (i = 0; i < 16; ++i) {
 				addDepends(rnd_key + i, dependent[i]);
 				dependent[i] = [rnd_key + i];
 			}
 		}
+
+		writeBytes($('output'), block, 'out-');
 	}
 
 	doEncrypt();
 
+	function toggleDiv($button, $div) {
+		var $span = $button.lastChild;
+		if ($span.classList.contains('icon-close')) {
+			$span.classList.remove('icon-close');
+			$span.classList.add('icon-bars');
+			$div.classList.add('hidden');
+		} else {
+			$span.classList.remove('icon-bars');
+			$span.classList.add('icon-close');
+			$div.classList.remove('hidden');
+		}
+	}
+	$('toggle-sbox').addEventListener('click', function(evt) {
+		toggleDiv(this, $('sbox'));
+	});
+	$('toggle-permute').addEventListener('click', function(evt) {
+		toggleDiv(this, $('permute'));
+	});
+	$('toggle-expanded-key').addEventListener('click', function(evt) {
+		toggleDiv(this, $('expanded-key'));
+	});
 	$('inc-rounds').addEventListener('click', function(evt) {
 		state.rounds += 1;
 		doEncrypt();
