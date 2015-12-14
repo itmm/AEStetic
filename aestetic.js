@@ -19,21 +19,6 @@ window.addEventListener('load', function () {
 
 	function $(id) { return document.getElementById(id); }
 
-	function readBytes(id, count, name) {
-		var $bytes = $(id).getElementsByTagName('span');
-		if ($bytes.length != count) {
-			alert("not " + count + " bytes in " + name + " but " + $bytes.length);
-			return null;
-		}
-
-		var result = Array(count);
-		for (var i = 0; i < count; ++i) {
-			result[i] = parseInt($bytes[i].innerText, 16);
-		}
-
-		return result;
-	}
-
 	function newTag(tag) { return document.createElement(tag); }
 	function newTxt(txt) { return document.createTextNode(txt); }
 	function newSpc() { return newTxt(' '); }
@@ -115,8 +100,11 @@ window.addEventListener('load', function () {
 		'input': [
 			0x00, 0x11, 0x22, 0x33,  0x44, 0x55, 0x66, 0x77,
 			0x88, 0x99, 0xaa, 0xbb,  0xcc, 0xdd, 0xee, 0xff
-		]
+		],
+		'rounds': 14
 	};
+
+	var block_size = 16;
 
 	function doEncrypt() {
 		function aes_mul(a, b) {
@@ -135,18 +123,18 @@ window.addEventListener('load', function () {
 		writeBytes($('key'), state.key, 'key-');
 		writeBytes($('input'), state.input, 'input-');
 
-		var expanded_key = Array(240);
+		var expanded_key = Array((state.rounds + 1) * block_size);
 		var i, j, k;
 
-		var dependent = Array(240);
-		for (i = 0; i < 240; ++i) { dependent[i] = []; }
+		var dependent = Array(expanded_key.length);
+		for (i = 0; i < dependent.length; ++i) { dependent[i] = []; }
 			
 		for (i = 0; i < 32; ++i) {
 			expanded_key[i] = state.key[i];
 			dependent[i].push('key-' + i);
 		}
 		
-		for (i = 32; i < 240; i += 4) {
+		for (i = 32; i < expanded_key.length; i += 4) {
 			for (j = 0; j < 4; ++j) {
 				expanded_key[i + j] = expanded_key[i - 4 + j];
 				dependent[i + j].push('expanded-key-' + (i - 4 + j));
@@ -164,8 +152,8 @@ window.addEventListener('load', function () {
 					dependent[i + 3] = v;
 				}
 				for (j = 0; j < 4; ++j) { 
-					expanded_key[i + j] = state.sbox[expanded_key[i + j] & 0xff]; 
-					dependent[i + j].push('sbox-' + (i + j));
+					dependent[i + j].push('sbox-' + expanded_key[i + j]);
+					expanded_key[i + j] = state.sbox[expanded_key[i + j]]; 
 				}
 				if (i % 32 == 0) { expanded_key[i] ^= 1 << (i/32 - 1); }
 			}
@@ -186,7 +174,7 @@ window.addEventListener('load', function () {
 			});
 		}
 		writeBytes($('expanded-key'), expanded_key, 'expanded-key-');
-		for (i = 0; i < 240; ++i) {
+		for (i = 0; i < expanded_key.length; ++i) {
 			addDepends('expanded-key-' + i, dependent[i]);
 		}
 
@@ -211,7 +199,8 @@ window.addEventListener('load', function () {
 			$computation.appendChild($d);
 		}
 
-		for (var round = 1; round <= 14; ++round) {
+		for (var round = 1; round <= state.rounds; ++round) {
+			var rnd = 'r-' + round;
 			var $h = document.createElement('h3');
 			$h.appendChild(document.createTextNode('round ' + round));
 			$computation.appendChild($h);
@@ -220,10 +209,11 @@ window.addEventListener('load', function () {
 				dependent[i].push('sbox-' + block[i]);
 				block[i] = state.sbox[block[i]];
 			}
-			add_tmp('after S-Box:', block, 'r-' + round + '-sbox-');
+			var rnd_sbox = rnd + '-sbox-';
+			add_tmp('after S-Box:', block, rnd_sbox);
 			for (i = 0; i < 16; ++i) {
-				addDepends('r-' + round + '-sbox-' + i, dependent[i]);
-				dependent[i] = ['r-' + round + '-sbox-' + i];
+				addDepends(rnd_sbox + i, dependent[i]);
+				dependent[i] = [rnd_sbox + i];
 			}
 			var dependent2 = Array(16);
 			for (i = 0; i < 16; ++i) {
@@ -231,13 +221,14 @@ window.addEventListener('load', function () {
 				dependent2[i] = dependent[state.permute[i]];
 				dependent2[i].push('permute-' + i);
 			}
-			add_tmp('after permutation:', temp, 'r-' + round + '-permute-');
+			var rnd_permute = rnd + '-permute-';
+			add_tmp('after permutation:', temp, rnd_permute);
 			for (i = 0; i < 16; ++i) {
-				addDepends('r-' + round + '-permute-' + i, dependent2[i]);
-				dependent[i] = ['r-' + round + '-permute-' + i];
+				addDepends(rnd_permute + i, dependent2[i]);
+				dependent[i] = [rnd_permute + i];
 			}
 
-			if (round < 14) {
+			if (round < state.rounds) {
 				for (j = 0; j < 4; ++j) {
 					var s0 = temp[4 * j];
 					var s1 = temp[4 * j + 1];
@@ -259,10 +250,11 @@ window.addEventListener('load', function () {
 					dependent2[4 * j + 2] = dependent2[4 * j];
 					dependent2[4 * j + 3] = dependent2[4 * j];
 				}
-				add_tmp('after mult:', temp, 'r-' + round + '-mult-');
+				var rnd_mult = rnd + '-mult-';
+				add_tmp('after mult:', temp, rnd_mult);
 				for (i = 0; i < 16; ++i) {
-					addDepends('r-' + round + '-mult-' + i, dependent2[i]);
-					dependent[i] = ['r-' + round + '-mult-' + i];
+					addDepends(rnd_mult + i, dependent2[i]);
+					dependent[i] = [rnd_mult + i];
 				}
 			}
 
@@ -270,13 +262,27 @@ window.addEventListener('load', function () {
 				block[i] = temp[i] ^ expanded_key[16 * round + i];
 				dependent[i].push('expanded-key-' + (16 * round + i));
 			}
-			add_tmp('after mix with key:', block, 'r-' + round + '-key-');
+			var rnd_key = rnd + '-key-';
+			add_tmp('after mix with key:', block, rnd_key);
 			for (i = 0; i < 16; ++i) {
-				addDepends('r-' + round + '-key-' + i, dependent[i]);
-				dependent[i] = ['r-' + round + '-key-' + i];
+				addDepends(rnd_key + i, dependent[i]);
+				dependent[i] = [rnd_key + i];
 			}
 		}
 	}
 
 	doEncrypt();
+
+	$('inc-rounds').addEventListener('click', function(evt) {
+		state.rounds += 1;
+		doEncrypt();
+		evt.preventDefault();
+	});
+	$('dec-rounds').addEventListener('click', function(evt) {
+		if (state.rounds > 1) {
+			state.rounds -= 1;
+			doEncrypt();
+		}
+		evt.preventDefault();
+	})
 });

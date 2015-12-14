@@ -6,16 +6,14 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <!--
     <link href="ratchet-v2.0.2/css/ratchet.min.css" rel="stylesheet">
     <script src="ratchet-v2.0.2/js/ratchet.min.js"></script>
-    -->
     <link href="aestetic.css" rel="stylesheet">
     <script src="aestetic.js"></script>
   </head>
   <body>
     <header class="bar bar-nav"><h1 class="title">AEStetic</h1></header>
-    <div class="content-padded">
+    <div class="content content-padded">
       <p>Inspect the encryption of AES step by step. Tap on each byte to see the bytes it depends on.</p>
         <h2>S-Box</h2>
         <p>Used S-Box:</p>
@@ -43,6 +41,8 @@
             <span>4b</span> <span>49</span> <span>60</span> <span>89</span>
           </div>
         </div>
+        <button class="btn btn-block" id="dec-rounds">less rounds</button>
+        <button class="btn btn-block" id="inc-rounds">more rounds</button>
     </div>
   </body>
 </html>
