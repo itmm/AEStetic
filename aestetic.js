@@ -201,7 +201,8 @@ window.addEventListener('load', function () {
 			$li.classList.add('table-view-cell');
 			$li.appendChild(newTxt(name));
 			$container.appendChild($li);
-			var $d = newTag('div');
+			var $d = newTag('li');
+			$d.classList.add('table-view-cell');
 			$d.classList.add('bytes');
 			writeBytes($d, block, prefix);
 			$container.appendChild($d);
@@ -225,9 +226,13 @@ window.addEventListener('load', function () {
 			$li = newTag('li');
 			$li.classList.add('table-view-cell');
 			$li.classList.add('hidden');
-			$parent.insertBefore($li, $computation_end);			
+			$parent.insertBefore($li, $computation_end);
+			var $div = newTag('div');
+			$div.classList.add('card');
 			var $container = newTag('ul');
-			$li.appendChild($container);
+			$container.classList.add('table-view');
+			$div.appendChild($container);
+			$li.appendChild($div);
 
 			(function($btn, $container) {
 				$btn.addEventListener('click', function(evt) {

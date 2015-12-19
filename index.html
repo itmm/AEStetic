@@ -1,57 +1,66 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>AEStetic</title>
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link href="ratchet-v2.0.2/css/ratchet.min.css" rel="stylesheet">
-    <script src="ratchet-v2.0.2/js/ratchet.min.js"></script>
-    <link href="aestetic.css" rel="stylesheet">
-    <script src="aestetic.js"></script>
-  </head>
-  <body>
-    <header class="bar bar-nav"><h1 class="title">AEStetic</h1></header>
-    <div class="content">
-        <div class="content-padded">
-      <p>Inspect the encryption of AES step by step. Tap on each byte to see the bytes it depends on.</p>
-      </div>
-      <ul class="table-view">
-        <li class="table-view-divider">Configuration</li>
-        <li class="table-view-cell">Rounds:
-            <span id="rounds-label"></span>
-        </li>
-        <li class="table-view-cell">S-Box
-            <button class="btn" id="toggle-sbox"><span class="icon icon-bars"></span></button></li>
-        <div class="bytes hidden" id="sbox"></div>
-        <li class="table-view-cell">Permutation
-            <button class="btn" id="toggle-permute"><span class="icon icon-bars"></span></button></li>
-        <div class="bytes hidden" id="permute"></div>
-        <li class="table-view-divider">Key</li>
-        <div class="bytes" id="key"></div>
-        <li class="table-view-cell">Expanded Key
-            <button class="btn" id="toggle-expanded-key"><span class="icon icon-bars"></span></button></li>
-        <div class="bytes hidden" id="expanded-key"></div>
-        <li class="table-view-divider">Input</li>
-        <div class="bytes" id="input"></div>
-        <li class="table-view-divider" id="rounds">Rounds</li>
-        <li class="table-view-divider" id="rounds-end">Output</li>
-        <div class="bytes" id="output"></div>
-        <li class="table-view-divider" id="rounds-end">Reference</li>
-        <div class="bytes">
-          <div>
-            <span>8e</span> <span>a2</span> <span>b7</span> <span>ca</span>
-            <span>51</span> <span>67</span> <span>45</span> <span>bf</span>
-          </div>
-          <div>
-            <span>ea</span> <span>fc</span> <span>49</span> <span>90</span>
-            <span>4b</span> <span>49</span> <span>60</span> <span>89</span>
-          </div>
+    <head>
+        <meta charset="utf-8">
+        <title>AEStetic</title>
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link href="ratchet-v2.0.2/css/ratchet.min.css" rel="stylesheet">
+        <script src="ratchet-v2.0.2/js/ratchet.min.js"></script>
+        <link href="aestetic.css" rel="stylesheet">
+        <script src="aestetic.js"></script>
+    </head>
+    <body>
+        <header class="bar bar-nav">
+            <h1 class="title">AEStetic</h1>
+        </header>
+        <div class="content">
+            <div class="content-padded">
+                <p>Inspect the encryption of AES step by step.
+                    Tap on each byte to see the bytes it depends on.
+                </p>
+            </div>
+            <ul class="table-view">
+                <li class="table-view-divider">Configuration</li>
+                <li class="table-view-cell">
+                    Rounds: <span id="rounds-label"></span>
+                </li>
+                <li class="table-view-cell">
+                    S-Box
+                    <button class="btn" id="toggle-sbox"><span class="icon icon-bars"></span></button>
+                </li>
+                <li class="table-view-cell bytes hidden" id="sbox"></li>
+                <li class="table-view-cell">
+                    Permutation
+                    <button class="btn" id="toggle-permute"><span class="icon icon-bars"></span></button>
+                </li>
+                <li class="table-view-cell bytes hidden" id="permute"></li>
+                <li class="table-view-divider">Key</li>
+                <li class="table-view-cell bytes" id="key"></li>
+                <li class="table-view-cell">Expanded Key
+                    <button class="btn" id="toggle-expanded-key"><span class="icon icon-bars"></span></button>
+                </li>
+                <li class="table-view-cell bytes hidden" id="expanded-key"></li>
+                <li class="table-view-divider">Input</li>
+                <li class="table-view-cell bytes" id="input"></li>
+                <li class="table-view-divider" id="rounds">Rounds</li>
+                <li class="table-view-divider" id="rounds-end">Output</li>
+                <li class="table-view-cell bytes" id="output"></li>
+                <li class="table-view-divider" id="rounds-end">Reference</li>
+                <div class="bytes">
+                    <div>
+                        <span>8e</span> <span>a2</span> <span>b7</span> <span>ca</span>
+                        <span>51</span> <span>67</span> <span>45</span> <span>bf</span>
+                    </div>
+                    <div>
+                        <span>ea</span> <span>fc</span> <span>49</span> <span>90</span>
+                        <span>4b</span> <span>49</span> <span>60</span> <span>89</span>
+                    </div>
+                </div>
+            </ul>
+            <button class="btn btn-block" id="dec-rounds">less rounds</button>
+            <button class="btn btn-block" id="inc-rounds">more rounds</button>
         </div>
-      </ul>
-        <button class="btn btn-block" id="dec-rounds">less rounds</button>
-        <button class="btn btn-block" id="inc-rounds">more rounds</button>
-    </div>
-  </body>
+    </body>
 </html>

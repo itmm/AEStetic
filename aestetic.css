@@ -3,9 +3,8 @@
 }
 .bytes {
 	font-family: monospace;
-	padding: 4px;
-	background-color: rgba(0, 0, 0, .1);
-	margin: 8px;
+	padding: 8px;
+	background-color: rgba(0, 0, 255, .1);
 }
 .bytes div {
 	display: inline-block;
