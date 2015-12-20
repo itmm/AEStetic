@@ -344,4 +344,30 @@ window.addEventListener('load', function () {
 		}
 		evt.preventDefault();
 	})
+
+	function updateBytes(message, bytes) {
+		var current = '';
+		for (var i = 0; i < bytes.length; ++i) {
+			var val = bytes[i];
+			var formatted = val < 16 ? '0' + val.toString(16) : val.toString(16);
+			current += formatted;
+		}
+		var entered = prompt(message, current);
+		if (entered.length == current.length) {
+			for (var i = 0; i < bytes.length; ++i) {
+				bytes[i] = parseInt(entered.substring(2 * i, 2 * i + 2), 16);
+			}
+		}
+	}
+
+	$('key').addEventListener('click', function(evt) {
+		updateBytes('change key', state.key);
+		doEncrypt();
+		evt.preventDefault();
+	});
+	$('input').addEventListener('click', function(evt) {
+		updateBytes('change input', state.input);
+		doEncrypt();
+		evt.preventDefault();
+	});
 });
