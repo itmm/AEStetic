@@ -25,6 +25,19 @@
                 <li class="table-view-divider">Configuration</li>
                 <li class="table-view-cell">
                     Rounds: <span id="rounds-label"></span>
+                    <button class="btn" id="toggle-rounds"><span class="icon icon-bars"></span></button>
+                </li>
+                <li class="table-view-cell hidden" id="rounds-config">
+                    <div class="card">
+                        <ul class="table-view">
+                            <li class="table-view-cell">
+                                <a id="dec-rounds">less rounds</a>
+                            </li>
+                            <li class="table-view-cell">
+                                <a id="inc-rounds">more rounds</a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
                 <li class="table-view-cell">
                     S-Box
@@ -59,8 +72,6 @@
                     </div>
                 </div>
             </ul>
-            <button class="btn btn-block" id="dec-rounds">less rounds</button>
-            <button class="btn btn-block" id="inc-rounds">more rounds</button>
         </div>
     </body>
 </html>

@@ -323,6 +323,9 @@ window.addEventListener('load', function () {
 			$div.classList.remove('hidden');
 		}
 	}
+	$('toggle-rounds').addEventListener('click', function(evt) {
+		toggleDiv(this, $('rounds-config'));
+	});
 	$('toggle-sbox').addEventListener('click', function(evt) {
 		toggleDiv(this, $('sbox'));
 	});
@@ -362,6 +365,11 @@ window.addEventListener('load', function () {
 
 	$('key').addEventListener('click', function(evt) {
 		updateBytes('change key', state.key);
+		doEncrypt();
+		evt.preventDefault();
+	});
+	$('sbox').addEventListener('click', function(evt) {
+		updateBytes('change S-Box', state.sbox);
 		doEncrypt();
 		evt.preventDefault();
 	});
