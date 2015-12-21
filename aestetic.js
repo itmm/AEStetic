@@ -19,6 +19,9 @@ window.addEventListener('load', function () {
 
 	function $(id) { return document.getElementById(id); }
 
+	function addClass($elm, cls) { $elm.classList.add(cls); }
+	function removeClass($elm, cls) { $elm.classList.remove(cls); }
+
 	function newTag(tag) { return document.createElement(tag); }
 	function newTxt(txt) { return document.createTextNode(txt); }
 	function newSpc() { return newTxt(' '); }
@@ -122,6 +125,12 @@ window.addEventListener('load', function () {
 		removeChilds($label);
 		$label.appendChild(newTxt(state.rounds));
 
+		if (state.rounds > 1) {
+			removeClass($('dec-rounds'), 'disabled');
+		} else {
+			addClass($('dec-rounds'), 'disabled');
+		}
+		
 		writeBytes($('sbox'), state.sbox, 'sbox-');
 		writeBytes($('permute'), state.permute, 'permute-');
 		writeBytes($('key'), state.key, 'key-');
