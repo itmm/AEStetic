@@ -159,7 +159,9 @@ window.addEventListener('load', function () {
 					dependent[i + j].push('sbox-' + expanded_key[i + j]);
 					expanded_key[i + j] = state.sbox[expanded_key[i + j]]; 
 				}
-				if (i % 32 == 0) { expanded_key[i] ^= 1 << (i/32 - 1); }
+				if (i % 32 == 0) {
+					expanded_key[i] ^= 1 << ((i/32 - 1) % 8);
+				}
 			}
 
 			for (j = 0; j < 4; ++j) {
