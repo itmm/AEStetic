@@ -371,6 +371,13 @@ window.addEventListener('load', function () {
 		return result & 0xff;
 	}
 
+	function polyDependency(frm, to, i) {
+		to[i] = [frm[i][0], frm[i + 1][0], frm[i + 2][0], frm[i + 3][0]];
+		to[i + 1] = to[i];
+		to[i + 2] = to[i];
+		to[i + 3] = to[i];
+	}
+
 	function encode() {
 		var $computation = $('rounds');
 		var $computation_end = $('rounds-end');
@@ -427,15 +434,7 @@ window.addEventListener('load', function () {
 					block2[4 * j + 2] = s0 ^ s1 ^ mult(2, s2) ^ mult(3, s3);
 					block2[4 * j + 3] = mult(3, s0) ^ s1 ^ s2 ^ mult(2, s3);
 
-					dependent2[4 * j] = [
-						dependent[4 * j][0],
-						dependent[4 * j + 1][0],
-						dependent[4 * j + 2][0],
-						dependent[4 * j + 3][0],
-					];
-					dependent2[4 * j + 1] = dependent2[4 * j];
-					dependent2[4 * j + 2] = dependent2[4 * j];
-					dependent2[4 * j + 3] = dependent2[4 * j];
+					polyDependency(dependent, dependent2, 4 * j);
 				}
 				var rnd_mult = rnd + '-mult-';
 				addSubEntry('after mult:', block2, rnd_mult, $container, dependent2);
@@ -536,15 +535,7 @@ window.addEventListener('load', function () {
 					dec[4 * j + 2] = mult(0x0d, s0) ^ mult(0x09, s1) ^ mult(0x0e, s2) ^ mult(0x0b, s3);
 					dec[4 * j + 3] = mult(0x0b, s0) ^ mult(0x0d, s1) ^ mult(0x09, s2) ^ mult(0x0e, s3);
 
-					dependent2[4 * j] = [
-						dependent[4 * j][0],
-						dependent[4 * j + 1][0],
-						dependent[4 * j + 2][0],
-						dependent[4 * j + 3][0]
-					];
-					dependent2[4 * j + 1] = dependent2[4 * j];
-					dependent2[4 * j + 2] = dependent2[4 * j];
-					dependent2[4 * j + 3] = dependent2[4 * j];
+					polyDependency(dependent, dependent2, 4 * j);
 				}
 				var rnd_mult = rnd + '-mult-';
 				addSubEntry('after mult:', dec, rnd_mult, $container, dependent2);
