@@ -57,11 +57,11 @@
                 <li class="table-view-cell bytes hidden" id="expanded-key"></li>
                 <li class="table-view-divider">Input</li>
                 <li class="table-view-cell bytes" id="input"></li>
-                <li class="table-view-divider" id="rounds">Rounds</li>
-                <li class="table-view-divider" id="rounds-end">Output</li>
+                <li class="table-view-divider" id="rounds">Encoding Rounds</li>
+                <li class="table-view-divider" id="rounds-end">Encoded</li>
                 <li class="table-view-cell bytes" id="output"></li>
                 <li class="table-view-divider" id="reference">Reference</li>
-                <div class="bytes" id="reference-bytes">
+                <li class="table-view-cell bytes" id="reference-bytes">
                     <div>
                         <span>8e</span> <span>a2</span> <span>b7</span> <span>ca</span>
                         <span>51</span> <span>67</span> <span>45</span> <span>bf</span>
@@ -70,7 +70,10 @@
                         <span>ea</span> <span>fc</span> <span>49</span> <span>90</span>
                         <span>4b</span> <span>49</span> <span>60</span> <span>89</span>
                     </div>
-                </div>
+                </li>
+                <li class="table-view-divider" id="decode-rounds">Decoding Rounds</li>
+                <li class="table-view-divider" id="decode-rounds-end">Decoded</li>
+                <li class="table-view-cell bytes" id="decoded"></li>
             </ul>
         </div>
     </body>
