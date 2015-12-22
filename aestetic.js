@@ -3,6 +3,7 @@ var state = null;
 window.addEventListener('load', function () {
 	'use strict';
 
+
 // setup
 
 	var defaults = {
@@ -47,14 +48,14 @@ window.addEventListener('load', function () {
 		'key': [
 			0x00, 0x01, 0x02, 0x03,  0x04, 0x05, 0x06, 0x07,
 			0x08, 0x09, 0x0a, 0x0b,  0x0c, 0x0d, 0x0e, 0x0f,
-			0x10, 0x11, 0x12, 0x13,  0x14, 0x15, 0x16, 0x17,
-			0x18, 0x19, 0x1a, 0x1b,  0x1c, 0x1d, 0x1e, 0x1f
+			// 0x10, 0x11, 0x12, 0x13,  0x14, 0x15, 0x16, 0x17,
+			// 0x18, 0x19, 0x1a, 0x1b,  0x1c, 0x1d, 0x1e, 0x1f
 		],
 		'input': [
 			0x00, 0x11, 0x22, 0x33,  0x44, 0x55, 0x66, 0x77,
 			0x88, 0x99, 0xaa, 0xbb,  0xcc, 0xdd, 0xee, 0xff
 		],
-		'rounds': 14,
+		'rounds': 10, //14,
 		'blockSize': 16
 	};
 	
@@ -287,7 +288,7 @@ window.addEventListener('load', function () {
 				dependent[i + j].push('expanded-key-' + (i - 4 + j));
 			}
 
-			if (i % 32 == 0) {
+			if (i % state.key.length == 0) {
 				var tempKey = expandedKey[i];
 				var tempDependent = dependent[i];
 				for (j = 0; j < 3; ++j) {
@@ -304,7 +305,7 @@ window.addEventListener('load', function () {
 				}
 
 				expandedKey[i] ^= 1 << ((i/32 - 1) % 8);
-			} else if (i % 16 == 0) {
+			} else if (state.key.length > 24 && i % state.key.length == 16) {
 				for (var j = 0; j < 4; ++j) { 
 					var idx = i + j;
 					dependent[idx].push('sbox-' + expandedKey[idx]);
