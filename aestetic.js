@@ -17,10 +17,25 @@ window.addEventListener('load', function () {
 		}
 	}
 
+	function equalArrays(a, b) {
+		if (a.length != b.length) { return false; }
+		for (var i = 0; i < a.length; ++i) {
+			if (a[i] != b[i]) { return false; }
+		}
+		return true;
+	}
+
 	function $(id) { return document.getElementById(id); }
 
 	function addClass($elm, cls) { $elm.classList.add(cls); }
 	function removeClass($elm, cls) { $elm.classList.remove(cls); }
+	function setClass($elm, cls, set) {
+		if (set) {
+			addClass($elm, cls);
+		} else {
+			removeClass($elm,cls);
+		}
+	}
 
 	function newTag(tag) { return document.createElement(tag); }
 	function newTxt(txt) { return document.createTextNode(txt); }
@@ -55,7 +70,7 @@ window.addEventListener('load', function () {
 		}
 	}
 
-	state = {
+	var defaults = {
 		'sbox': [
 			0x63, 0x7c, 0x77, 0x7b,  0xf2, 0x6b, 0x6f, 0xc5,
 			0x30, 0x01, 0x67, 0x2b,  0xfe, 0xd7, 0xab, 0x76,
@@ -106,6 +121,14 @@ window.addEventListener('load', function () {
 		],
 		'rounds': 14
 	};
+	
+	state = {
+		'sbox': defaults.sbox.slice(),
+		'permute': defaults.permute.slice(),
+		'key': defaults.key.slice(),
+		'input': defaults.input.slice(),
+		'rounds': defaults.rounds
+	};
 
 	var block_size = 16;
 
@@ -125,16 +148,59 @@ window.addEventListener('load', function () {
 		removeChilds($label);
 		$label.appendChild(newTxt(state.rounds));
 
-		if (state.rounds > 1) {
-			removeClass($('dec-rounds'), 'disabled');
-		} else {
-			addClass($('dec-rounds'), 'disabled');
-		}
-		
+		setClass($('dec-rounds'), 'disabled', state.rounds <= 1);
+
 		writeBytes($('sbox'), state.sbox, 'sbox-');
 		writeBytes($('permute'), state.permute, 'permute-');
 		writeBytes($('key'), state.key, 'key-');
 		writeBytes($('input'), state.input, 'input-');
+
+		var is_rijndael = false;
+		var is_aes = false;
+		var is_aes256 = false;
+		var is_testcase = false;
+
+		if (equalArrays(state.sbox, defaults.sbox) && equalArrays(state.permute, defaults.permute)) {
+			switch (state.key.length) {
+				case 16:
+					if (state.rounds >= 10 && state.rounds <= 14) {
+						is_rijndael = true;
+						is_aes = (state.rounds == 10);
+					}
+					break;
+				case 20:
+					if (state.rounds >= 11 && state.rounds <= 14) {
+						is_rijndael = true;
+						is_aes = (state.rounds == 11);
+					}
+					break;
+				case 24:
+					if (state.rounds >= 12 && state.rounds <= 14) {
+						is_rijndael = true;
+						is_aes = (state.rounds == 12);
+					}
+					break;
+				case 28:
+					if (state.rounds >= 13 && state.rounds <= 14) {
+						is_rijndael = true;
+						is_aes = (state.rounds == 13);
+					}
+					break;
+				case 32:
+					if (state.rounds == 14) {
+						is_rijndael = true;
+						is_aes = true;
+						is_aes256 = true;
+
+						if (equalArrays(state.key, defaults.key) && equalArrays(state.input, defaults.input)) {
+							is_testcase = true;
+						}
+					}
+					break;
+			}
+		}
+		setClass($('reference'), 'hidden', !is_testcase);
+		setClass($('reference-bytes'), 'hidden', !is_testcase);
 
 		var expanded_key = Array((state.rounds + 1) * block_size);
 		var i, j, k;
