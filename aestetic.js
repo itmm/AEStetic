@@ -622,19 +622,19 @@ window.addEventListener('load', function () {
 		}
 	}
 
-	$('key').addEventListener('click', function(evt) {
-		updateBytes('change key', state.key);
-		refresh();
-		evt.preventDefault();
-	});
-	$('sbox').addEventListener('click', function(evt) {
-		updateBytes('change S-Box', state.sbox);
-		refresh();
-		evt.preventDefault();
-	});
-	$('input').addEventListener('click', function(evt) {
-		updateBytes('change input', state.input);
-		refresh();
-		evt.preventDefault();
-	});
+
+// update parameters
+
+	function addUpdateBytes(elm, message, bytes) {
+		$(elm).addEventListener('click', function(evt) {
+			updateBytes(message, bytes);
+			refresh();
+			evt.preventDefault();
+		});
+	}
+
+	addUpdateBytes('key', 'change key', state.key);
+	addUpdateBytes('sbox', 'change S-Box', state.sbox);
+	addUpdateBytes('permute', 'change permutation', state.permute);
+	addUpdateBytes('input', 'change input', state.input);
 });
