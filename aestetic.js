@@ -156,7 +156,8 @@ window.addEventListener('load', function () {
 		writeBytes($('input'), state.input, 'input-');
 
 		var is_rijndael = false;
-		var is_aes = false;
+		var is_aes128 = false;
+		var is_aes192 = false;
 		var is_aes256 = false;
 		var is_testcase = false;
 
@@ -165,31 +166,28 @@ window.addEventListener('load', function () {
 				case 16:
 					if (state.rounds >= 10 && state.rounds <= 14) {
 						is_rijndael = true;
-						is_aes = (state.rounds == 10);
+						is_aes128 = (state.rounds == 10);
 					}
 					break;
 				case 20:
 					if (state.rounds >= 11 && state.rounds <= 14) {
 						is_rijndael = true;
-						is_aes = (state.rounds == 11);
 					}
 					break;
 				case 24:
 					if (state.rounds >= 12 && state.rounds <= 14) {
 						is_rijndael = true;
-						is_aes = (state.rounds == 12);
+						is_aes192 = (state.rounds == 12);
 					}
 					break;
 				case 28:
 					if (state.rounds >= 13 && state.rounds <= 14) {
 						is_rijndael = true;
-						is_aes = (state.rounds == 13);
 					}
 					break;
 				case 32:
 					if (state.rounds == 14) {
 						is_rijndael = true;
-						is_aes = true;
 						is_aes256 = true;
 
 						if (equalArrays(state.key, defaults.key) && equalArrays(state.input, defaults.input)) {
