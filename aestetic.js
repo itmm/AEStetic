@@ -59,12 +59,64 @@ window.addEventListener('load', function () {
 		'blockSize': 16
 	};
 	
+	var testcases = [
+		{
+			name: 'FIPS: AES-256',
+			key: [
+				0x00, 0x01, 0x02, 0x03,  0x04, 0x05, 0x06, 0x07,
+				0x08, 0x09, 0x0a, 0x0b,  0x0c, 0x0d, 0x0e, 0x0f,
+				0x10, 0x11, 0x12, 0x13,  0x14, 0x15, 0x16, 0x17,
+				0x18, 0x19, 0x1a, 0x1b,  0x1c, 0x1d, 0x1e, 0x1f
+			],
+			rounds: 14,
+			input: [
+				0x00, 0x11, 0x22, 0x33,  0x44, 0x55, 0x66, 0x77,
+				0x88, 0x99, 0xaa, 0xbb,  0xcc, 0xdd, 0xee, 0xff
+			],
+			encoded: [
+            	0x51, 0x67, 0x45, 0xbf,  0x8e, 0xa2, 0xb7, 0xca,
+            	0xea, 0xfc, 0x49, 0x90,  0x4b, 0x49, 0x60, 0x89
+			]
+		}, {
+			name: 'FIPS: AES-128',
+			key: [
+				0x00, 0x01, 0x02, 0x03,  0x04, 0x05, 0x06, 0x07,
+				0x08, 0x09, 0x0a, 0x0b,  0x0c, 0x0d, 0x0e, 0x0f
+			],
+			rounds: 10,
+			input: [
+				0x00, 0x11, 0x22, 0x33,  0x44, 0x55, 0x66, 0x77,
+				0x88, 0x99, 0xaa, 0xbb,  0xcc, 0xdd, 0xee, 0xff
+			],
+			encoded: [
+				0x69, 0xc4, 0xe0, 0xd8,  0x6a, 0x7b, 0x04, 0x30,
+				0xd8, 0xcd, 0xb7, 0x80,  0x70, 0xb4, 0xc5, 0x5a
+			]
+		}, {
+			name: 'FIPS: AES-196',
+			key: [
+				0x00, 0x01, 0x02, 0x03,  0x04, 0x05, 0x06, 0x07,
+				0x08, 0x09, 0x0a, 0x0b,  0x0c, 0x0d, 0x0e, 0x0f,
+				0x10, 0x11, 0x12, 0x13,  0x14, 0x15, 0x16, 0x17
+			],
+			rounds: 12,
+			input: [
+				0x00, 0x11, 0x22, 0x33,  0x44, 0x55, 0x66, 0x77,
+				0x88, 0x99, 0xaa, 0xbb,  0xcc, 0xdd, 0xee, 0xff
+			],
+			encoded: [
+            	0xdd, 0xa9, 0x7c, 0xa4,  0x86, 0x4c, 0xdf, 0xe0,
+            	0x6e, 0xaf, 0x70, 0xa0,  0xec, 0x0d, 0x71, 0x91
+			]
+		}
+	];
+
 	state = {
 		'sbox': defaults.sbox.slice(),
 		'permute': defaults.permute.slice(),
-		'key': defaults.key.slice(),
-		'input': defaults.input.slice(),
-		'rounds': defaults.rounds,
+		'key': testcases[0].key.slice(),
+		'input': testcases[0].input.slice(),
+		'rounds': testcases[0].rounds,
 		'blockSize': defaults.blockSize
 	};
 
@@ -203,14 +255,14 @@ window.addEventListener('load', function () {
 	var is_aes128 = false;
 	var is_aes192 = false;
 	var is_aes256 = false;
-	var is_testcase = false;
+	var usedTestcase = null;
 
 	function checkForKnownConfigurations() {
 		is_rijndael = false;
 		is_aes128 = false;
 		is_aes192 = false;
 		is_aes256 = false;
-		is_testcase = false;
+		usedTestcase = null;
 
 		if (_.equals(state.sbox, defaults.sbox) && _.equals(state.permute, defaults.permute)) {
 			switch (state.key.length) {
@@ -241,13 +293,19 @@ window.addEventListener('load', function () {
 						is_rijndael = true;
 						is_aes256 = true;
 
-						var isDefaultKey = _.equals(state.key, defaults.key);
-						var isDefaultInput = _.equals(state.input, defaults.input);
-						if (isDefaultKey && isDefaultInput) {
-							is_testcase = true;
-						}
 					}
 					break;
+			}
+
+			if (is_aes256 || is_aes192 || is_aes128) {
+				for (var i = 0; i < testcases.length; ++i) {
+					var tc = testcases[i];
+					var isTestcaseKey = _.equals(state.key, tc.key);
+					var isTestcaseInput = _.equals(state.input, tc.input);
+					if (state.rounds == tc.rounds && isTestcaseKey && isTestcaseInput) {
+						usedTestcase = tc;
+					}
+				}
 			}
 		}		
 	}
@@ -262,8 +320,12 @@ window.addEventListener('load', function () {
 		writeBytes($('input'), state.input, 'input-');
 
 		checkForKnownConfigurations();
-		setClass($('reference'), 'hidden', !is_testcase);
-		setClass($('reference-bytes'), 'hidden', !is_testcase);
+
+		setClass($('reference'), 'hidden', usedTestcase == null);
+		setClass($('reference-bytes'), 'hidden', usedTestcase == null);
+		if (usedTestcase) {
+			writeBytes($('reference-bytes'), usedTestcase.encoded);
+		}
 	}
 
 
