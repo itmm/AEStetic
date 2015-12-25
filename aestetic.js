@@ -48,14 +48,14 @@ window.addEventListener('load', function () {
 		'key': [
 			0x00, 0x01, 0x02, 0x03,  0x04, 0x05, 0x06, 0x07,
 			0x08, 0x09, 0x0a, 0x0b,  0x0c, 0x0d, 0x0e, 0x0f,
-			// 0x10, 0x11, 0x12, 0x13,  0x14, 0x15, 0x16, 0x17,
-			// 0x18, 0x19, 0x1a, 0x1b,  0x1c, 0x1d, 0x1e, 0x1f
+			0x10, 0x11, 0x12, 0x13,  0x14, 0x15, 0x16, 0x17,
+			0x18, 0x19, 0x1a, 0x1b,  0x1c, 0x1d, 0x1e, 0x1f
 		],
 		'input': [
 			0x00, 0x11, 0x22, 0x33,  0x44, 0x55, 0x66, 0x77,
 			0x88, 0x99, 0xaa, 0xbb,  0xcc, 0xdd, 0xee, 0xff
 		],
-		'rounds': 10, //14,
+		'rounds': 14,
 		'blockSize': 16
 	};
 	
@@ -282,6 +282,7 @@ window.addEventListener('load', function () {
 			dependent[i].push('key-' + i);
 		});		
 
+		var rcon = 1;
 		for (var i = state.key.length; i < expandedKey.length; i += 4) {
 			for (var j = 0; j < 4; ++j) {
 				expandedKey[i + j] = expandedKey[i - 4 + j];
@@ -304,7 +305,9 @@ window.addEventListener('load', function () {
 					expandedKey[idx] = state.sbox[expandedKey[idx]]; 
 				}
 
-				expandedKey[i] ^= 1 << ((i/32 - 1) % 8);
+				expandedKey[i] ^= rcon;
+				console.log(i + ": " + rcon);
+				rcon = mult(rcon, 2);
 			} else if (state.key.length > 24 && i % state.key.length == 16) {
 				for (var j = 0; j < 4; ++j) { 
 					var idx = i + j;
@@ -607,29 +610,71 @@ window.addEventListener('load', function () {
 
 // update parameters
 
-	function updateBytes(message, bytes) {
+	function isValidHexDigit(digit) {
+		return ('0' <= digit) && ('9' >= digit) || ('a' <= digit) && ('f' >= digit) || ('A' <= digit) && ('F' >= digit);
+	}
+
+	function updateBytes(message, bytes, validator) {
 		var current = '';
 		_.each(bytes, function(byte) {
 			current += formatByte(byte);			
 		});
 		var entered = prompt(message, current);
-		if (entered.length == current.length) {
-			_.map(bytes, function(_, i) {
-				return parseInt(entered.substring(2 * i, 2 * i + 2), 16);
-			});
+		var result = [];
+		var lastNibble = 0;
+		var hasLastNibble = false;
+		for (var i = 0; i < entered.length; ++i) {
+			if (i < entered.length && entered[i] <= ' ') {
+				if (hasLastNibble) {
+					result.push(lastNibble);
+					lastNibble = 0;
+					hasLastNibble = false;
+				}
+			} else if (isValidHexDigit(entered[i])) {
+				var value = lastNibble * 16 + parseInt(entered[i], 16);
+				if (hasLastNibble) {
+					result.push(value);
+					lastNibble = 0;
+					hasLastNibble = false;
+				} else {
+					lastNibble = value;
+					hasLastNibble = true;
+				}
+			} else {
+				alert("'" + entered[i] + "' is not a valid hex digit");
+				return;
+			}
+		}
+		if (hasLastNibble) {
+			result.push(lastNibble);
+		}
+
+		if (validator(result, bytes)) {
+			for (var i = 0; i < bytes.length; ++i) { bytes[i] = result[i]; }
+			while (bytes.length > result.length) { bytes.pop(); }
+			for (var i = bytes.length; i < result.length; ++i) { bytes.push(result[i]); }
+			refresh();
+		} else {
+			alert("invalid byte sequence entered");
 		}
 	}
 
-	function addUpdateBytes(elm, message, bytes) {
+	function addUpdateBytes(elm, message, bytes, validator) {
 		$(elm).addEventListener('click', function(evt) {
-			updateBytes(message, bytes);
-			refresh();
+			updateBytes(message, bytes, validator);
 			evt.preventDefault();
 		});
 	}
 
-	addUpdateBytes('key', 'change key', state.key);
-	addUpdateBytes('sbox', 'change S-Box', state.sbox);
-	addUpdateBytes('permute', 'change permutation', state.permute);
-	addUpdateBytes('input', 'change input', state.input);
+	function validKeyLength(newArray, _) {
+		return newArray.length >= 4;
+	}
+
+	addUpdateBytes('key', 'change key', state.key, validKeyLength);
+
+	function sameLength(newArray, oldArray) { return newArray.length == oldArray.length; }
+
+	addUpdateBytes('sbox', 'change S-Box', state.sbox, sameLength);
+	addUpdateBytes('permute', 'change permutation', state.permute, sameLength);
+	addUpdateBytes('input', 'change input', state.input, sameLength);
 });
