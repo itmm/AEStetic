@@ -206,18 +206,36 @@ window.addEventListener('load', function () {
 	var dependencies = {};
 	var tappedCell = null;
 
+	function processClosure(active, visited, depth, addActiveClass) {
+		if (!active.length || depth > 3) return;
+
+		var nextLevel = [];
+
+		var className = "active-" + depth;
+		_.each(active, function(obj) {
+			if (visited.indexOf(obj) < 0) {
+				_.each(dependencies[obj], function(val) { nextLevel.push(val); });
+				visited.push(obj);
+			}
+			if (addActiveClass) {
+				addClass($(obj), className);
+			} else {
+				removeClass($(obj), className);
+			}
+		});
+		processClosure(nextLevel, visited, depth + 1, addActiveClass);
+	}
+
 	function doCellClick(evt) {
 		if (tappedCell) { 
-			removeClass($(tappedCell), 'active');
-			_.each(dependencies[tappedCell], function(sub) { removeClass($(sub), 'active'); });
+			processClosure([tappedCell], [], 1, false);
 		}
 		var id = this.getAttribute('id');
 		if (id == tappedCell) {
 			tappedCell = null;
 		} else {
-			addClass($(id), 'active');
-			_.each(dependencies[id], function(sub) { addClass($(sub), 'active'); });
 			tappedCell = id;
+			processClosure([tappedCell], [], 1, true);
 		}
 		evt.preventDefault();
 	}
@@ -345,7 +363,7 @@ window.addEventListener('load', function () {
 
 		_.each(state.key, function(key, i) {
 			expandedKey[i] = key;
-			dependencies['expanded-key-' + i, ['key-' + i]];
+			dependencies['expanded-key-' + i] = ['key-' + i];
 		});		
 
 		var rcon = 1;
@@ -372,7 +390,6 @@ window.addEventListener('load', function () {
 				}
 
 				expandedKey[i] ^= rcon;
-				console.log(i + ": " + rcon);
 				rcon = mult(rcon, 2);
 			} else if (state.key.length > 24 && i % state.key.length == 16) {
 				for (var j = 0; j < 4; ++j) { 
@@ -563,39 +580,45 @@ window.addEventListener('load', function () {
 			var $container = addRound(i + 1, $parent, $computation_end);
 
 			var rnd_input = rnd + '-input-';
-			addSubEntry('input to round:', dec, rnd_input, $container, dependent);
-			_.map(dependent, function(_, j) { return [rnd_input + j]; });
+			_.map(dependent, function(val, j) {
+				dependencies[rnd_input + j] = val;
+				return [rnd_input + j];
+			});
+			addSubEntry('input to round:', dec, rnd_input, $container, true);
 
 			// permute
 
+			var rnd_permute = rnd + '-permute-';
 			_.map(dec2, function(_, j) {
 				dependent2[j] = dependent[inv_permute[j]];
 				dependent2[j].push('permute-' + inv_permute[j]);
+				dependencies[rnd_permute + j] = dependent2[j];
 				return dec[inv_permute[j]];
 			});
-			var rnd_permute = rnd + '-permute-';
-			addSubEntry('after permute:', dec2, rnd_permute, $container, dependent2);
+			addSubEntry('after permute:', dec2, rnd_permute, $container, true);
 			_.map(dependent, function(_, j) { return [rnd_permute + j]; });
 
 			// sbox
 
+			var rnd_sbox = rnd + '-sbox-';
 			_.map(dec, function(_, j) {
 				dependent[j].push('sbox-' + inv_sbox[dec2[j]]);
+				dependencies[rnd_sbox + j] = dependent[j];
+				dependent[j] = [rnd_sbox + j];
 				return inv_sbox[dec2[j]];
 			});
-			var rnd_sbox = rnd + '-sbox-';
-			addSubEntry('after S-Box:', dec, rnd_sbox, $container, dependent);
-			_.map(dependent, function(_, j) { return [rnd_sbox, j]; });
+			addSubEntry('after S-Box:', dec, rnd_sbox, $container, true);
 
 			// mix with key
 
+			var rnd_key = rnd + '-key-';
 			_.map(dec, function(val, j) {
 				dependent[j].push('expanded-key-' + (i * state.blockSize + j));
+				dependencies[rnd_key + j] = dependent[j];
+				dependent[j] = [rnd_key + j];
 				return val ^ expandedKey[i * state.blockSize + j];
 			});
-			var rnd_key = rnd + '-key-';
-			addSubEntry('after mix with key:', dec, rnd_key, $container, dependent);
-			_.map(dependent, function(_, j) { return [rnd_key + j]; });
+			addSubEntry('after mix with key:', dec, rnd_key, $container, true);
 
 			// mult
 
@@ -614,12 +637,16 @@ window.addEventListener('load', function () {
 					polyDependency(dependent, dependent2, 4 * j);
 				}
 				var rnd_mult = rnd + '-mult-';
-				addSubEntry('after mult:', dec, rnd_mult, $container, dependent2);
-				_.map(dependent, function(_, i) { return [rnd_mult + j]; });
+				addSubEntry('after mult:', dec, rnd_mult, $container, true);
+				_.map(dependent, function(_, k) {
+					dependencies[rnd_mult + k] = dependent2[k];
+					return [rnd_mult + k];
+				});
 			}
 		}
 
-		writeBytes($('decoded'), dec, 'dec-', dependent);
+		writeBytes($('decoded'), dec, 'dec-', true);
+		_.each(dependent, function(val, j) { dependencies['dec-' + j] = val; });
 	}
 
 

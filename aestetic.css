@@ -10,13 +10,13 @@
 	display: inline-block;
 	padding: 0 8px 0 0;
 }
-.active {
+.active-1 {
 	background-color: #faa;
 }
-.active-1 {
+.active-2 {
 	background-color: #fcc;
 }
-.active-2 {
+.active-3 {
 	background-color: #fee;
 }
 .disabled {
