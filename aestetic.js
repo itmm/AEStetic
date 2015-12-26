@@ -354,6 +354,31 @@ window.addEventListener('load', function () {
 	}
 
 
+// test vector handling
+
+	function updateTestvectors() {
+		var $container = $('testvectors-container');
+		removeChilds($container);
+		_.each(testcases, function(testcase) {
+			var $li = newTag('li', null, ['table-view-cell']);
+			var $a = newTag('a');
+			setTxt($a, testcase.name);
+			$li.appendChild($a);
+			$container.appendChild($li);
+			$a.addEventListener('click', function(evt) {
+				state.sbox = defaults.sbox.slice();
+				state.permute = defaults.permute.slice();
+				state.key = testcase.key.slice();
+				state.input = testcase.input.slice();
+				state.rounds = testcase.rounds;
+				state.blockSize = defaults.blockSize;
+				refresh();
+				evt.preventDefault();
+			});
+		});
+	}
+
+
 // expand key
 
 	var expandedKey;
@@ -655,6 +680,7 @@ window.addEventListener('load', function () {
 	function refresh() {
 		dependencies = {};
 		refreshState();
+		updateTestvectors();
 		expandKey();
 		var encoded = encode();
 		decode(encoded);
@@ -686,6 +712,7 @@ window.addEventListener('load', function () {
 	}
 
 	addToggleDiv('toggle-rounds', 'rounds-config');
+	addToggleDiv('toggle-testvectors', 'testvectors');
 	addToggleDiv('toggle-sbox', 'sbox');
 	addToggleDiv('toggle-permute', 'permute');
 	addToggleDiv('toggle-expanded-key', 'expanded-key');
