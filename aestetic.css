@@ -11,7 +11,13 @@
 	padding: 0 8px 0 0;
 }
 .active {
+	background-color: #faa;
+}
+.active-1 {
 	background-color: #fcc;
+}
+.active-2 {
+	background-color: #fee;
 }
 .disabled {
 	color: rgba(0, 0, 0, .2) !important;

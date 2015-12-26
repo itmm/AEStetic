@@ -59,6 +59,7 @@ window.addEventListener('load', function () {
 		'blockSize': 16
 	};
 	
+
 	var testcases = [
 		{
 			name: 'FIPS: AES-256',
@@ -125,6 +126,7 @@ window.addEventListener('load', function () {
 
 	var _ = {
 		'each': function(ary, fn) {
+			if (ary == null) { return; }
 			var l = ary.length;
 			for (var i = 0; i < l; ++i) { fn(ary[i], i); }
 		},
@@ -136,6 +138,7 @@ window.addEventListener('load', function () {
 			return true;			
 		},
 		'map': function(ary, fn) {
+			if (ary == null) { return; }
 			var l = ary.length;
 			for (var i = 0; i < l; ++i) { ary[i] = fn(ary[i], i); }
 		}
@@ -165,9 +168,7 @@ window.addEventListener('load', function () {
 	function newTag(tag, id, classes) {
 		var $elm = document.createElement(tag);
 		if (id) { $elm.setAttribute('id', id); }
-		if (classes) {
-			_.each(classes, function(cls) { addClass($elm, cls); });
-		}
+		_.each(classes, function(cls) { addClass($elm, cls); });
 		return $elm;
 	}
 
@@ -202,18 +203,30 @@ window.addEventListener('load', function () {
 
 // handle highlighting
 
-	var $actives = [];
+	var dependencies = {};
+	var tappedCell = null;
 
-	function activate(ids) {
-		_.each($actives, function($val) { removeClass($val, 'active'); });
-		$actives = [];
-		_.each(ids, function(id) {
-			var $obj = $(id);
-			$actives.push($obj);
-			addClass($obj, 'active');
-		});
+	function doCellClick(evt) {
+		if (tappedCell) { 
+			removeClass($(tappedCell), 'active');
+			_.each(dependencies[tappedCell], function(sub) { removeClass($(sub), 'active'); });
+		}
+		var id = this.getAttribute('id');
+		if (id == tappedCell) {
+			tappedCell = null;
+		} else {
+			addClass($(id), 'active');
+			_.each(dependencies[id], function(sub) { addClass($(sub), 'active'); });
+			tappedCell = id;
+		}
+		evt.preventDefault();
 	}
 
+	function addDependency(key, id) {
+		var val = dependencies[key];
+		if (val == null) { val = []; dependencies[key] = val; }
+		val.push(id);
+	}
 
 // insert byte strings into DOM
 
@@ -222,7 +235,7 @@ window.addEventListener('load', function () {
 		return byte < 16 ? '0' + formatted : formatted;
 	}
 
-	function writeBytes($dest, ary, prefix, depends) {
+	function writeBytes($dest, ary, prefix, activeCells) {
 		var grouping = 8;
 		var len = ary.length;
 
@@ -233,14 +246,8 @@ window.addEventListener('load', function () {
 			for (var j = 0; j < grouping; ++j) {
 				var k = i + j;
 				var $span = newTag('span', prefix + k);
-				if (depends) {
-					(function(id, deps) {
-						$span.addEventListener('click', function(evt) {
-							deps.push(id);
-							activate(deps);
-							evt.preventDefault();
-						});
-					})(prefix + k, depends[k].slice());
+				if (activeCells) {
+					$span.addEventListener('click', doCellClick);
 				}
 				appendChild($div, setTxt($span, formatByte(ary[k])), j > 0);
 			}
@@ -314,17 +321,17 @@ window.addEventListener('load', function () {
 		setTxt($('rounds-label'), state.rounds);
 		setClass($('dec-rounds'), 'disabled', state.rounds <= 1);
 
-		writeBytes($('sbox'), state.sbox, 'sbox-');
-		writeBytes($('permute'), state.permute, 'permute-');
-		writeBytes($('key'), state.key, 'key-');
-		writeBytes($('input'), state.input, 'input-');
+		writeBytes($('sbox'), state.sbox, 'sbox-', false);
+		writeBytes($('permute'), state.permute, 'permute-', false);
+		writeBytes($('key'), state.key, 'key-', false);
+		writeBytes($('input'), state.input, 'input-', false);
 
 		checkForKnownConfigurations();
 
 		setClass($('reference'), 'hidden', usedTestcase == null);
 		setClass($('reference-bytes'), 'hidden', usedTestcase == null);
 		if (usedTestcase) {
-			writeBytes($('reference-bytes'), usedTestcase.encoded);
+			writeBytes($('reference-bytes'), usedTestcase.encoded, false);
 		}
 	}
 
@@ -336,34 +343,31 @@ window.addEventListener('load', function () {
 	function expandKey() {
 		expandedKey = Array((state.rounds + 1) * state.blockSize);
 
-		var dependent = Array(expandedKey.length);
-		_.map(dependent, function() { return []; });
-
 		_.each(state.key, function(key, i) {
 			expandedKey[i] = key;
-			dependent[i].push('key-' + i);
+			dependencies['expanded-key-' + i, ['key-' + i]];
 		});		
 
 		var rcon = 1;
 		for (var i = state.key.length; i < expandedKey.length; i += 4) {
 			for (var j = 0; j < 4; ++j) {
 				expandedKey[i + j] = expandedKey[i - 4 + j];
-				dependent[i + j].push('expanded-key-' + (i - 4 + j));
+				addDependency('expanded-key-' + (i + j), 'expanded-key-' + (i - 4 + j));
 			}
 
 			if (i % state.key.length == 0) {
 				var tempKey = expandedKey[i];
-				var tempDependent = dependent[i];
+				var tempDependent = dependencies['expanded-key-' + i];
 				for (j = 0; j < 3; ++j) {
 					expandedKey[i + j] = expandedKey[i + j + 1]; 
-					dependent[i + j] = dependent[i + j + 1];
+					dependencies['expanded-key-' + (i + j)] = dependencies['expanded-key-' + (i + j + 1)];
 				}
 				expandedKey[i + 3] = tempKey;
-				dependent[i + 3] = tempDependent;
+				dependencies['expanded-key-' + (i + 3)] = tempDependent;
 
 				for (var j = 0; j < 4; ++j) { 
 					var idx = i + j;
-					dependent[idx].push('sbox-' + expandedKey[idx]);
+					addDependency('expanded-key-' + idx, 'sbox-' + expandedKey[idx]);
 					expandedKey[idx] = state.sbox[expandedKey[idx]]; 
 				}
 
@@ -373,7 +377,7 @@ window.addEventListener('load', function () {
 			} else if (state.key.length > 24 && i % state.key.length == 16) {
 				for (var j = 0; j < 4; ++j) { 
 					var idx = i + j;
-					dependent[idx].push('sbox-' + expandedKey[idx]);
+					addDependency('expanded-key-' + idx, 'sbox-' + expandedKey[idx]);
 					expandedKey[idx] = state.sbox[expandedKey[idx]]; 
 				}
 			}
@@ -382,11 +386,11 @@ window.addEventListener('load', function () {
 				var idx = i + j;
 				var old = idx - state.key.length;
 				expandedKey[idx] ^= expandedKey[old];
-				dependent[idx].push('expanded-key-' + old);
+				addDependency('expanded-key-' + idx, 'expanded-key-' + old);
 			}
 		}
 
-		writeBytes($('expanded-key'), expandedKey, 'expanded-key-', dependent);
+		writeBytes($('expanded-key'), expandedKey, 'expanded-key-', true);
 	}
 
 
@@ -416,11 +420,11 @@ window.addEventListener('load', function () {
 		return $container;
 	}
 
-	function addSubEntry(name, block, prefix, $container, dependent) {
+	function addSubEntry(name, block, prefix, $container) {
 		var $li = setTxt(newTag('li', null, ['table-view-cell']), name);
 		$container.appendChild($li);
 		var $entry = newTag('li', null, ['table-view-cell', 'bytes']);
-		writeBytes($entry, block, prefix, dependent);
+		writeBytes($entry, block, prefix, true);
 		$container.appendChild($entry);
 	}
 
@@ -467,23 +471,25 @@ window.addEventListener('load', function () {
 
 			// sbox
 
+			var rnd_sbox = rnd + '-sbox-';
 			_.map(block, function(val, i) {
 				dependent[i].push('sbox-' + val);
+				dependencies[rnd_sbox + i] = dependent[i];
+				dependent[i] = [rnd_sbox + i];
 				return state.sbox[val];				
 			});
-			var rnd_sbox = rnd + '-sbox-';
-			addSubEntry('after S-Box:', block, rnd_sbox, $container, dependent);
-			_.map(dependent, function(_, i) { return [rnd_sbox + i]});
+			addSubEntry('after S-Box:', block, rnd_sbox, $container, true);
 
 			// permute
 
+			var rnd_permute = rnd + '-permute-';
 			_.map(block2, function(_, i) {
 				dependent2[i] = dependent[state.permute[i]];
 				dependent2[i].push('permute-' + i);
+				dependencies[rnd_permute + i] = dependent2[i];
 				return block[state.permute[i]];
 			});
-			var rnd_permute = rnd + '-permute-';
-			addSubEntry('after permutation:', block2, rnd_permute, $container, dependent2);
+			addSubEntry('after permutation:', block2, rnd_permute, $container, true);
 			_.map(dependent, function(_, i) { return [rnd_permute + i]; });
 
 			// mult
@@ -503,19 +509,23 @@ window.addEventListener('load', function () {
 					polyDependency(dependent, dependent2, 4 * j);
 				}
 				var rnd_mult = rnd + '-mult-';
-				addSubEntry('after mult:', block2, rnd_mult, $container, dependent2);
-				_.map(dependent, function(_, i) { return [rnd_mult + i]; });
+				_.each(dependent2, function(val, i) {
+					dependencies[rnd_mult + i] = val;
+					dependent[i] = [rnd_mult + i];
+				});
+				addSubEntry('after mult:', block2, rnd_mult, $container, true);
 			}
 
 			// mix key
 
+			var rnd_key = rnd + '-key-';
 			_.map(block, function(_, i) {
 				dependent[i].push('expanded-key-' + (state.blockSize * round + i));
+				dependencies[rnd_key + i] = dependent[i];
+				dependent[i] = [rnd_key + i];
 				return block2[i] ^ expandedKey[state.blockSize * round + i];
 			});
-			var rnd_key = rnd + '-key-';
-			addSubEntry('after mix with key:', block, rnd_key, $container, dependent);
-			_.map(dependent, function(_, i) { return [rnd_key + i]; });
+			addSubEntry('after mix with key:', block, rnd_key, $container, true);
 		}
 
 		writeBytes($('output'), block, 'out-', dependent);
@@ -616,6 +626,7 @@ window.addEventListener('load', function () {
 // recalculate fields
 
 	function refresh() {
+		dependencies = {};
 		refreshState();
 		expandKey();
 		var encoded = encode();
