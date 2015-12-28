@@ -24,40 +24,50 @@
                 </p>
             </div>
             <ul>
-                <li class="header"><a>Configuration <span class="right"><span id="badge" class="badge-aes256"></span></span></a></li>
-                <li><a id="toggle-testvectors" href="#">Test Vectors<span class="icon-expand" /></a></li>
-                <li class="hidden" id="testvectors">
-                    <div class="card"><ul id="testvectors-container"></ul></div>
-                </li>
-                <li><a id="toggle-rounds" href="#">Rounds: <span id="rounds-label"></span>
-                    <span class="icon-expand" /></a></li>
-                <li class="hidden" id="rounds-config">
-                    <div class="card">
-                        <ul>
-                            <li><a id="dec-rounds" href="#">less rounds</a></li>
-                            <li><a id="inc-rounds" href="#">more rounds</a></li>
-                        </ul>
-                    </div>
-                </li>
-                <li><a id="toggle-sbox" href="#">S-Box<span class="icon-expand" /></a></li>
-                <li class="editable hidden" id="sbox" />
-                <li><a id="toggle-permute" href="#">Permutation<span class="icon-expand" /></a></li>
-                <li class="editable hidden" id="permute" />
+                <li class="header"><a id="toggle-configuration" href="">Configuration
+                    <span class="right"><span id="badge" class="badge-aes256"></span>
+                    <span id="conf-label" class="icon-collapse"></span></span></a></li>
+                    <li id="testvectors-toggler"><a id="toggle-testvectors" href="#">Test
+                        Vectors<span class="icon-expand" /></a></li>
+                        <li class="hidden" id="testvectors">
+                            <div class="card"><ul id="testvectors-container"></ul></div>
+                        </li>
+                    <li id="rounds-toggler"><a id="toggle-rounds" href="#">Rounds:
+                        <span id="rounds-label"></span><span class="icon-expand" /></a></li>
+                        <li class="hidden" id="rounds-config">
+                            <div class="card">
+                                <ul>
+                                    <li><a id="dec-rounds" href="#">less rounds</a></li>
+                                    <li><a id="inc-rounds" href="#">more rounds</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    <li id="sbox-toggler"><a id="toggle-sbox" href="#">S-Box
+                        <span class="icon-expand" /></a></li>
+                        <li class="editable hidden" id="sbox" />
+                    <li id="permute-toggler"><a id="toggle-permute" href="#">Permutation
+                        <span class="icon-expand" /></a></li>
+                        <li class="editable hidden" id="permute" />
                 <li class="header"><a id="toggle-key" href="#">Key<span class="icon-collapse" /></a></li>
-                <li class="editable" id="key" />
-                <li id="expanded-key-toggler"><a id="toggle-expanded-key" href="#">Expanded Key
-                    <span class="icon-expand" /></a></li>
-                <li class="referable hidden" id="expanded-key" />
-                <li class="header">Input</li>
-                <li class="editable" id="input" />
-                <li class="header" id="rounds">Encoding Rounds</li>
-                <li class="header" id="rounds-end">Encoded</li>
-                <li class="referable" id="output" />
-                <li class="header" id="reference">Reference</li>
-                <li class="bytes" id="reference-bytes" />
-                <li class="header" id="decode-rounds">Decoding Rounds</li>
-                <li class="table-view-divider" id="decode-rounds-end">Decoded</li>
-                <li class="referable" id="decoded" />
+                    <li class="editable" id="key" />
+                    <li id="expanded-key-toggler"><a id="toggle-expanded-key" href="#">Expanded Key
+                        <span class="icon-expand" /></a></li>
+                        <li class="referable hidden" id="expanded-key" />
+                <li class="header"><a id="toggle-input" href="#">Input<span class="icon-collapse" /></a></li>
+                    <li class="editable" id="input" />
+                <li class="header" id="rounds"><a id="toggle-enc-rounds" href="#">Encoding Rounds
+                    <span id="toggle-enc-label" class="icon-collapse" /></a></li>
+                <li class="header" id="rounds-end"><a id="toggle-encoded" href="#">Encoded
+                    <span class="icon-collapse" /></a></li>
+                    <li class="referable" id="output" />
+                <li class="header" id="reference"><a id="toggle-reference" href="#">Reference
+                    <span class="icon-collapse" /></a></li>
+                    <li class="bytes" id="reference-bytes" />
+                <li class="header" id="decode-rounds"><a id="toggle-dec-rounds" href="#">Decoding Rounds
+                    <span id="toggle-dec-label" class="icon-collapse" /></a></li>
+                <li class="header" id="decode-rounds-end"><a id="toggle-decoded" href="#">Decoded
+                    <span class="icon-collapse" /></a></li>
+                    <li class="referable" id="decoded" />
             </ul>
         </div>
         <script src="aestetic.js"></script>

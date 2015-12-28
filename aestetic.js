@@ -450,15 +450,15 @@ window.addEventListener('load', function () {
 
 // create table DOM elements
 
-	function addRound(round, $parent, $before) {
-		var $header = newTag('li');
+	function addRound(round, $parent, $before, prefix, headerClasses, contentClasses) {
+		var $header = newTag('li', prefix + 'hdr', headerClasses);
 		var $a = setTxt(newTag('a'), 'round ' + round);
-		var $spn = newTag('span', null, ['icon-expand']);
+		var $spn = newTag('span', null, ['item-expand']);
 		$a.appendChild($spn);
 		$header.appendChild($a);
 		$parent.insertBefore($header, $before);
 
-		var $cell = newTag('li', null, ['hidden']);
+		var $cell = newTag('li', prefix + 'cnt', contentClasses);
 		$parent.insertBefore($cell, $before);
 		var $div = newTag('div', null, ['card']);
 		var $container = newTag('ul');
@@ -467,7 +467,7 @@ window.addEventListener('load', function () {
 		$parent.insertBefore($cell, $before);
 
 		$a.addEventListener('click', function(evt) {
-			toggleDiv(this, [$cell]);
+			toggleDiv(this, $spn, [$cell]);
 			evt.preventDefault();
 		});
 
@@ -519,9 +519,19 @@ window.addEventListener('load', function () {
 			return state.input[i] ^ expandedKey[i];
 		});
 
+		var roundHeaderClasses;
+		var roundContentClasses;
+		if ($('toggle-enc-label').classList.contains('icon-collapse')) {
+			roundHeaderClasses = null;
+			roundContentClasses = ['hidden'];
+
+		} else {
+			roundHeaderClasses = ['hidden'];
+			roundContentClasses = ['hidden', 'hidden-2'];
+		}
 		for (var round = 1; round <= state.rounds; ++round) {
 			var rnd = 'r-' + round;
-			var $container = addRound(round, $parent, $computation_end);
+			var $container = addRound(round, $parent, $computation_end, 'r-enc-' + round + '-', roundHeaderClasses, roundContentClasses);
 
 			// sbox
 
@@ -612,9 +622,19 @@ window.addEventListener('load', function () {
 			return block[i] ^ expandedKey[state.rounds * state.blockSize + i];
 		});
 
+		var roundHeaderClasses;
+		var roundContentClasses;
+		if ($('toggle-dec-label').classList.contains('icon-collapse')) {
+			roundHeaderClasses = null;
+			roundContentClasses = ['hidden'];
+
+		} else {
+			roundHeaderClasses = ['hidden'];
+			roundContentClasses = ['hidden', 'hidden-2'];
+		}
 		for (var i = state.rounds - 1; i >= 0; --i) {
 			var rnd = 'd-' + (i + 1);
-			var $container = addRound(i + 1, $parent, $computation_end);
+			var $container = addRound(i + 1, $parent, $computation_end, 'r-dec-' + (i + 1) + '-', roundHeaderClasses, roundContentClasses);
 
 			var rnd_input = rnd + '-input-';
 			_.map(dependent, function(val, j) {
@@ -740,29 +760,51 @@ window.addEventListener('load', function () {
 		}
 	}
 
-	function toggleDiv($a, $divs) {
-		var $span = $a.lastChild;
+	function toggleDiv($a, $span, $divs) {
 		var collapse = $span.classList.contains('icon-collapse');
 		setClass($span, 'icon-collapse', !collapse);
 		setClass($span, 'icon-expand', collapse);
 		_.each($divs, function($div) { setHide($div, collapse); });
 	}
 
-	function addToggleDiv(a, divs) {
+	function addToggleDiv(a, divs, span) {
 		_.map(divs, function(div) { return $(div); });
 		$(a).addEventListener('click', function(evt) {
-			toggleDiv(this, divs);
+			var $span = span ? $(span) : this.lastChild;
+			toggleDiv(this, $span, divs);
 			evt.preventDefault();
 		});
 	}
 
+	addToggleDiv('toggle-configuration', ['testvectors-toggler', 'testvectors', 'rounds-toggler', 'rounds-config', 'sbox-toggler', 'sbox', 'permute-toggler', 'permute'], 'conf-label')
 	addToggleDiv('toggle-rounds', ['rounds-config']);
 	addToggleDiv('toggle-testvectors', ['testvectors']);
 	addToggleDiv('toggle-sbox', ['sbox']);
 	addToggleDiv('toggle-permute', ['permute']);
-	addToggleDiv('toggle-expanded-key', ['expanded-key']);
-	addToggleDiv('toggle-key', ['key', 'expanded-key-toggler', 'expanded-key']);
 
+	addToggleDiv('toggle-key', ['key', 'expanded-key-toggler', 'expanded-key']);
+	addToggleDiv('toggle-expanded-key', ['expanded-key']);
+
+	addToggleDiv('toggle-input', ['input']);
+
+	function setRoundsToggle($a, prefix) {
+		$a.addEventListener('click', function(evt) {
+			var $divs = [];
+			for (var i = 1; i <= state.rounds; ++i) {
+				$divs.push($(prefix + i + '-hdr'));
+				$divs.push($(prefix + i + '-cnt'));
+			}
+			toggleDiv(this, this.lastChild, $divs);
+			evt.preventDefault();
+		});
+	}
+
+	setRoundsToggle($('toggle-enc-rounds'), 'r-enc-');
+	setRoundsToggle($('toggle-dec-rounds'), 'r-dec-');
+
+	addToggleDiv('toggle-encoded', ['output']);
+	addToggleDiv('toggle-reference', ['reference-bytes']);
+	addToggleDiv('toggle-decoded', ['decoded']);
 
 // change round count
 
