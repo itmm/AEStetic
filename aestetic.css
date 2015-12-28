@@ -166,7 +166,7 @@ li.header > a {
 	margin: -6px -65px -6px -15px;	
 }
 
-span.icon-expand, span.icon-collapse {
+li > a > span.icon-expand, li > a > span.icon-collapse, li > a > span.right {
 	position: absolute;
 	right: 15px;
 	top: 50%;
@@ -178,4 +178,41 @@ span.icon-expand:before {
 }
 span.icon-collapse:before {
 	content: "\27e8";
+}
+span.badge-aes256, span.badge-aes192, span.badge-aes128, span.badge-rijndael, span.badge-unknown {
+	display: inline-block;
+	padding: 2px 9px 3px;
+	font-size: 12px;
+	line-height: 1;
+	border-radius: 100px;
+}
+span.badge-aes256, span.badge-aes192, span.badge-aes128 {
+	color: #060;
+	background-color: rgba(0, 255, 0, 0.15);
+	border: solid 1px #060;
+}
+span.badge-rijndael {
+	color: #550;
+	background-color: rgba(255, 255, 0, 0.15);
+	border: solid 1px #550;
+}
+span.badge-unknown {
+	color: #600;
+	background-color: rgba(255, 0, 0, 0.15);
+	border: solid 1px #600;
+}
+span.badge-aes256:before {
+	content: "AES-256";
+}
+span.badge-aes192:before {
+	content: "AES-192";
+}
+span.badge-aes128:before {
+	content: "AES-128";
+}
+span.badge-rijndael:before {
+	content: "Rijndael";
+}
+span.badge-unknown:before {
+	content: "unknown configuration";
 }

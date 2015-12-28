@@ -94,7 +94,7 @@ window.addEventListener('load', function () {
 				0xd8, 0xcd, 0xb7, 0x80,  0x70, 0xb4, 0xc5, 0x5a
 			]
 		}, {
-			name: 'FIPS: AES-196',
+			name: 'FIPS: AES-192',
 			key: [
 				0x00, 0x01, 0x02, 0x03,  0x04, 0x05, 0x06, 0x07,
 				0x08, 0x09, 0x0a, 0x0b,  0x0c, 0x0d, 0x0e, 0x0f,
@@ -206,7 +206,7 @@ window.addEventListener('load', function () {
 	addClass($('no-javascript'), 'hidden');
 	removeClass($('main'), 'hidden');
 
-	
+
 // handle highlighting
 
 	var dependencies = {};
@@ -339,6 +339,12 @@ window.addEventListener('load', function () {
 				}
 			}
 		}		
+		var $badge = $('badge');
+		setClass($badge, 'badge-aes256', is_aes256);
+		setClass($badge, 'badge-aes192', is_aes192);
+		setClass($badge, 'badge-aes128', is_aes128);
+		setClass($badge, 'badge-rijndael', is_rijndael && !(is_aes256 || is_aes192 || is_aes128));
+		setClass($badge, 'badge-unknown', !is_rijndael);
 	}
 
 	function refreshState() {
