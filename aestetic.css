@@ -1,22 +1,18 @@
 .hidden {
 	display: none;
 }
-.bytes {
+.bytes, .editable, .referable {
 	font-family: monospace;
-	padding: 8px;
+	padding: 8px 15px;
 	background-color: #fff;
+}
+.bytes {
 	color: #888;
 }
 .editable {
-	font-family: monospace;
-	padding: 8px;
-	background-color: #eef;
 	color: #008;
 }
 .referable {
-	font-family: monospace;
-	padding: 8px;
-	background-color: #fff;	
 	color: #008;
 }
 .bytes div, .editable div, .referable div {
@@ -84,7 +80,7 @@ h1 {
 	padding-top: 44px;
 }
 .content-padded {
-	margin: 10px;
+	margin: 10px 15px;
 }
 ul {
 	padding-left: 0;
