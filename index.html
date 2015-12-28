@@ -8,13 +8,16 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta name="format-detection" content="telephone=no">
         <link href="aestetic.css" rel="stylesheet">
-        <script src="aestetic.js"></script>
     </head>
     <body>
-        <header>
-            <h1>AEStetic</h1>
-        </header>
-        <div class="content">
+        <h1>AEStetic</h1>
+        <div id="no-javascript" class="error-overlay">
+            <h2>No JavaScript active</h2>
+            <p>
+                Please activate Javascript to use this Web-App.
+            </p>
+        </div>
+        <div id="main" class="content hidden">
             <div class="content-padded">
                 <p>Inspect the encryption of AES step by step.
                     Tap on each byte to see the bytes it depends on.
@@ -22,16 +25,12 @@
             </div>
             <ul>
                 <li class="header">Configuration</li>
-                <li><a id="toggle-testvectors" href="#">Test Vectors
-                    <span class="icon-expand"></span></a></li>
+                <li><a id="toggle-testvectors" href="#">Test Vectors<span class="icon-expand" /></a></li>
                 <li class="hidden" id="testvectors">
-                    <div class="card">
-                        <ul id="testvectors-container"></ul>
-                    </div>
+                    <div class="card"><ul id="testvectors-container"></ul></div>
                 </li>
-                <li><a id="toggle-rounds" href="#">Rounds:
-                    <span id="rounds-label"></span>
-                    <span class="icon-expand"></span></a></li>
+                <li><a id="toggle-rounds" href="#">Rounds: <span id="rounds-label"></span>
+                    <span class="icon-expand" /></a></li>
                 <li class="hidden" id="rounds-config">
                     <div class="card">
                         <ul>
@@ -40,27 +39,27 @@
                         </ul>
                     </div>
                 </li>
-                <li><a id="toggle-sbox" href="#">S-Box <span class="icon-expand"></span></a></li>
-                <li class="editable hidden" id="sbox"></li>
-                <li><a id="toggle-permute" href="#">Permutation <span class="icon-expand"></span></a></li>
-                <li class="editable hidden" id="permute"></li>
-                <li class="header"><a id="toggle-key" href="#">Key
-                    <span class="icon-collapse"></span></a></li>
-                <li class="editable" id="key"></li>
+                <li><a id="toggle-sbox" href="#">S-Box<span class="icon-expand" /></a></li>
+                <li class="editable hidden" id="sbox" />
+                <li><a id="toggle-permute" href="#">Permutation<span class="icon-expand" /></a></li>
+                <li class="editable hidden" id="permute" />
+                <li class="header"><a id="toggle-key" href="#">Key<span class="icon-collapse" /></a></li>
+                <li class="editable" id="key" />
                 <li id="expanded-key-toggler"><a id="toggle-expanded-key" href="#">Expanded Key
-                    <span class="icon-expand"></span></a></li>
-                <li class="referable hidden" id="expanded-key"></li>
+                    <span class="icon-expand" /></a></li>
+                <li class="referable hidden" id="expanded-key" />
                 <li class="header">Input</li>
-                <li class="editable" id="input"></li>
+                <li class="editable" id="input" />
                 <li class="header" id="rounds">Encoding Rounds</li>
                 <li class="header" id="rounds-end">Encoded</li>
-                <li class="referable" id="output"></li>
+                <li class="referable" id="output" />
                 <li class="header" id="reference">Reference</li>
-                <li class="bytes" id="reference-bytes"></li>
+                <li class="bytes" id="reference-bytes" />
                 <li class="header" id="decode-rounds">Decoding Rounds</li>
                 <li class="table-view-divider" id="decode-rounds-end">Decoded</li>
-                <li class="referable" id="decoded"></li>
+                <li class="referable" id="decoded" />
             </ul>
         </div>
+        <script src="aestetic.js"></script>
     </body>
 </html>

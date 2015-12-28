@@ -201,6 +201,12 @@ window.addEventListener('load', function () {
 	}
 
 
+// dismiss JavaScript error
+
+	addClass($('no-javascript'), 'hidden');
+	removeClass($('main'), 'hidden');
+
+	
 // handle highlighting
 
 	var dependencies = {};
