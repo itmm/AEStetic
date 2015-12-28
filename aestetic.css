@@ -185,6 +185,8 @@ span.badge-aes256, span.badge-aes192, span.badge-aes128, span.badge-rijndael, sp
 	font-size: 12px;
 	line-height: 1;
 	border-radius: 100px;
+	margin-right: 6px;
+	transform: translateY(-2px);
 }
 span.badge-aes256, span.badge-aes192, span.badge-aes128 {
 	color: #060;
