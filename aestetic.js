@@ -126,7 +126,7 @@ window.addEventListener('load', function () {
 
 	var _ = {
 		'each': function(ary, fn) {
-			if (ary == null) { return; }
+			if (!ary || !ary.length) { return; }
 			var l = ary.length;
 			for (var i = 0; i < l; ++i) { fn(ary[i], i); }
 		},
@@ -138,7 +138,7 @@ window.addEventListener('load', function () {
 			return true;			
 		},
 		'map': function(ary, fn) {
-			if (ary == null) { return; }
+			if (!ary || !ary.length) { return; }
 			var l = ary.length;
 			for (var i = 0; i < l; ++i) { ary[i] = fn(ary[i], i); }
 		}
@@ -150,11 +150,11 @@ window.addEventListener('load', function () {
 	function $(id) { return document.getElementById(id); }
 
 	function addClass($elm, cls) {
-		$elm.classList.add(cls);
+		if ($elm && $elm.classList) { $elm.classList.add(cls); }
 	}
 
 	function removeClass($elm, cls) {
-		$elm.classList.remove(cls);
+		if ($elm && $elm.classList) { $elm.classList.remove(cls); }
 	}
 
 	function setClass($elm, cls, set) {
