@@ -592,7 +592,8 @@ window.addEventListener('load', function () {
 			addSubEntry('after mix with key:', block, rnd_key, $container, true);
 		}
 
-		writeBytes($('output'), block, 'out-', dependent);
+		writeBytes($('output'), block, 'out-', true);
+		_.each(dependent, function(val, i) { dependencies['out-' + i] = dependent[i]; });
 		return block;
 	}
 
