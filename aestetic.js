@@ -455,7 +455,7 @@ window.addEventListener('load', function () {
 		$parent.insertBefore($cell, $before);
 
 		$a.addEventListener('click', function(evt) {
-			toggleDiv(this, $cell);
+			toggleDiv(this, [$cell]);
 			evt.preventDefault();
 		});
 
@@ -691,26 +691,65 @@ window.addEventListener('load', function () {
 
 // toggle collapse/expand
 
-	function toggleDiv($a, $div) {
+	function hideLevel($elm) {
+		var level = 0;
+		if ($elm.classList.contains('hidden')) {
+			level = 1;
+			while ($elm.classList.contains('hidden-' + (level + 1))) {
+				++level;
+			}
+		}
+		return level;
+	}
+
+	function hide($elm) {
+		var level = hideLevel($elm);
+		if (level <= 0) {
+			addClass($elm, 'hidden');
+		} else {
+			addClass($elm, 'hidden-' + (level + 1));
+		}
+	}
+
+	function unhide($elm) {
+		var level = hideLevel($elm);
+		if (level <= 1) {
+			removeClass($elm, 'hidden');
+		} else {
+			removeClass($elm, 'hidden-' + level);
+		}
+	}
+
+	function setHide($elm, doHide) {
+		if (doHide) {
+			hide($elm);
+		} else {
+			unhide($elm);
+		}
+	}
+
+	function toggleDiv($a, $divs) {
 		var $span = $a.lastChild;
 		var collapse = $span.classList.contains('icon-collapse');
 		setClass($span, 'icon-collapse', !collapse);
 		setClass($span, 'icon-expand', collapse);
-		setClass($div, 'hidden', collapse);
+		_.each($divs, function($div) { setHide($div, collapse); });
 	}
 
-	function addToggleDiv(a, div) {
+	function addToggleDiv(a, divs) {
+		_.map(divs, function(div) { return $(div); });
 		$(a).addEventListener('click', function(evt) {
-			toggleDiv(this, $(div));
+			toggleDiv(this, divs);
 			evt.preventDefault();
 		});
 	}
 
-	addToggleDiv('toggle-rounds', 'rounds-config');
-	addToggleDiv('toggle-testvectors', 'testvectors');
-	addToggleDiv('toggle-sbox', 'sbox');
-	addToggleDiv('toggle-permute', 'permute');
-	addToggleDiv('toggle-expanded-key', 'expanded-key');
+	addToggleDiv('toggle-rounds', ['rounds-config']);
+	addToggleDiv('toggle-testvectors', ['testvectors']);
+	addToggleDiv('toggle-sbox', ['sbox']);
+	addToggleDiv('toggle-permute', ['permute']);
+	addToggleDiv('toggle-expanded-key', ['expanded-key']);
+	addToggleDiv('toggle-key', ['key', 'expanded-key-toggler', 'expanded-key']);
 
 
 // change round count

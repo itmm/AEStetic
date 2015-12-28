@@ -97,7 +97,7 @@ li {
 li:last-child {
 	border-bottom: 0;
 }
-.table-view-divider, .header {
+.header {
 	padding-top: 6px;
 	padding-bottom: 6px;
 	padding-left: 15px;
@@ -127,6 +127,7 @@ li > a {
 	padding: inherit;
 	margin: -11px -65px -11px -15px;
 	color: #008;
+	text-decoration: none;
 
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -134,6 +135,11 @@ li > a {
     -o-user-select: none;
     user-select: none;
 }
+li.header > a {
+	padding: inherit;
+	margin: -6px -65px -6px -15px;	
+}
+
 span.icon-expand, span.icon-collapse {
 	position: absolute;
 	right: 15px;
