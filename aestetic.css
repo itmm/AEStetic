@@ -17,7 +17,7 @@
 }
 .bytes div, .editable div, .referable div {
 	display: inline-block;
-	padding: 0 8px 0 0;
+	padding: 0 12px 0 0;
 }
 .active-1 {
 	background-color: rgba(255, 0, 0, 0.5);

@@ -260,7 +260,7 @@ window.addEventListener('load', function () {
 	}
 
 	function writeBytes($dest, ary, prefix, activeCells) {
-		var grouping = 8;
+		var grouping = 4;
 		var len = ary.length;
 
 		removeChilds($dest);
