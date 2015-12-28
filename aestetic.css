@@ -24,11 +24,7 @@
 	pointer-events: none;
 }
 * {
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: -moz-none;
-    -o-user-select: none;
-    user-select: none;
+    box-sizing: border-box;
 }
 
 p {
@@ -37,4 +33,119 @@ p {
     -moz-user-select: text;
     -o-user-select: text;
     user-select: text;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #777;
+}
+body {
+	font-family: "Helvetica Neue", Helvetica, sans-serif;
+	font-size: 17px;
+	line-height: 21px;
+	color: #000;
+	background-color: #fff;
+}
+header {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;	
+	z-index: 10;
+	height: 44px;
+	padding-right: 10px;
+	padding-left: 10px;
+	background-color: #fff;
+	border-bottom: solid 1px #ddd;
+}
+h1 {
+	position: absolute;
+	display: block;
+	width: 100%;
+	padding: 0;
+	margin: 0 -10px;
+	font-size: 17px;
+	font-weight: 500;
+	line-height: 44px;
+	text-align: center;
+}
+.content {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	padding-top: 44px;
+}
+.content-padded {
+	margin: 10px;
+}
+ul {
+	padding-left: 0;
+	margin-top: 0;
+	margin-bottom: 15px;
+	list-style: none;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+}
+.table-view-cell {
+	padding: 11px 65px 11px 15px;
+	border-bottom: 1px solid #ddd;	
+}
+.table-view-cell:last-child {
+	border-bottom: 0;
+}
+.table-view-divider {
+	padding-top: 6px;
+	padding-bottom: 6px;
+	padding-left: 15px;
+	margin-top: -1px;
+	margin-left: 0;
+	font-weight: 500;
+	color: #999;
+	background-color: #fafafa;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;	
+}
+.card {
+	overflow: hidden;
+	background-color: #fff;
+	margin: 10px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+}
+.card ul {
+	margin-bottom: 0;
+	border-top: 0;
+	border-bottom: 0;
+}
+.table-view-cell a {
+	position: relative;
+	display: block;
+	padding: inherit;
+	margin: -11px -65px -11px -15px;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: -moz-none;
+    -o-user-select: none;
+    user-select: none;
+}
+.table-view-cell a span.icon-expand {
+	position: absolute;
+	right: 15px;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 21px;
+}
+.table-view-cell a span.icon-expand:before {
+	content: "\27e9";
+}
+.table-view-cell a span.icon-collapse {
+	position: absolute;
+	right: 15px;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 21px;
+}
+.table-view-cell a span.icon-collapse:before {
+	content: "\27e8";
 }

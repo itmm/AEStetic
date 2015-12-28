@@ -6,14 +6,12 @@
         <meta name="viewport" content="initial-scale=1, maximum-scale=1">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <link href="ratchet-v2.0.2/css/ratchet.min.css" rel="stylesheet">
-        <script src="ratchet-v2.0.2/js/ratchet.min.js"></script>
         <link href="aestetic.css" rel="stylesheet">
         <script src="aestetic.js"></script>
     </head>
     <body>
-        <header class="bar bar-nav">
-            <h1 class="title">AEStetic</h1>
+        <header>
+            <h1>AEStetic</h1>
         </header>
         <div class="content">
             <div class="content-padded">
@@ -24,8 +22,8 @@
             <ul class="table-view">
                 <li class="table-view-divider">Configuration</li>
                 <li class="table-view-cell">
-                    Rounds: <span id="rounds-label"></span>
-                    <button class="btn" id="toggle-rounds"><span class="icon icon-bars"></span></button>
+                    <a id="toggle-rounds">Rounds: <span id="rounds-label"></span>
+                        <span class="icon-expand"></span></a>
                 </li>
                 <li class="table-view-cell hidden" id="rounds-config">
                     <div class="card">
@@ -40,8 +38,7 @@
                     </div>
                 </li>
                 <li class="table-view-cell">
-                    Test Vectors
-                    <button class="btn" id="toggle-testvectors"><span class="icon icon-bars"></span></button>
+                    <a id="toggle-testvectors">Test Vectors <span class="icon-expand"></span></a>
                 </li>
                 <li class="table-view-cell hidden" id="testvectors">
                     <div class="card">
@@ -50,19 +47,19 @@
                     </div>
                 </li>
                 <li class="table-view-cell">
-                    S-Box
-                    <button class="btn" id="toggle-sbox"><span class="icon icon-bars"></span></button>
+                    <a id="toggle-sbox">S-Box
+                    <span class="icon-expand"></span></a>
                 </li>
                 <li class="table-view-cell bytes hidden" id="sbox"></li>
                 <li class="table-view-cell">
-                    Permutation
-                    <button class="btn" id="toggle-permute"><span class="icon icon-bars"></span></button>
+                    <a id="toggle-permute">Permutation
+                    <span class="icon-expand"></span></a>
                 </li>
                 <li class="table-view-cell bytes hidden" id="permute"></li>
                 <li class="table-view-divider">Key</li>
                 <li class="table-view-cell bytes" id="key"></li>
-                <li class="table-view-cell">Expanded Key
-                    <button class="btn" id="toggle-expanded-key"><span class="icon icon-bars"></span></button>
+                <li class="table-view-cell"><a id="toggle-expanded-key">Expanded Key
+                    <span class="icon-expand"></span></a>
                 </li>
                 <li class="table-view-cell bytes hidden" id="expanded-key"></li>
                 <li class="table-view-divider">Input</li>
@@ -71,16 +68,7 @@
                 <li class="table-view-divider" id="rounds-end">Encoded</li>
                 <li class="table-view-cell bytes" id="output"></li>
                 <li class="table-view-divider" id="reference">Reference</li>
-                <li class="table-view-cell bytes" id="reference-bytes">
-                    <div>
-                        <span>8e</span> <span>a2</span> <span>b7</span> <span>ca</span>
-                        <span>51</span> <span>67</span> <span>45</span> <span>bf</span>
-                    </div>
-                    <div>
-                        <span>ea</span> <span>fc</span> <span>49</span> <span>90</span>
-                        <span>4b</span> <span>49</span> <span>60</span> <span>89</span>
-                    </div>
-                </li>
+                <li class="table-view-cell bytes" id="reference-bytes"></li>
                 <li class="table-view-divider" id="decode-rounds">Decoding Rounds</li>
                 <li class="table-view-divider" id="decode-rounds-end">Decoded</li>
                 <li class="table-view-cell bytes" id="decoded"></li>

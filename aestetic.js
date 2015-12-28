@@ -439,9 +439,9 @@ window.addEventListener('load', function () {
 // create table DOM elements
 
 	function addRound(round, $parent, $before) {
-		var $header = setTxt(newTag('li', null, ['table-view-cell']), 'round ' + round);
-		var $btn = newTag('button', null, ['btn']);
-		var $spn = newTag('span', null, ['icon', 'icon-bars']);
+		var $header = newTag('li', null, ['table-view-cell']);
+		var $btn = setTxt(newTag('a'), 'round ' + round);
+		var $spn = newTag('span', null, ['icon-expand']);
 		$btn.appendChild($spn);
 		$header.appendChild($btn);
 		$parent.insertBefore($header, $before);
@@ -693,13 +693,13 @@ window.addEventListener('load', function () {
 
 	function toggleDiv($button, $div) {
 		var $span = $button.lastChild;
-		if ($span.classList.contains('icon-close')) {
-			$span.classList.remove('icon-close');
-			$span.classList.add('icon-bars');
+		if ($span.classList.contains('icon-collapse')) {
+			$span.classList.remove('icon-collapse');
+			$span.classList.add('icon-expand');
 			$div.classList.add('hidden');
 		} else {
-			$span.classList.remove('icon-bars');
-			$span.classList.add('icon-close');
+			$span.classList.remove('icon-expand');
+			$span.classList.add('icon-collapse');
 			$div.classList.remove('hidden');
 		}
 	}
