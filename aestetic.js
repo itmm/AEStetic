@@ -747,6 +747,8 @@ window.addEventListener('load', function () {
 			current += formatByte(byte);			
 		});
 		var entered = prompt(message, current);
+		if (entered == '') { return; }
+		
 		var result = [];
 		var lastNibble = 0;
 		var hasLastNibble = false;
