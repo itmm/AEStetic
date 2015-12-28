@@ -440,10 +440,10 @@ window.addEventListener('load', function () {
 
 	function addRound(round, $parent, $before) {
 		var $header = newTag('li', null, ['table-view-cell']);
-		var $btn = setTxt(newTag('a'), 'round ' + round);
+		var $a = setTxt(newTag('a'), 'round ' + round);
 		var $spn = newTag('span', null, ['icon-expand']);
-		$btn.appendChild($spn);
-		$header.appendChild($btn);
+		$a.appendChild($spn);
+		$header.appendChild($a);
 		$parent.insertBefore($header, $before);
 
 		var $cell = newTag('li', null, ['table-view-cell', 'hidden']);
@@ -454,7 +454,7 @@ window.addEventListener('load', function () {
 		$cell.appendChild($div);
 		$parent.insertBefore($cell, $before);
 
-		$btn.addEventListener('click', function(evt) {
+		$a.addEventListener('click', function(evt) {
 			toggleDiv(this, $cell);
 			evt.preventDefault();
 		});
@@ -691,21 +691,16 @@ window.addEventListener('load', function () {
 
 // toggle collapse/expand
 
-	function toggleDiv($button, $div) {
-		var $span = $button.lastChild;
-		if ($span.classList.contains('icon-collapse')) {
-			$span.classList.remove('icon-collapse');
-			$span.classList.add('icon-expand');
-			$div.classList.add('hidden');
-		} else {
-			$span.classList.remove('icon-expand');
-			$span.classList.add('icon-collapse');
-			$div.classList.remove('hidden');
-		}
+	function toggleDiv($a, $div) {
+		var $span = $a.lastChild;
+		var collapse = $span.classList.contains('icon-collapse');
+		setClass($span, 'icon-collapse', !collapse);
+		setClass($span, 'icon-expand', collapse);
+		setClass($div, 'hidden', collapse);
 	}
 
-	function addToggleDiv(button, div) {
-		$(button).addEventListener('click', function(evt) {
+	function addToggleDiv(a, div) {
+		$(a).addEventListener('click', function(evt) {
 			toggleDiv(this, $(div));
 			evt.preventDefault();
 		});
@@ -720,8 +715,8 @@ window.addEventListener('load', function () {
 
 // change round count
 
-	function addChangeRounds(button, delta) {
-		$(button).addEventListener('click', function(evt) {
+	function addChangeRounds(a, delta) {
+		$(a).addEventListener('click', function(evt) {
 			var newRounds = state.rounds + delta;
 			if (newRounds > 0) {
 				state.rounds = newRounds;
@@ -748,7 +743,7 @@ window.addEventListener('load', function () {
 		});
 		var entered = prompt(message, current);
 		if (entered == '') { return; }
-		
+
 		var result = [];
 		var lastNibble = 0;
 		var hasLastNibble = false;
