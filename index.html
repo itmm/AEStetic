@@ -21,6 +21,13 @@
             </div>
             <ul>
                 <li class="header">Configuration</li>
+                <li><a id="toggle-testvectors" href="#">Test Vectors
+                    <span class="icon-expand"></span></a></li>
+                <li class="hidden" id="testvectors">
+                    <div class="card">
+                        <ul id="testvectors-container"></ul>
+                    </div>
+                </li>
                 <li><a id="toggle-rounds" href="#">Rounds:
                     <span id="rounds-label"></span>
                     <span class="icon-expand"></span></a></li>
@@ -30,13 +37,6 @@
                             <li><a id="dec-rounds" href="#">less rounds</a></li>
                             <li><a id="inc-rounds" href="#">more rounds</a></li>
                         </ul>
-                    </div>
-                </li>
-                <li><a id="toggle-testvectors" href="#">Test Vectors
-                    <span class="icon-expand"></span></a></li>
-                <li class="hidden" id="testvectors">
-                    <div class="card">
-                        <ul id="testvectors-container"></ul>
                     </div>
                 </li>
                 <li><a id="toggle-sbox" href="#">S-Box <span class="icon-expand"></span></a></li>
@@ -55,7 +55,7 @@
                 <li class="header" id="rounds-end">Encoded</li>
                 <li class="referable" id="output"></li>
                 <li class="header" id="reference">Reference</li>
-                <li class="referable" id="reference-bytes"></li>
+                <li class="bytes" id="reference-bytes"></li>
                 <li class="header" id="decode-rounds">Decoding Rounds</li>
                 <li class="table-view-divider" id="decode-rounds-end">Decoded</li>
                 <li class="referable" id="decoded"></li>
