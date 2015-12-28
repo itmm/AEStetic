@@ -878,7 +878,7 @@ window.addEventListener('load', function () {
 
 	function addUpdateBytes(elm, message, bytes, validator) {
 		$(elm).addEventListener('click', function(evt) {
-			updateBytes(message, bytes, validator);
+			updateBytes(message, state[bytes], validator);
 			evt.preventDefault();
 		});
 	}
@@ -887,11 +887,11 @@ window.addEventListener('load', function () {
 		return newArray.length >= 4;
 	}
 
-	addUpdateBytes('key', 'change key', state.key, validKeyLength);
+	addUpdateBytes('key', 'change key', 'key', validKeyLength);
 
 	function sameLength(newArray, oldArray) { return newArray.length == oldArray.length; }
 
-	addUpdateBytes('sbox', 'change S-Box', state.sbox, sameLength);
-	addUpdateBytes('permute', 'change permutation', state.permute, sameLength);
-	addUpdateBytes('input', 'change input', state.input, sameLength);
+	addUpdateBytes('sbox', 'change S-Box', 'sbox', sameLength);
+	addUpdateBytes('permute', 'change permutation', 'permute', sameLength);
+	addUpdateBytes('input', 'change input', 'input', sameLength);
 });
