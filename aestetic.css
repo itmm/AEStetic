@@ -4,20 +4,33 @@
 .bytes {
 	font-family: monospace;
 	padding: 8px;
-	background-color: rgba(0, 0, 255, .1);
+	background-color: #fff;
+	color: #888;
 }
-.bytes div {
+.editable {
+	font-family: monospace;
+	padding: 8px;
+	background-color: #eef;
+	color: #008;
+}
+.referable {
+	font-family: monospace;
+	padding: 8px;
+	background-color: #fff;	
+	color: #008;
+}
+.bytes div, .editable div, .referable div {
 	display: inline-block;
 	padding: 0 8px 0 0;
 }
 .active-1 {
-	background-color: #faa;
+	background-color: rgba(255, 0, 0, 0.5);
 }
 .active-2 {
-	background-color: #fcc;
+	background-color: rgba(255, 0, 0, 0.25);
 }
 .active-3 {
-	background-color: #fee;
+	background-color: rgba(255, 0, 0, 0.125);
 }
 .disabled {
 	color: rgba(0, 0, 0, .2) !important;
@@ -122,6 +135,7 @@ ul {
 	display: block;
 	padding: inherit;
 	margin: -11px -65px -11px -15px;
+	color: #008;
 
     -webkit-user-select: none;
     -khtml-user-select: none;

@@ -465,7 +465,7 @@ window.addEventListener('load', function () {
 	function addSubEntry(name, block, prefix, $container) {
 		var $li = setTxt(newTag('li', null, ['table-view-cell']), name);
 		$container.appendChild($li);
-		var $entry = newTag('li', null, ['table-view-cell', 'bytes']);
+		var $entry = newTag('li', null, ['table-view-cell', 'referable']);
 		writeBytes($entry, block, prefix, true);
 		$container.appendChild($entry);
 	}
