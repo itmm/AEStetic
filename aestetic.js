@@ -453,7 +453,7 @@ window.addEventListener('load', function () {
 	function addRound(round, $parent, $before, prefix, headerClasses, contentClasses) {
 		var $header = newTag('li', prefix + 'hdr', headerClasses);
 		var $a = setTxt(newTag('a'), 'round ' + round);
-		var $spn = newTag('span', null, ['item-expand']);
+		var $spn = newTag('span', null, ['icon-expand']);
 		$a.appendChild($spn);
 		$header.appendChild($a);
 		$parent.insertBefore($header, $before);
