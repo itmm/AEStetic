@@ -19,59 +19,43 @@
                     Tap on each byte to see the bytes it depends on.
                 </p>
             </div>
-            <ul class="table-view">
-                <li class="table-view-divider">Configuration</li>
-                <li class="table-view-cell">
-                    <a id="toggle-rounds">Rounds: <span id="rounds-label"></span>
-                        <span class="icon-expand"></span></a>
-                </li>
-                <li class="table-view-cell hidden" id="rounds-config">
+            <ul>
+                <li class="header">Configuration</li>
+                <li><a id="toggle-rounds">Rounds:
+                    <span id="rounds-label"></span>
+                    <span class="icon-expand"></span></a></li>
+                <li class="hidden" id="rounds-config">
                     <div class="card">
-                        <ul class="table-view">
-                            <li class="table-view-cell">
-                                <a id="dec-rounds">less rounds</a>
-                            </li>
-                            <li class="table-view-cell">
-                                <a id="inc-rounds">more rounds</a>
-                            </li>
+                        <ul>
+                            <li><a id="dec-rounds">less rounds</a></li>
+                            <li><a id="inc-rounds">more rounds</a></li>
                         </ul>
                     </div>
                 </li>
-                <li class="table-view-cell">
-                    <a id="toggle-testvectors">Test Vectors <span class="icon-expand"></span></a>
-                </li>
-                <li class="table-view-cell hidden" id="testvectors">
+                <li><a id="toggle-testvectors">Test Vectors <span class="icon-expand"></span></a></li>
+                <li class="hidden" id="testvectors">
                     <div class="card">
-                        <ul class="table-view" id="testvectors-container">
-                        </ul>
+                        <ul id="testvectors-container"></ul>
                     </div>
                 </li>
-                <li class="table-view-cell">
-                    <a id="toggle-sbox">S-Box
-                    <span class="icon-expand"></span></a>
-                </li>
-                <li class="table-view-cell editable hidden" id="sbox"></li>
-                <li class="table-view-cell">
-                    <a id="toggle-permute">Permutation
-                    <span class="icon-expand"></span></a>
-                </li>
-                <li class="table-view-cell editable hidden" id="permute"></li>
-                <li class="table-view-divider">Key</li>
-                <li class="table-view-cell editable" id="key"></li>
-                <li class="table-view-cell"><a id="toggle-expanded-key">Expanded Key
-                    <span class="icon-expand"></span></a>
-                </li>
-                <li class="table-view-cell referable hidden" id="expanded-key"></li>
-                <li class="table-view-divider">Input</li>
-                <li class="table-view-cell editable" id="input"></li>
-                <li class="table-view-divider" id="rounds">Encoding Rounds</li>
-                <li class="table-view-divider" id="rounds-end">Encoded</li>
-                <li class="table-view-cell referable" id="output"></li>
-                <li class="table-view-divider" id="reference">Reference</li>
-                <li class="table-view-cell referable" id="reference-bytes"></li>
-                <li class="table-view-divider" id="decode-rounds">Decoding Rounds</li>
+                <li><a id="toggle-sbox">S-Box <span class="icon-expand"></span></a></li>
+                <li class="editable hidden" id="sbox"></li>
+                <li><a id="toggle-permute">Permutation <span class="icon-expand"></span></a></li>
+                <li class="editable hidden" id="permute"></li>
+                <li class="header">Key</li>
+                <li class="editable" id="key"></li>
+                <li><a id="toggle-expanded-key">Expanded Key <span class="icon-expand"></span></a></li>
+                <li class="referable hidden" id="expanded-key"></li>
+                <li class="header">Input</li>
+                <li class="editable" id="input"></li>
+                <li class="header" id="rounds">Encoding Rounds</li>
+                <li class="header" id="rounds-end">Encoded</li>
+                <li class="referable" id="output"></li>
+                <li class="header" id="reference">Reference</li>
+                <li class="referable" id="reference-bytes"></li>
+                <li class="header" id="decode-rounds">Decoding Rounds</li>
                 <li class="table-view-divider" id="decode-rounds-end">Decoded</li>
-                <li class="table-view-cell referable" id="decoded"></li>
+                <li class="referable" id="decoded"></li>
             </ul>
         </div>
     </body>

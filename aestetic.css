@@ -41,11 +41,6 @@
 }
 
 p {
-    -webkit-user-select: text;
-    -khtml-user-select: text;
-    -moz-user-select: text;
-    -o-user-select: text;
-    user-select: text;
     margin-top: 0;
     margin-bottom: 10px;
     font-size: 14px;
@@ -99,14 +94,14 @@ ul {
 	border-top: 1px solid #ddd;
 	border-bottom: 1px solid #ddd;
 }
-.table-view-cell {
+li {
 	padding: 11px 65px 11px 15px;
 	border-bottom: 1px solid #ddd;	
 }
-.table-view-cell:last-child {
+li:last-child {
 	border-bottom: 0;
 }
-.table-view-divider {
+.table-view-divider, .header {
 	padding-top: 6px;
 	padding-bottom: 6px;
 	padding-left: 15px;
@@ -130,7 +125,7 @@ ul {
 	border-top: 0;
 	border-bottom: 0;
 }
-.table-view-cell a {
+li > a {
 	position: relative;
 	display: block;
 	padding: inherit;
@@ -143,23 +138,23 @@ ul {
     -o-user-select: none;
     user-select: none;
 }
-.table-view-cell a span.icon-expand {
+span.icon-expand {
 	position: absolute;
 	right: 15px;
 	top: 50%;
 	transform: translateY(-50%);
 	font-size: 21px;
 }
-.table-view-cell a span.icon-expand:before {
+span.icon-expand:before {
 	content: "\27e9";
 }
-.table-view-cell a span.icon-collapse {
+span.icon-collapse {
 	position: absolute;
 	right: 15px;
 	top: 50%;
 	transform: translateY(-50%);
 	font-size: 21px;
 }
-.table-view-cell a span.icon-collapse:before {
+span.icon-collapse:before {
 	content: "\27e8";
 }

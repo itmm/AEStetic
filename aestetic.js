@@ -360,7 +360,7 @@ window.addEventListener('load', function () {
 		var $container = $('testvectors-container');
 		removeChilds($container);
 		_.each(testcases, function(testcase) {
-			var $li = newTag('li', null, ['table-view-cell']);
+			var $li = newTag('li');
 			var $a = newTag('a');
 			setTxt($a, testcase.name);
 			$li.appendChild($a);
@@ -439,17 +439,17 @@ window.addEventListener('load', function () {
 // create table DOM elements
 
 	function addRound(round, $parent, $before) {
-		var $header = newTag('li', null, ['table-view-cell']);
+		var $header = newTag('li');
 		var $a = setTxt(newTag('a'), 'round ' + round);
 		var $spn = newTag('span', null, ['icon-expand']);
 		$a.appendChild($spn);
 		$header.appendChild($a);
 		$parent.insertBefore($header, $before);
 
-		var $cell = newTag('li', null, ['table-view-cell', 'hidden']);
+		var $cell = newTag('li', null, ['hidden']);
 		$parent.insertBefore($cell, $before);
 		var $div = newTag('div', null, ['card']);
-		var $container = newTag('ul', null, ['table-view']);
+		var $container = newTag('ul');
 		$div.appendChild($container);
 		$cell.appendChild($div);
 		$parent.insertBefore($cell, $before);
@@ -463,9 +463,9 @@ window.addEventListener('load', function () {
 	}
 
 	function addSubEntry(name, block, prefix, $container) {
-		var $li = setTxt(newTag('li', null, ['table-view-cell']), name);
+		var $li = setTxt(newTag('li'), name);
 		$container.appendChild($li);
-		var $entry = newTag('li', null, ['table-view-cell', 'referable']);
+		var $entry = newTag('li', null, ['referable']);
 		writeBytes($entry, block, prefix, true);
 		$container.appendChild($entry);
 	}
