@@ -582,8 +582,16 @@ window.addEventListener('load', function () {
 
 			// mix key
 
+			var rnd_subkey = rnd + '-subkey-';
+			_.map(block, function(_, j) {
+				dependencies[rnd_subkey + j] = ['expanded-key-' + j];
+				return expandedKey[state.blockSize * round + j];
+			});
+			addSubEntry('used subkey:', block, rnd_subkey, $container, true);
+
 			var rnd_key = rnd + '-key-';
 			_.map(block, function(_, i) {
+				dependent[i].push(rnd_subkey + i);
 				dependent[i].push('expanded-key-' + (state.blockSize * round + i));
 				dependencies[rnd_key + i] = dependent[i];
 				dependent[i] = [rnd_key + i];
@@ -669,9 +677,17 @@ window.addEventListener('load', function () {
 
 			// mix with key
 
+			var rnd_subkey = rnd + '-subkey-';
+			_.map(dec2, function(_, j) {
+				dependencies[rnd_subkey + j] = ['expanded-key-' + j];
+				return expandedKey[state.blockSize * i + j];
+			});
+			addSubEntry('used subkey:', dec2, rnd_subkey, $container, true);
+
 			var rnd_key = rnd + '-key-';
 			_.map(dec, function(val, j) {
 				dependent[j].push('expanded-key-' + (i * state.blockSize + j));
+				dependent[j].push(rnd_subkey + j);
 				dependencies[rnd_key + j] = dependent[j];
 				dependent[j] = [rnd_key + j];
 				return val ^ expandedKey[i * state.blockSize + j];
