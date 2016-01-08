@@ -216,5 +216,5 @@ span.badge-rijndael:before {
 	content: "Rijndael";
 }
 span.badge-unknown:before {
-	content: "unknown configuration";
+	content: "Non-Standard Configuration";
 }
