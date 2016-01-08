@@ -213,7 +213,7 @@ window.addEventListener('load', function () {
 	var tappedCell = null;
 
 	function processClosure(active, visited, depth, addActiveClass) {
-		if (!active.length || depth > 3) return;
+		if (!active.length || depth > 10) return;
 
 		var nextLevel = [];
 

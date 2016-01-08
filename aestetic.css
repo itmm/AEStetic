@@ -28,6 +28,27 @@
 .active-3 {
 	background-color: rgba(255, 0, 0, 0.125);
 }
+.active-4 {
+	background-color: rgba(255, 0, 0, 0.115);
+}
+.active-5 {
+	background-color: rgba(255, 0, 0, 0.105);
+}
+.active-6 {
+	background-color: rgba(255, 0, 0, 0.095);
+}
+.active-7 {
+	background-color: rgba(255, 0, 0, 0.085);
+}
+.active-8 {
+	background-color: rgba(255, 0, 0, 0.075);
+}
+.active-9 {
+	background-color: rgba(255, 0, 0, 0.065);
+}
+.active-10 {
+	background-color: rgba(255, 0, 0, 0.055);
+}
 .disabled {
 	color: rgba(0, 0, 0, .2) !important;
 	pointer-events: none;
