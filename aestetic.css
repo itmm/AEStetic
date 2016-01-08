@@ -11,6 +11,7 @@
 }
 .editable {
 	color: #008;
+	background-color: #ddf;
 }
 .referable {
 	color: #008;
@@ -110,6 +111,18 @@ h1 {
 	color: #f00;
 	border: solid 3px #f00;
 	border-radius: 6px;
+}
+div#calc {
+	position: absolute;
+	z-index: 20;
+	top: 0;
+	left: 0;
+	background-color: #fff;
+	color: #444;
+	border: solid 3px #888;
+	border-radius: 6px;
+	padding: 8px;
+
 }
 
 .error-overlay > h2 {

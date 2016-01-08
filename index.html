@@ -17,6 +17,9 @@
                 Please activate Javascript to use this Web-App.
             </p>
         </div>
+        <script type="text/javascript">
+            document.getElementById('no-javascript').classList.add('hidden');
+        </script>
         <div id="main" class="content hidden">
             <div class="content-padded">
                 <p>Inspect the encryption of AES step by step.
@@ -69,7 +72,11 @@
                     <span class="icon-collapse" /></a></li>
                     <li class="referable" id="decoded" />
             </ul>
+            <div id="calc" class="hidden">Calculation</div>
         </div>
+        <script type="text/javascript">
+            document.getElementById('main').classList.remove('hidden');
+        </script>
         <script src="aestetic.js"></script>
     </body>
 </html>

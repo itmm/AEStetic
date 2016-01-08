@@ -1,8 +1,5 @@
-var state = null;
-
 window.addEventListener('load', function () {
 	'use strict';
-
 
 // setup
 
@@ -112,7 +109,7 @@ window.addEventListener('load', function () {
 		}
 	];
 
-	state = {
+	var state = {
 		'sbox': defaults.sbox.slice(),
 		'permute': defaults.permute.slice(),
 		'key': testcases[0].key.slice(),
@@ -201,15 +198,10 @@ window.addEventListener('load', function () {
 	}
 
 
-// dismiss JavaScript error
-
-	addClass($('no-javascript'), 'hidden');
-	removeClass($('main'), 'hidden');
-
-
 // handle highlighting
 
 	var dependencies = {};
+	var calculations = {}
 	var tappedCell = null;
 
 	function processClosure(active, visited, depth, addActiveClass) {
@@ -239,9 +231,21 @@ window.addEventListener('load', function () {
 		var id = this.getAttribute('id');
 		if (id == tappedCell) {
 			tappedCell = null;
+			addClass($('calc'), 'hidden');
 		} else {
 			tappedCell = id;
 			processClosure([tappedCell], [], 1, true);
+			var calc = $('calc');
+			var msg = calculations[id];
+			if (msg) {
+				calc.firstChild.nodeValue = msg;
+				var box = this.getBoundingClientRect();
+				calc.style['left'] = (box.left + window.scrollX + box.width + 4) + "px";
+				calc.style['top'] = (box.top + window.scrollY + box.height + 4) + "px";
+				removeClass(calc, 'hidden');
+			} else {
+				addClass(calc, 'hidden');
+			}
 		}
 		evt.preventDefault();
 	}
@@ -257,6 +261,10 @@ window.addEventListener('load', function () {
 	function formatByte(byte) {
 		var formatted = byte.toString(16);
 		return byte < 16 ? '0' + formatted : formatted;
+	}
+
+	function fb(byte) {
+		return '0x' + formatByte(byte);
 	}
 
 	function writeBytes($dest, ary, prefix, activeCells) {
@@ -539,6 +547,7 @@ window.addEventListener('load', function () {
 			_.map(block, function(val, i) {
 				dependent[i].push('sbox-' + val);
 				dependencies[rnd_sbox + i] = dependent[i];
+				calculations[rnd_sbox + i] = fb(state.sbox[val]) + " = S-Box[" + fb(val) + "]";
 				dependent[i] = [rnd_sbox + i];
 				return state.sbox[val];				
 			});
@@ -559,6 +568,7 @@ window.addEventListener('load', function () {
 			// mult
 
 			if (round < state.rounds) {
+				var rnd_mult = rnd + '-mult-';
 				for (var j = 0; j < 4; ++j) {
 					var s0 = block2[4 * j];
 					var s1 = block2[4 * j + 1];
@@ -571,8 +581,16 @@ window.addEventListener('load', function () {
 					block2[4 * j + 3] = mult(3, s0) ^ s1 ^ s2 ^ mult(2, s3);
 
 					polyDependency(dependent, dependent2, 4 * j);
+					calculations[rnd_mult + 4 * j] = fb(block2[4 * j]) + " = (2 × " + fb(s0) +
+						" = " + fb(mult(2, s0)) + ") XOR (3 × " + fb(s1) + " = " + fb(mult(3, s1)) + ") XOR " + fb(s2) + " XOR " + fb(s3);
+					calculations[rnd_mult + (4 * j + 1)] = fb(block2[4 * j + 1]) + " = " + fb(s0) +
+						" XOR (2 × " + fb(s1) + " = " + fb(mult(2, s1)) + ") XOR (3 × " + fb(s2) + " = " + fb(mult(3, s2)) + ") XOR " + fb(s3);
+					calculations[rnd_mult + (4 * j + 2)] = fb(block2[4 * j + 2]) + " = " + fb(s0) + " XOR " + fb(s1) +
+						" XOR (2 × " + fb(s2) + " = " + fb(mult(2, s2)) + ") XOR (3 × " + fb(s3) + " = " + fb(mult(3, s3)) + ")";
+					calculations[rnd_mult + (4 * j + 3)] = fb(block2[4 * j + 3]) + " = (3 × " + fb(s0) + " = " +
+						fb(mult(3, s0)) + ") XOR " +
+						fb(s1) + " XOR " + fb(s2) + " XOR (2 × " + fb(s3) + " = " + fb(mult(2, s3)) + ")";
 				}
-				var rnd_mult = rnd + '-mult-';
 				_.each(dependent2, function(val, i) {
 					dependencies[rnd_mult + i] = val;
 					dependent[i] = [rnd_mult + i];
@@ -585,6 +603,8 @@ window.addEventListener('load', function () {
 			var rnd_subkey = rnd + '-subkey-';
 			_.map(block, function(_, j) {
 				dependencies[rnd_subkey + j] = ['expanded-key-' + j];
+				calculations[rnd_subkey + j] = fb(expandedKey[state.blockSize * round + j]) +
+					" = key[" + state.blockSize + " * " + round + " + " + j + " = " + (state.blockSize * round + j) + "]";
 				return expandedKey[state.blockSize * round + j];
 			});
 			addSubEntry('used subkey:', block, rnd_subkey, $container, true);
@@ -594,6 +614,8 @@ window.addEventListener('load', function () {
 				dependent[i].push(rnd_subkey + i);
 				dependent[i].push('expanded-key-' + (state.blockSize * round + i));
 				dependencies[rnd_key + i] = dependent[i];
+				calculations[rnd_key + i] = fb(block2[i] ^ expandedKey[state.blockSize * round + i]) + " = " + fb(block2[i]) + " XOR " + fb(expandedKey[state.blockSize * round + i]);
+
 				dependent[i] = [rnd_key + i];
 				return block2[i] ^ expandedKey[state.blockSize * round + i];
 			});
@@ -727,7 +749,8 @@ window.addEventListener('load', function () {
 // recalculate fields
 
 	function refresh() {
-		dependencies = {};
+		addClass($('calc'), 'hidden');
+		dependencies = {}; calculations = {};
 		refreshState();
 		updateTestvectors();
 		expandKey();
@@ -781,6 +804,7 @@ window.addEventListener('load', function () {
 		var collapse = $span.classList.contains('icon-collapse');
 		setClass($span, 'icon-collapse', !collapse);
 		setClass($span, 'icon-expand', collapse);
+		addClass($('calc'), 'hidden');
 		_.each($divs, function($div) { setHide($div, collapse); });
 	}
 
