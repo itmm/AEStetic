@@ -523,11 +523,11 @@ window.addEventListener('load', function () {
 		var roundContentClasses;
 		if ($('toggle-enc-label').classList.contains('icon-collapse')) {
 			roundHeaderClasses = null;
-			roundContentClasses = ['hidden'];
+			roundContentClasses = ['hidden', 'sub'];
 
 		} else {
 			roundHeaderClasses = ['hidden'];
-			roundContentClasses = ['hidden', 'hidden-2'];
+			roundContentClasses = ['hidden', 'hidden-2', 'sub'];
 		}
 		for (var round = 1; round <= state.rounds; ++round) {
 			var rnd = 'r-' + round;
@@ -635,11 +635,11 @@ window.addEventListener('load', function () {
 		var roundContentClasses;
 		if ($('toggle-dec-label').classList.contains('icon-collapse')) {
 			roundHeaderClasses = null;
-			roundContentClasses = ['hidden'];
+			roundContentClasses = ['hidden', 'sub'];
 
 		} else {
 			roundHeaderClasses = ['hidden'];
-			roundContentClasses = ['hidden', 'hidden-2'];
+			roundContentClasses = ['hidden', 'hidden-2', 'sub'];
 		}
 		for (var i = state.rounds - 1; i >= 0; --i) {
 			var rnd = 'd-' + (i + 1);

@@ -134,15 +134,14 @@ ul {
 	margin-top: 0;
 	margin-bottom: 15px;
 	list-style: none;
-	border-top: 1px solid #ddd;
 	border-bottom: 1px solid #ddd;
 }
 li {
+	border-top: 1px solid #ddd;		
 	padding: 11px 65px 11px 15px;
-	border-bottom: 1px solid #ddd;	
 }
-li:last-child {
-	border-bottom: 0;
+li.sub {
+	border-top: 0;
 }
 .header {
 	padding-top: 6px;
@@ -154,12 +153,11 @@ li:last-child {
 	color: #999;
 	background-color: #fafafa;
 	border-top: 1px solid #ddd;
-	border-bottom: 1px solid #ddd;	
 }
 .card {
 	overflow: hidden;
 	background-color: #fff;
-	margin: 10px;
+	margin: 0 10px 10px 10px;
 	border: 1px solid #ddd;
 	border-radius: 6px;
 }
@@ -167,6 +165,9 @@ li:last-child {
 	margin-bottom: 0;
 	border-top: 0;
 	border-bottom: 0;
+}
+.card ul li:first-child {
+	border-top: 0;
 }
 li > a {
 	position: relative;
