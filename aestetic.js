@@ -666,7 +666,7 @@ window.addEventListener('load', function () {
 					"j ← " + k + " = bs × round + i",
 					fb(expandedKey[k]) + " = key[j]"
 				]);
-				return expandedKey[state.blockSize * round + j];
+				return expandedKey[k];
 			});
 			addSubEntry('used subkey:', block, rnd_subkey, $container, true);
 
@@ -734,6 +734,9 @@ window.addEventListener('load', function () {
 			var rnd_input = rnd + '-input-';
 			_.map(dependent, function(val, j) {
 				dependencies[rnd_input + j] = val;
+				calculations[rnd_input + j] = pars([
+					fb(dec[j]) + " = block[" + j + "]"
+				]);
 				return [rnd_input + j];
 			});
 			addSubEntry('input to round:', dec, rnd_input, $container, true);
@@ -745,7 +748,13 @@ window.addEventListener('load', function () {
 				dependent2[j] = dependent[inv_permute[j]];
 				dependent2[j].push('permute-' + inv_permute[j]);
 				dependencies[rnd_permute + j] = dependent2[j];
-				return dec[inv_permute[j]];
+				var k = inv_permute[j];
+				calculations[rnd_permute + j] = pars([
+					j + " = permute[i]",
+					"⇒ i = " + k,
+					fb(dec[k]) + " = block[i]"
+				]);
+				return dec[k];
 			});
 			addSubEntry('after permute:', dec2, rnd_permute, $container, true);
 			_.map(dependent, function(_, j) { return [rnd_permute + j]; });
@@ -757,6 +766,11 @@ window.addEventListener('load', function () {
 				dependent[j].push('sbox-' + inv_sbox[dec2[j]]);
 				dependencies[rnd_sbox + j] = dependent[j];
 				dependent[j] = [rnd_sbox + j];
+				calculations[rnd_sbox + j] = pars([
+					fb(dec2[j]) + " = S-Box[i]",
+					"⇒ i = " + fb(inv_sbox[dec2[j]]),
+					"i"
+				]);
 				return inv_sbox[dec2[j]];
 			});
 			addSubEntry('after S-Box:', dec, rnd_sbox, $container, true);
@@ -766,7 +780,15 @@ window.addEventListener('load', function () {
 			var rnd_subkey = rnd + '-subkey-';
 			_.map(dec2, function(_, j) {
 				dependencies[rnd_subkey + j] = ['expanded-key-' + j];
-				return expandedKey[state.blockSize * i + j];
+				var k = state.blockSize * i + j;
+				calculations[rnd_subkey + j] = pars([
+					"bs ← " + state.blockSize,
+					"round ← " + i,
+					"i ← " + j,
+					"j ← " + k + " = bs × round + i",
+					fb(expandedKey[k]) + " = key[j]"
+				]);
+				return expandedKey[k];
 			});
 			addSubEntry('used subkey:', dec2, rnd_subkey, $container, true);
 
@@ -776,27 +798,105 @@ window.addEventListener('load', function () {
 				dependent[j].push(rnd_subkey + j);
 				dependencies[rnd_key + j] = dependent[j];
 				dependent[j] = [rnd_key + j];
-				return val ^ expandedKey[i * state.blockSize + j];
+				var k = i * state.blockSize + j;
+				calculations[rnd_key + j] = pars(
+					[fb(val ^ expandedKey[k]) + " = " + fb(val) + " ⊕ " + fb(expandedKey[k])
+				]);
+				return val ^ expandedKey[k];
 			});
 			addSubEntry('after mix with key:', dec, rnd_key, $container, true);
 
 			// mult
 
 			if (i > 0) {
-				for (var j = 0; j < 4; ++j) {
+				var rnd_mult = rnd + '-mult-';
+				for (var j = 0; j < state.blockSize/4; ++j) {
 					var s0 = dec[4 * j];
 					var s1 = dec[4 * j + 1];
 					var s2 = dec[4 * j + 2];
 					var s3 = dec[4 * j + 3];
 
-					dec[4 * j] = mult(0x0e, s0) ^ mult(0x0b, s1) ^ mult(0x0d, s2) ^ mult(0x09, s3);
-					dec[4 * j + 1] = mult(0x09, s0) ^ mult(0x0e, s1) ^ mult(0x0b, s2) ^ mult(0x0d, s3);
-					dec[4 * j + 2] = mult(0x0d, s0) ^ mult(0x09, s1) ^ mult(0x0e, s2) ^ mult(0x0b, s3);
-					dec[4 * j + 3] = mult(0x0b, s0) ^ mult(0x0d, s1) ^ mult(0x09, s2) ^ mult(0x0e, s3);
+					var s0e = mult(0x0e, s0);
+					var s1b = mult(0x0b, s1);
+					var s2d = mult(0x0d, s2);
+					var s39 = mult(0x09, s3);
+
+					var s0exs1b = s0e ^ s1b;
+					var s2dxs39 = s2d ^ s39;
+
+					dec[4 * j] = s0exs1b ^ s2dxs39;
+
+					var s09 = mult(0x09, s0);
+					var s1e = mult(0x0e, s1);
+					var s2b = mult(0x0b, s2);
+					var s3d = mult(0x0d, s3);
+					var s09xs1e = s09 ^ s1e;
+					var s2bxs3d = s2b ^ s3d;
+
+					dec[4 * j + 1] = s09xs1e ^ s2bxs3d;
+
+					var s0d = mult(0x0d, s0);
+					var s19 = mult(0x09, s1);
+					var s2e = mult(0x0e, s2);
+					var s3b = mult(0x0b, s3);
+					var s0dxs19 = s0d ^ s19;
+					var s2exs3b = s2e ^ s3b;
+
+					dec[4 * j + 2] = s0dxs19 ^ s2exs3b;
+
+					var s0b = mult(0x0b, s0);
+					var s1d = mult(0x0d, s1);
+					var s29 = mult(0x09, s2);
+					var s3e = mult(0x0e, s3);
+					var s0bxs1d = s0b ^ s1d;
+					var s29xs3e = s29 ^ s3e;
+
+					dec[4 * j + 3] = s0bxs1d ^ s29xs3e;
 
 					polyDependency(dependent, dependent2, 4 * j);
+
+					var fbs0 = fb(s0);
+					var fbs1 = fb(s1);
+					var fbs2 = fb(s2);
+					var fbs3 = fb(s3);
+
+					calculations[rnd_mult + (4 * j)] = pars([
+						"s0 ← " + fb(s0e) + " = 0x0e × " + fbs0,
+						"s1 ← " + fb(s1b) + " = 0x0b × " + fbs1,
+						"s2 ← " + fb(s2d) + " = 0x0d × " + fbs2,
+						"s3 ← " + fb(s39) + " = 0x09 × " + fbs3,
+						"a ← " + fb(s0exs1b) + " = s0 ⊕ s1",
+						"b ← " + fb(s2dxs39) + " = s2 ⊕ s3",
+						fb(dec[4 * j]) + " = a ⊕ b"
+					]);
+					calculations[rnd_mult + (4 * j + 1)] = pars([
+						"s0 ← " + fb(s09) + " = 0x09 × " + fbs0,
+						"s1 ← " + fb(s1e) + " = 0x0e × " + fbs1,
+						"s2 ← " + fb(s2b) + " = 0x0b × " + fbs2,
+						"s3 ← " + fb(s3d) + " = 0x0d × " + fbs3,
+						"a ← " + fb(s09xs1e) + " = s0 ⊕ s1",
+						"b ← " + fb(s2bxs3d) + " = s2 ⊕ s3",
+						fb(dec[4 * j + 1]) + " = a ⊕ b"
+					]);
+					calculations[rnd_mult + (4 * j + 2)] = pars([
+						"s0 ← " + fb(s0d) + " = 0x0d × " + fbs0,
+						"s1 ← " + fb(s19) + " = 0x09 × " + fbs1,
+						"s2 ← " + fb(s2e) + " = 0x0e × " + fbs2,
+						"s3 ← " + fb(s3b) + " = 0x0b × " + fbs3,
+						"a ← " + fb(s0dxs19) + " = s0 ⊕ s1",
+						"b ← " + fb(s2exs3b) + " = s2 ⊕ s3",
+						fb(dec[4 * j + 2]) + " = a ⊕ b"
+					]);
+					calculations[rnd_mult + (4 * j + 3)] = pars([
+						"s0 ← " + fb(s0b) + " = 0x0b × " + fbs0,
+						"s1 ← " + fb(s1d) + " = 0x0d × " + fbs1,
+						"s2 ← " + fb(s29) + " = 0x09 × " + fbs2,
+						"s3 ← " + fb(s3e) + " = 0x0e × " + fbs3,
+						"a ← " + fb(s0bxs1d) + " = s0 ⊕ s1",
+						"b ← " + fb(s29xs3e) + " = s2 ⊕ s3",
+						fb(dec[4 * j + 3]) + " = a ⊕ b"
+					]);
 				}
-				var rnd_mult = rnd + '-mult-';
 				addSubEntry('after mult:', dec, rnd_mult, $container, true);
 				_.map(dependent, function(_, k) {
 					dependencies[rnd_mult + k] = dependent2[k];
