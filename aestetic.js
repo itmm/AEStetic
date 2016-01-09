@@ -231,6 +231,96 @@ window.addEventListener('load', function () {
 		processClosure(nextLevel, visited, depth + 1, addActiveClass);
 	}
 
+	function repositionCalc() {
+		var $calc = $('calc');
+		if (tappedCell && $calc.firstChild) {
+			var $box = $(tappedCell).getBoundingClientRect();
+			if (! $box.width && ! $box.height) {
+				processClosure([tappedCell], [], 1, false);
+				tappedCell = null;
+				removeChilds($calc);
+				relayout();
+			}
+			calc.style['left'] = ($box.left + window.scrollX + $box.width + 4) + "px";
+			calc.style['top'] = ($box.top + window.scrollY + $box.height + 4) + "px";
+			removeClass($calc, 'hidden');
+		} else {
+			addClass($calc, 'hidden');
+		}
+	}
+
+	function absoluteCenter(box) {
+		return {
+			x: box.left + box.width/2 + window.scrollX,
+			y: box.top + box.height/2 + window.scrollY
+		}
+	}
+	function newLine($from, $to) {
+		var fromBox = $from.getBoundingClientRect();
+		var toBox = $to.getBoundingClientRect();
+		if (! fromBox.width || ! fromBox.height || ! toBox.width || ! toBox.height) {
+			return null;
+		}
+
+		var fromCenter = absoluteCenter(fromBox);
+		var toCenter = absoluteCenter(toBox);
+
+		var x1, y1, x2, y2;
+		if (Math.abs(fromCenter.x - toCenter.x) > Math.abs(fromCenter.y - toCenter.y)) {
+			var slope = (toCenter.y - fromCenter.y)/(toCenter.x - fromCenter.x);
+			if (fromCenter.x < toCenter.x) {
+				x1 = fromBox.right + 1 + window.scrollX;
+				x2 = toBox.left - 1 + window.scrollX;
+			} else {
+				x1 = fromBox.left - 1 + window.scrollX;
+				x2 = toBox.right + 1 + window.scrollX;
+			}
+			y1 = fromCenter.y - slope * (fromCenter.x - x1);
+			y2 = fromCenter.y - slope * (fromCenter.x - x2);
+		} else {
+			var slope = (toCenter.x - fromCenter.x)/(toCenter.y - fromCenter.y);
+			if (fromCenter.y < toCenter.y) {
+				y1 = fromBox.bottom + 1 + window.scrollY;
+				y2 = toBox.top - 1 + window.scrollY;
+			} else {
+				y1 = fromBox.top - 1 + window.scrollY;
+				y2 = toBox.bottom + 1 + window.scrollY;
+			}
+			x1 = fromCenter.x - slope * (fromCenter.y - y1);
+			x2 = fromCenter.x - slope * (fromCenter.y - y2);
+		}
+
+		var $line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+	    $line.setAttribute('x1', x1);
+	    $line.setAttribute('y1', y1);
+	    $line.setAttribute('x2', x2);
+	    $line.setAttribute('y2', y2);
+	    $line.setAttribute('stroke', 'rgba(255, 0, 0, 0.3)');
+	    $line.setAttribute('stroke-width', "1px");
+	    return $line;
+	}
+
+	function updateConnections() {
+		var $connections = $('connections');
+		removeChilds($connections);
+		if (tappedCell) {
+			var $source = $(tappedCell);
+
+			_.each(dependencies[tappedCell], function(destination) {
+				var $destination = $(destination);
+				var $line = newLine($source, $destination);
+				if ($line) {
+					$connections.appendChild($line);
+				}
+			});
+		}
+	}
+
+	function relayout() {
+		repositionCalc();
+		updateConnections();
+	}
+
 	function doCellClick(evt) {
 		if (tappedCell) { 
 			processClosure([tappedCell], [], 1, false);
@@ -238,23 +328,15 @@ window.addEventListener('load', function () {
 		var id = this.getAttribute('id');
 		if (id == tappedCell) {
 			tappedCell = null;
-			addClass($('calc'), 'hidden');
 		} else {
 			tappedCell = id;
 			processClosure([tappedCell], [], 1, true);
 			var calc = $('calc');
 			var msg = calculations[id];
-			if (msg) {
-				removeChilds(calc);
-				_.each(msg, function(elm) { calc.appendChild(elm); });
-				var box = this.getBoundingClientRect();
-				calc.style['left'] = (box.left + window.scrollX + box.width + 4) + "px";
-				calc.style['top'] = (box.top + window.scrollY + box.height + 4) + "px";
-				removeClass(calc, 'hidden');
-			} else {
-				addClass(calc, 'hidden');
-			}
+			removeChilds(calc);
+			_.each(msg, function(elm) { calc.appendChild(elm); });
 		}
+		relayout();
 		evt.preventDefault();
 	}
 
@@ -947,7 +1029,7 @@ window.addEventListener('load', function () {
 // recalculate fields
 
 	function refresh() {
-		addClass($('calc'), 'hidden');
+		relayout();
 		dependencies = {}; calculations = {};
 		refreshState();
 		updateTestvectors();
@@ -1002,8 +1084,8 @@ window.addEventListener('load', function () {
 		var collapse = $span.classList.contains('icon-collapse');
 		setClass($span, 'icon-collapse', !collapse);
 		setClass($span, 'icon-expand', collapse);
-		addClass($('calc'), 'hidden');
 		_.each($divs, function($div) { setHide($div, collapse); });
+		relayout();
 	}
 
 	function addToggleDiv(a, divs, span) {

@@ -257,3 +257,11 @@ span.badge-rijndael:before {
 span.badge-unknown:before {
 	content: "Non-Standard Configuration";
 }
+#connections {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	pointer-events: none;
+}
