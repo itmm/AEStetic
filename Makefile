@@ -5,7 +5,7 @@ SUB_HTML := $(filter-out index.html, $(ALL_HTML))
 SELF := Makefile
 
 index.html: $(SUB_HTML) $(ALL_JS) $(ALL_CSS) $(SELF)
-	inliner -s main.html >index.html
+	inliner -s main.html | sed 's/<\/script> <script>"use strict";//g' >index.html
 
 clean:
 	rm index.html

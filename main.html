@@ -17,7 +17,7 @@
                 Please activate Javascript to use this Web-App.
             </p>
         </div>
-        <script type="text/javascript">
+        <script>
             document.getElementById('no-javascript').classList.add('hidden');
         </script>
         <div id="main" class="content hidden">
@@ -78,6 +78,11 @@
                 width="100%" height="100%">
             </svg>
         </div>
+        <script>
+            document.getElementById('main').classList.remove('hidden');
+        </script>
+        <script src="config.js"></script>
+        <script src="underscore.js"></script>
         <script src="aestetic.js"></script>
     </body>
 </html>
