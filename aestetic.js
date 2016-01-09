@@ -1,3 +1,5 @@
+document.getElementById('main').classList.remove('hidden');
+
 window.addEventListener('load', function () {
 	'use strict';
 
