@@ -198,8 +198,11 @@ window.addEventListener('load', function () {
 		return $elm;
 	}
 
+	function par(text) {
+		return setTxt(newTag('p'), text);
+	}
 	function pars(texts) {
-		return _.map(texts.slice(), function(text) { return setTxt(newTag('p'), text); });
+		return _.map(texts.slice(), par);
 	}
 
 // handle highlighting
@@ -414,38 +417,62 @@ window.addEventListener('load', function () {
 		_.each(state.key, function(key, i) {
 			expandedKey[i] = key;
 			dependencies['expanded-key-' + i] = ['key-' + i];
+			calculations['expanded-key-' + i] = pars([
+				"key[" + i + "]"
+			]);
 		});		
 
 		var rcon = 1;
+		var rconExp = 0;
+
 		for (var i = state.key.length; i < expandedKey.length; i += 4) {
 			for (var j = 0; j < 4; ++j) {
 				expandedKey[i + j] = expandedKey[i - 4 + j];
 				addDependency('expanded-key-' + (i + j), 'expanded-key-' + (i - 4 + j));
+				calculations['expanded-key-' + (i + j)] = pars([
+					"cur ← " + fb(expandedKey[i + j - 4]) + " = key[" + (i + j - 4) + "]"
+				]);
 			}
 
 			if (i % state.key.length == 0) {
 				var tempKey = expandedKey[i];
 				var tempDependent = dependencies['expanded-key-' + i];
+				var tempCalculations = calculations['expanded-key-' + i];
 				for (j = 0; j < 3; ++j) {
 					expandedKey[i + j] = expandedKey[i + j + 1]; 
 					dependencies['expanded-key-' + (i + j)] = dependencies['expanded-key-' + (i + j + 1)];
+					calculations['expanded-key-' + (i + j)] = calculations['expanded-key-' + (i + j + 1)];
 				}
 				expandedKey[i + 3] = tempKey;
 				dependencies['expanded-key-' + (i + 3)] = tempDependent;
+				calculations['expanded-key-' + (i + 3)] = tempCalculations;
 
 				for (var j = 0; j < 4; ++j) { 
 					var idx = i + j;
 					addDependency('expanded-key-' + idx, 'sbox-' + expandedKey[idx]);
 					expandedKey[idx] = state.sbox[expandedKey[idx]]; 
+					calculations['expanded-key-' + idx].push(par(
+						"cur ← " + fb(expandedKey[idx]) + " = S-Box[cur]"
+					));
 				}
 
+				calculations['expanded-key-' + i].push(par(
+					"rcon ← " + fb(rcon) + " = 0x02 ^ " + rconExp
+				));
 				expandedKey[i] ^= rcon;
+				calculations['expanded-key-' + i].push(par(
+					"cur ← " + fb(expandedKey[i]) + " = cur ⊕ rcon"
+				));
 				rcon = mult(rcon, 2);
+				++rconExp;
 			} else if (state.key.length > 24 && i % state.key.length == 16) {
 				for (var j = 0; j < 4; ++j) { 
 					var idx = i + j;
 					addDependency('expanded-key-' + idx, 'sbox-' + expandedKey[idx]);
 					expandedKey[idx] = state.sbox[expandedKey[idx]]; 
+					calculations['expanded-key-' + idx].push(par(
+						"cur ← " + fb(expandedKey[idx]) + " = S-Box[cur]"
+					));
 				}
 			}
 
@@ -454,6 +481,13 @@ window.addEventListener('load', function () {
 				var old = idx - state.key.length;
 				expandedKey[idx] ^= expandedKey[old];
 				addDependency('expanded-key-' + idx, 'expanded-key-' + old);
+				calculations['expanded-key-' + idx].push(par(
+					"old ← " + fb(expandedKey[old]) + " = key[" + old + "]"
+				));
+				calculations['expanded-key-' + idx].push(par(
+					fb(expandedKey[idx]) + " = cur ⊕ old"
+				));
+
 			}
 		}
 
