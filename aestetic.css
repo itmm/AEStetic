@@ -119,10 +119,14 @@ div#calc {
 	left: 0;
 	background-color: #fff;
 	color: #444;
-	border: solid 3px #888;
+	border: solid 1px #888;
 	border-radius: 6px;
-	padding: 8px;
+	padding: 6px;
 
+}
+
+div#calc p {
+	margin-bottom: 0;
 }
 
 .error-overlay > h2 {
