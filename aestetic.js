@@ -421,6 +421,7 @@ window.addEventListener('load', function () {
 			roundHeaderClasses = 'hidden';
 			roundContentClasses = ['hidden', 'hidden-2', 'sub'];
 		}
+		var lastPrefix = 'out-';
 		for (var i = state.rounds - 1; i >= 0; --i) {
 			var rnd = 'd-' + (i + 1);
 			var $container = addRound(i + 1, $parent, $computation_end, 'r-dec-' + (i + 1) + '-', roundHeaderClasses, roundContentClasses);
@@ -472,131 +473,27 @@ window.addEventListener('load', function () {
 			// mix with key
 
 			var rnd_subkey = rnd + '-subkey-';
-			dec2 = _.map(dec2, function(_, j) {
-				addDependencies(rnd_subkey + j, 'expanded-key-' + j);
-				var k = state.blockSize * i + j;
-				addCalculations(rnd_subkey + j, [
-					"bs ← " + state.blockSize,
-					"round ← " + i,
-					"i ← " + j,
-					"j ← " + k + " = bs × round + i",
-					fb(expandedKey[k]) + " = key[j]"
-				]);
-				return expandedKey[k];
-			});
-			addSubEntry('used subkey:', dec2, rnd_subkey, $container, true);
+			var key = applySubkey(dec, i, expandedKey, rnd_subkey, rnd_sbox);
+			addSubEntry('used subkey:', key, rnd_subkey, $container, true);
 
 			var rnd_key = rnd + '-key-';
-			dec = _.map(dec, function(val, j) {
-				dependent[j].push('expanded-key-' + (i * state.blockSize + j));
-				dependent[j].push(rnd_subkey + j);
-				addDependencies(rnd_key + j, dependent[j]);
-				dependent[j] = [rnd_key + j];
-				var k = i * state.blockSize + j;
-				addCalculations(rnd_key + j,
-					fb(val ^ expandedKey[k]) + " = " + fb(val) + " ⊕ " + fb(expandedKey[k])
-				);
-				return val ^ expandedKey[k];
-			});
-			addSubEntry('after mix with key:', dec, rnd_key, $container, true);
+			dec = applyMixWithKey(dec, key, rnd_key, lastPrefix, rnd_subkey);
+			addSubEntry('after mix with key:', block, rnd_key, $container, true);
+			lastPrefix = rnd_key;
 
 			// mult
 
 			if (i > 0) {
-				var rnd_mult = rnd + '-mult-';
-				for (var j = 0; j < state.blockSize/4; ++j) {
-					var s0 = dec[4 * j];
-					var s1 = dec[4 * j + 1];
-					var s2 = dec[4 * j + 2];
-					var s3 = dec[4 * j + 3];
-
-					var s0e = mult(0x0e, s0);
-					var s1b = mult(0x0b, s1);
-					var s2d = mult(0x0d, s2);
-					var s39 = mult(0x09, s3);
-
-					var s0exs1b = s0e ^ s1b;
-					var s2dxs39 = s2d ^ s39;
-
-					dec[4 * j] = s0exs1b ^ s2dxs39;
-
-					var s09 = mult(0x09, s0);
-					var s1e = mult(0x0e, s1);
-					var s2b = mult(0x0b, s2);
-					var s3d = mult(0x0d, s3);
-					var s09xs1e = s09 ^ s1e;
-					var s2bxs3d = s2b ^ s3d;
-
-					dec[4 * j + 1] = s09xs1e ^ s2bxs3d;
-
-					var s0d = mult(0x0d, s0);
-					var s19 = mult(0x09, s1);
-					var s2e = mult(0x0e, s2);
-					var s3b = mult(0x0b, s3);
-					var s0dxs19 = s0d ^ s19;
-					var s2exs3b = s2e ^ s3b;
-
-					dec[4 * j + 2] = s0dxs19 ^ s2exs3b;
-
-					var s0b = mult(0x0b, s0);
-					var s1d = mult(0x0d, s1);
-					var s29 = mult(0x09, s2);
-					var s3e = mult(0x0e, s3);
-					var s0bxs1d = s0b ^ s1d;
-					var s29xs3e = s29 ^ s3e;
-
-					dec[4 * j + 3] = s0bxs1d ^ s29xs3e;
-
-					polyDependency(dependent, dependent2, 4 * j);
-
-					var fbs0 = fb(s0);
-					var fbs1 = fb(s1);
-					var fbs2 = fb(s2);
-					var fbs3 = fb(s3);
-
-					addCalculations(rnd_mult + (4 * j), [
-						"s0 ← " + fb(s0e) + " = 0x0e × " + fbs0,
-						"s1 ← " + fb(s1b) + " = 0x0b × " + fbs1,
-						"s2 ← " + fb(s2d) + " = 0x0d × " + fbs2,
-						"s3 ← " + fb(s39) + " = 0x09 × " + fbs3,
-						"a ← " + fb(s0exs1b) + " = s0 ⊕ s1",
-						"b ← " + fb(s2dxs39) + " = s2 ⊕ s3",
-						fb(dec[4 * j]) + " = a ⊕ b"
-					]);
-					addCalculations(rnd_mult + (4 * j + 1), [
-						"s0 ← " + fb(s09) + " = 0x09 × " + fbs0,
-						"s1 ← " + fb(s1e) + " = 0x0e × " + fbs1,
-						"s2 ← " + fb(s2b) + " = 0x0b × " + fbs2,
-						"s3 ← " + fb(s3d) + " = 0x0d × " + fbs3,
-						"a ← " + fb(s09xs1e) + " = s0 ⊕ s1",
-						"b ← " + fb(s2bxs3d) + " = s2 ⊕ s3",
-						fb(dec[4 * j + 1]) + " = a ⊕ b"
-					]);
-					addCalculations(rnd_mult + (4 * j + 2), [
-						"s0 ← " + fb(s0d) + " = 0x0d × " + fbs0,
-						"s1 ← " + fb(s19) + " = 0x09 × " + fbs1,
-						"s2 ← " + fb(s2e) + " = 0x0e × " + fbs2,
-						"s3 ← " + fb(s3b) + " = 0x0b × " + fbs3,
-						"a ← " + fb(s0dxs19) + " = s0 ⊕ s1",
-						"b ← " + fb(s2exs3b) + " = s2 ⊕ s3",
-						fb(dec[4 * j + 2]) + " = a ⊕ b"
-					]);
-					addCalculations(rnd_mult + (4 * j + 3), [
-						"s0 ← " + fb(s0b) + " = 0x0b × " + fbs0,
-						"s1 ← " + fb(s1d) + " = 0x0d × " + fbs1,
-						"s2 ← " + fb(s29) + " = 0x09 × " + fbs2,
-						"s3 ← " + fb(s3e) + " = 0x0e × " + fbs3,
-						"a ← " + fb(s0bxs1d) + " = s0 ⊕ s1",
-						"b ← " + fb(s29xs3e) + " = s2 ⊕ s3",
-						fb(dec[4 * j + 3]) + " = a ⊕ b"
-					]);
-				}
-				addSubEntry('after mult:', dec, rnd_mult, $container, true);
+				var rndMult = rnd + '-mult-';
+				dec = applyMults(dec, 0xe, 0xb, 0xd, 0x9, rndMult, rnd_key);
+				addSubEntry('after mult:', dec, rndMult, $container, true);
 				dependent = _.map(dependent, function(_, k) {
-					addDependencies(rnd_mult + k, dependent2[k]);
-					return [rnd_mult + k];
+					addDependencies(rndMult + k, dependent2[k]);
+					return [rndMult + k];
 				});
+				lastPrefix = rndMult;
 			}
+
 		}
 
 		writeBytes($('decoded'), dec, 'dec-', true);
