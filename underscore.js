@@ -58,3 +58,13 @@ var _ = {
 		}
 	}
 };
+
+function formatByte(byte) {
+	var formatted = byte.toString(16);
+	return byte < 16 ? '0' + formatted : formatted;
+}
+
+function fb(byte) {
+	return '0x' + formatByte(byte);
+}
+

@@ -61,3 +61,20 @@ function par(text) {
 function pars(texts) {
 	return _.map(texts.slice(), par);
 }
+
+function absoluteBox($elm) {
+	var box = $elm.getBoundingClientRect();
+	return {
+		left: box.left + window.scrollX,
+		right: box.right + window.scrollX,
+		top: box.top + window.scrollY,
+		bottom: box.bottom + window.scrollY,
+		width: box.width,
+		height: box.height
+	};
+}
+
+function center(box) {
+	return { x: box.left + box.width/2, y: box.top + box.height/2 };
+}
+
