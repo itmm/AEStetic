@@ -14,65 +14,6 @@ window.addEventListener('load', function () {
 
 // DOM manipulation
 
-	function $(id) { return document.getElementById(id); }
-
-	function addClass($elm, cls) {
-		if ($elm && $elm.classList) { $elm.classList.add(cls); }
-	}
-
-	function removeClass($elm, cls) {
-		if ($elm && $elm.classList) { $elm.classList.remove(cls); }
-	}
-
-	function setClass($elm, cls, set) {
-		if (set) {
-			addClass($elm, cls);
-		} else {
-			removeClass($elm, cls);
-		}
-	}
-
-	function newTag(tag, id, classes) {
-		var $elm = document.createElement(tag);
-		if (id) { $elm.setAttribute('id', id); }
-		_.each(classes, function(cls) { addClass($elm, cls); });
-		return $elm;
-	}
-
-	function newTxt(txt) { return document.createTextNode(txt); }
-	function newSpc() { return newTxt(' '); }
-
-	function appendChild($parent, $child, addSpace) {
-		if (addSpace) { $parent.appendChild(newSpc()); }
-		$parent.appendChild($child);
-		return $parent;
-	}
-
-	function removeChilds($parent) {
-		while ($parent.hasChildNodes()) { $parent.removeChild($parent.lastChild); }
-	}
-
-	function removeBetween($from, $to) {
-		var $parent = $from.parentNode;
-		for (;;) {
-			var $next = $from.nextSibling;
-			if ($next == $to) { break; }
-			$parent.removeChild($next);
-		}
-	}
-
-	function setTxt($elm, txt) {
-		removeChilds($elm);
-		$elm.appendChild(newTxt(txt));
-		return $elm;
-	}
-
-	function par(text) {
-		return setTxt(newTag('p'), text);
-	}
-	function pars(texts) {
-		return _.map(texts.slice(), par);
-	}
 
 // handle highlighting
 
@@ -451,14 +392,14 @@ window.addEventListener('load', function () {
 	function addRound(round, $parent, $before, prefix, headerClasses, contentClasses) {
 		var $header = newTag('li', prefix + 'hdr', headerClasses);
 		var $a = setTxt(newTag('a'), 'round ' + round);
-		var $spn = newTag('span', null, ['icon-expand']);
+		var $spn = newTag('span', null, 'icon-expand');
 		$a.appendChild($spn);
 		$header.appendChild($a);
 		$parent.insertBefore($header, $before);
 
 		var $cell = newTag('li', prefix + 'cnt', contentClasses);
 		$parent.insertBefore($cell, $before);
-		var $div = newTag('div', null, ['card']);
+		var $div = newTag('div', null, 'card');
 		var $container = newTag('ul');
 		$div.appendChild($container);
 		$cell.appendChild($div);
@@ -475,7 +416,7 @@ window.addEventListener('load', function () {
 	function addSubEntry(name, block, prefix, $container) {
 		var $li = setTxt(newTag('li'), name);
 		$container.appendChild($li);
-		var $entry = newTag('li', null, ['referable']);
+		var $entry = newTag('li', null, 'referable');
 		writeBytes($entry, block, prefix, true);
 		$container.appendChild($entry);
 	}
@@ -524,7 +465,7 @@ window.addEventListener('load', function () {
 			roundContentClasses = ['hidden', 'sub'];
 
 		} else {
-			roundHeaderClasses = ['hidden'];
+			roundHeaderClasses = 'hidden';
 			roundContentClasses = ['hidden', 'hidden-2', 'sub'];
 		}
 		for (var round = 1; round <= state.rounds; ++round) {
@@ -709,7 +650,7 @@ window.addEventListener('load', function () {
 			roundContentClasses = ['hidden', 'sub'];
 
 		} else {
-			roundHeaderClasses = ['hidden'];
+			roundHeaderClasses = 'hidden';
 			roundContentClasses = ['hidden', 'hidden-2', 'sub'];
 		}
 		for (var i = state.rounds - 1; i >= 0; --i) {
@@ -1073,7 +1014,7 @@ window.addEventListener('load', function () {
 		});
 	}
 
-	function validKeyLength(newArray, _) {
+	function validKeyLength(newArray) {
 		return newArray.length >= 4;
 	}
 

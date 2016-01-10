@@ -14,7 +14,6 @@
 	tests.run({
 		name: 'underscore.js',
 		testEach: {
-			name: 'each',
 			setup: function(ctx) { ctx['count'] = ctx['valSum'] = ctx['idxSum'] = 0; },
 			testEmpty: function(ctx) {
 				_.each([], makeFn(ctx));
@@ -27,10 +26,16 @@
 			testSimple: function(ctx) {
 				_.each([2, 4, 6, 8], makeFn(ctx));
 				expectCtx(ctx, 4, 20, 6);				
+			},
+			testNonArray: function(ctx) {
+				_.each(3, makeFn(ctx));
+				expectCtx(ctx, 1, 3, 0);
 			}
 		},
 		testEquals: {
-			name: 'equals',
+			testEmpty: function() {
+				tests.assert(_.equals([], []));
+			},
 			testSingleEqual: function() {
 				tests.assert(_.equals([1], [1]));
 			},
@@ -48,10 +53,18 @@
 			},
 			testSecondShorter: function() {
 				tests.assert(! _.equals([2, 3, 4], [2, 3]));
+			},
+			testBothNull: function() {
+				tests.assert(_.equals(null, null));
+			},
+			testFirstNull: function() {
+				tests.assert(! _.equals(null, []));
+			},
+			testsSecondNull: function() {
+				tests.assert(! _.equals([], null));
 			}
 		},
 		testMap: {
-			name: 'map',
 			testEmpty: function() {
 				tests.assert(_.equals([], _.map([], square)));
 			},

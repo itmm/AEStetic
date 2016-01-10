@@ -33,7 +33,7 @@ tests['run'] = function(tsts) {
  				if (tsts['teardown']) { tsts['teardown'](context); }
   			} else {
   				var oldName = test['name'];
-  				if (tsts['name']) { test['name'] = tsts['name'] + ': ' + (oldName ? oldName : 'unnamed'); } 
+  				test['name'] = tsts['name'] ? tsts['name'] + ': ' + key : key;
   				tests.run(test);
   				tsts.name = oldName;
   			}

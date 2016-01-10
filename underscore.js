@@ -8,22 +8,30 @@
 var _ = {
 
 	/*
-		Invoke the function `fn` for each element of the array `ary`. `ary` can be `null`.
-		`fn` will be invoked with the value and the current index.
+		Invoke the function `fn` for each element of the array `ary`.
+		`fn` will be invoked with the value and the current index of each element.
+		If  `ary` is `null`, `fn` wont be invoked.
+		But if `ary` is not `null` and not an array, then `fn` will be invoked
+		with `ary`. So a non-Array will be treated as an array with only one element.
 	*/
 
 	'each': function(ary, fn) {
-		if (! ary || ! ary.length) { return; }
-		var l = ary.length;
-		for (var i = 0; i < l; ++i) { fn(ary[i], i); }
+		if (! ary) { return; }
+		if (Array.isArray(ary)) {
+			var l = ary.length;
+			for (var i = 0; i < l; ++i) { fn(ary[i], i); }
+		} else {
+			fn(ary, 0);
+		}
 	},
 
 	/*
 		Compares two arrays, if the contain the same elements. This is a swallow comparison.
-		Both arrays must not be `null`.
 	*/
 
 	'equals': function(a, b) {
+		if (! a) { return ! b; }
+		if (! b) { return false; }
 		if (a.length != b.length) { return false; }
 		for (var i = 0; i < a.length; ++i) {
 			if (a[i] != b[i]) { return false; }
