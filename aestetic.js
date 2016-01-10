@@ -201,6 +201,11 @@ window.addEventListener('load', function () {
 				addCalculations(idx, [
 					fb(val) + " = input[" + i + "] ⊕ key[" + i + "]"
 				]);
+			} else if (prevPrefix == 'out-') {
+				addDependencies(idx, ['key-' + i, 'expanded-key-' + i]);
+				addCalculations(idx, [
+					fb(val) + " = out[" + i + "] ⊕ key[" + (state.rounds * block.length + i) + "]"
+				]);				
 			} else {
 				addCalculations(idx, "block[" + i + "]");
 			}
@@ -218,13 +223,41 @@ window.addEventListener('load', function () {
 		});
 	}
 
+	function applyInvSBox(block, invsbox, prefix, prevPrefix) {
+		return _.map(block, function(val, i) {
+			var idx = prefix + i;
+			var res = invsbox[val];
+			addDependencies(idx, [prevPrefix + i, 'sbox-' + res]);
+			addCalculations(idx, [
+				fb(val) + " = S-Box[i]",
+				"⇒ i = " + fb(res),
+				"i"
+			]);
+			return res;				
+		});
+	}
+
 	function applyPermute(block, permute, prefix, prevPrefix) {
 		return _.map(block, function(_, i) {
 			var j = permute[i];
-			var idx = prefix + i
+			var idx = prefix + i;
 			addDependencies(idx, [prevPrefix + j, 'permute-' + i]);
 			addCalculations(idx, [
 				"i ← " + j + " = permute[" + i + "]",
+				fb(block[j]) + " = block[i]"
+			]);
+			return block[j];
+		});
+	}
+
+	function applyInvPermute(block, invpermute, prefix, prevPrefix) {
+		return _.map(block, function(_, i) {
+			var j = invpermute[i];
+			var idx = prefix + i;
+			addDependencies(idx, [prevPrefix + j, 'permute-' + j]);
+			addCalculations(idx, [
+				i + " = permute[i]",
+				"⇒ i = " + j,
 				fb(block[j]) + " = block[i]"
 			]);
 			return block[j];
@@ -427,47 +460,19 @@ window.addEventListener('load', function () {
 			var $container = addRound(i + 1, $parent, $computation_end, 'r-dec-' + (i + 1) + '-', roundHeaderClasses, roundContentClasses);
 
 			var rnd_input = rnd + '-input-';
-			dependent = _.map(dependent, function(val, j) {
-				addDependencies(rnd_input + j, val);
-				addCalculations(rnd_input + j,
-					fb(dec[j]) + " = block[" + j + "]"
-				);
-				return [rnd_input + j];
-			});
+			dec = applyInput(dec, rnd_input, lastPrefix);
 			addSubEntry('input to round:', dec, rnd_input, $container, true);
 
 			// permute
 
 			var rnd_permute = rnd + '-permute-';
-			dec2 = _.map(dec2, function(_, j) {
-				dependent2[j] = dependent[inv_permute[j]];
-				dependent2[j].push('permute-' + inv_permute[j]);
-				addDependencies(rnd_permute + j, dependent2[j]);
-				var k = inv_permute[j];
-				addCalculations(rnd_permute + j, [
-					j + " = permute[i]",
-					"⇒ i = " + k,
-					fb(dec[k]) + " = block[i]"
-				]);
-				return dec[k];
-			});
-			addSubEntry('after permute:', dec2, rnd_permute, $container, true);
-			dependent = _.map(dependent, function(_, j) { return [rnd_permute + j]; });
+			dec = applyInvPermute(dec, inv_permute, rnd_permute, rnd_input);
+			addSubEntry('after permute:', dec, rnd_permute, $container, true);
 
 			// sbox
 
 			var rnd_sbox = rnd + '-sbox-';
-			dec = _.map(dec, function(_, j) {
-				dependent[j].push('sbox-' + inv_sbox[dec2[j]]);
-				addDependencies(rnd_sbox + j, dependent[j]);
-				dependent[j] = [rnd_sbox + j];
-				addCalculations(rnd_sbox + j, [
-					fb(dec2[j]) + " = S-Box[i]",
-					"⇒ i = " + fb(inv_sbox[dec2[j]]),
-					"i"
-				]);
-				return inv_sbox[dec2[j]];
-			});
+			dec = applyInvSBox(dec, inv_sbox, rnd_sbox, rnd_permute);
 			addSubEntry('after S-Box:', dec, rnd_sbox, $container, true);
 
 			// mix with key
@@ -487,17 +492,13 @@ window.addEventListener('load', function () {
 				var rndMult = rnd + '-mult-';
 				dec = applyMults(dec, 0xe, 0xb, 0xd, 0x9, rndMult, rnd_key);
 				addSubEntry('after mult:', dec, rndMult, $container, true);
-				dependent = _.map(dependent, function(_, k) {
-					addDependencies(rndMult + k, dependent2[k]);
-					return [rndMult + k];
-				});
 				lastPrefix = rndMult;
 			}
 
 		}
 
 		writeBytes($('decoded'), dec, 'dec-', true);
-		_.each(dependent, function(val, j) { addDependencies('dec-' + j, val); });
+		_.each(dec, function(_, j) { addDependencies('dec-' + j, lastPrefix + j); });
 	}
 
 
