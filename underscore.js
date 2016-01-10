@@ -13,7 +13,7 @@ var _ = {
 	*/
 
 	'each': function(ary, fn) {
-		if (!ary || !ary.length) { return; }
+		if (! ary || ! ary.length) { return; }
 		var l = ary.length;
 		for (var i = 0; i < l; ++i) { fn(ary[i], i); }
 	},
@@ -39,7 +39,7 @@ var _ = {
 	*/
 
 	'map': function(ary, fn) {
-		if (!ary || !ary.length) { return ary; }
+		if (! ary || ! ary.length) { return ary; }
 		var l = ary.length;
 		for (var i = 0; i < l; ++i) { ary[i] = fn(ary[i], i); }
 		return ary;

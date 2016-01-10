@@ -77,7 +77,7 @@ window.addEventListener('load', function () {
 // handle highlighting
 
 	var dependencies = {};
-	var calculations = {}
+	var calculations = {};
 	var tappedCell = null;
 
 	function processClosure(active, visited, depth, addActiveClass) {

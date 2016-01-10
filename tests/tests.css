@@ -1,0 +1,22 @@
+.ok-only {
+	display: none;
+}
+body.succeeded .ok-only {
+	display: block;
+}
+.failed-only {
+	display: none;
+}
+body.failed .failed-only {
+	display: block;
+}
+
+body.succeeded {
+	background-color: #dfd;
+	color: #060;
+}
+
+body.failed {
+	background-color: #f88;
+	color: #800;
+}
