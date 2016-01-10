@@ -453,7 +453,7 @@ window.addEventListener('load', function () {
 		var dependent = Array(state.blockSize);
 		var dependent2 = Array(state.blockSize);
 
-		_.map(block, function(_, i) {
+		block = _.map(block, function(_, i) {
 			dependent[i] = ['input-' + i, 'expanded-key-' + i];
 			return state.input[i] ^ expandedKey[i];
 		});
@@ -475,7 +475,7 @@ window.addEventListener('load', function () {
 			// sbox
 
 			var rnd_sbox = rnd + '-sbox-';
-			_.map(block, function(val, i) {
+			block = _.map(block, function(val, i) {
 				dependent[i].push('sbox-' + val);
 				dependencies[rnd_sbox + i] = dependent[i];
 				dependent[i] = [rnd_sbox + i];
@@ -489,7 +489,7 @@ window.addEventListener('load', function () {
 			// permute
 
 			var rnd_permute = rnd + '-permute-';
-			_.map(block2, function(_, i) {
+			block2 = _.map(block2, function(_, i) {
 				dependent2[i] = dependent[state.permute[i]];
 				dependent2[i].push('permute-' + i);
 				dependencies[rnd_permute + i] = dependent2[i];
@@ -501,7 +501,7 @@ window.addEventListener('load', function () {
 				return block[j];
 			});
 			addSubEntry('after permutation:', block2, rnd_permute, $container, true);
-			_.map(dependent, function(_, i) { return [rnd_permute + i]; });
+			dependent = _.map(dependent, function(_, i) { return [rnd_permute + i]; });
 
 			// mult
 
@@ -582,7 +582,7 @@ window.addEventListener('load', function () {
 			// mix key
 
 			var rnd_subkey = rnd + '-subkey-';
-			_.map(block, function(_, j) {
+			block = _.map(block, function(_, j) {
 				dependencies[rnd_subkey + j] = ['expanded-key-' + j];
 				var k = state.blockSize * round + j;
 				calculations[rnd_subkey + j] = pars([
@@ -597,7 +597,7 @@ window.addEventListener('load', function () {
 			addSubEntry('used subkey:', block, rnd_subkey, $container, true);
 
 			var rnd_key = rnd + '-key-';
-			_.map(block, function(_, i) {
+			block = _.map(block, function(_, i) {
 				dependent[i].push(rnd_subkey + i);
 				var j = state.blockSize * round + i;
 				dependent[i].push('expanded-key-' + j);
@@ -638,7 +638,7 @@ window.addEventListener('load', function () {
 		_.each(state.permute, function(val, i) { inv_permute[val] = i; });
 		_.each(state.sbox, function(val, i) { inv_sbox[val] = i; });
 
-		_.map(dec, function(_ ,i) {
+		dec = _.map(dec, function(_ ,i) {
 			dependent[i] = ['out-' + i, 'expanded-key-' + (state.rounds * state.blockSize + i)];
 			return block[i] ^ expandedKey[state.rounds * state.blockSize + i];
 		});
@@ -658,7 +658,7 @@ window.addEventListener('load', function () {
 			var $container = addRound(i + 1, $parent, $computation_end, 'r-dec-' + (i + 1) + '-', roundHeaderClasses, roundContentClasses);
 
 			var rnd_input = rnd + '-input-';
-			_.map(dependent, function(val, j) {
+			dependent = _.map(dependent, function(val, j) {
 				dependencies[rnd_input + j] = val;
 				calculations[rnd_input + j] = pars([
 					fb(dec[j]) + " = block[" + j + "]"
@@ -670,7 +670,7 @@ window.addEventListener('load', function () {
 			// permute
 
 			var rnd_permute = rnd + '-permute-';
-			_.map(dec2, function(_, j) {
+			dec2 = _.map(dec2, function(_, j) {
 				dependent2[j] = dependent[inv_permute[j]];
 				dependent2[j].push('permute-' + inv_permute[j]);
 				dependencies[rnd_permute + j] = dependent2[j];
@@ -683,12 +683,12 @@ window.addEventListener('load', function () {
 				return dec[k];
 			});
 			addSubEntry('after permute:', dec2, rnd_permute, $container, true);
-			_.map(dependent, function(_, j) { return [rnd_permute + j]; });
+			dependent = _.map(dependent, function(_, j) { return [rnd_permute + j]; });
 
 			// sbox
 
 			var rnd_sbox = rnd + '-sbox-';
-			_.map(dec, function(_, j) {
+			dec = _.map(dec, function(_, j) {
 				dependent[j].push('sbox-' + inv_sbox[dec2[j]]);
 				dependencies[rnd_sbox + j] = dependent[j];
 				dependent[j] = [rnd_sbox + j];
@@ -704,7 +704,7 @@ window.addEventListener('load', function () {
 			// mix with key
 
 			var rnd_subkey = rnd + '-subkey-';
-			_.map(dec2, function(_, j) {
+			dec2 = _.map(dec2, function(_, j) {
 				dependencies[rnd_subkey + j] = ['expanded-key-' + j];
 				var k = state.blockSize * i + j;
 				calculations[rnd_subkey + j] = pars([
@@ -719,7 +719,7 @@ window.addEventListener('load', function () {
 			addSubEntry('used subkey:', dec2, rnd_subkey, $container, true);
 
 			var rnd_key = rnd + '-key-';
-			_.map(dec, function(val, j) {
+			dec = _.map(dec, function(val, j) {
 				dependent[j].push('expanded-key-' + (i * state.blockSize + j));
 				dependent[j].push(rnd_subkey + j);
 				dependencies[rnd_key + j] = dependent[j];
@@ -824,7 +824,7 @@ window.addEventListener('load', function () {
 					]);
 				}
 				addSubEntry('after mult:', dec, rnd_mult, $container, true);
-				_.map(dependent, function(_, k) {
+				dependent = _.map(dependent, function(_, k) {
 					dependencies[rnd_mult + k] = dependent2[k];
 					return [rnd_mult + k];
 				});
@@ -899,7 +899,7 @@ window.addEventListener('load', function () {
 	}
 
 	function addToggleDiv(a, divs, span) {
-		_.map(divs, function(div) { return $(div); });
+		divs = _.map(divs, function(div) { return $(div); });
 		$(a).addEventListener('click', function(evt) {
 			var $span = span ? $(span) : this.lastChild;
 			toggleDiv(this, $span, divs);

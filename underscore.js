@@ -40,16 +40,21 @@ var _ = {
 	},
 
 	/*
-		Map currently changes `ary` by invoking `fn` with each element and updates the value
-		with the result. Issue #51 addresses the mutation of the argument. The result array
-		will be returned. `ary` can be `null`. `fn` will be invoked with the value and the
-		current index.
+		Map currently changes `ary` by invoking `fn` with each element and building an
+		array with the results. The result array will be returned. But if `ary` is not
+		`null` and not an array, then `fn` will be invoked with `ary`. `fn` will be
+		invoked with the value and the current index.
 	*/
 
 	'map': function(ary, fn) {
-		if (! ary || ! ary.length) { return ary; }
-		var l = ary.length;
-		for (var i = 0; i < l; ++i) { ary[i] = fn(ary[i], i); }
-		return ary;
+		if (! ary) { return ary; }
+		if (Array.isArray(ary)) {
+			var l = ary.length;
+			var result = [];
+			for (var i = 0; i < l; ++i) { result.push(fn(ary[i], i)); }
+			return result;
+		} else {
+			return [fn(ary, 0)];
+		}
 	}
 };

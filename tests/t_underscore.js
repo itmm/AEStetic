@@ -73,6 +73,12 @@
 			},
 			testSimple: function() {
 				tests.assert(_.equals([0, 1, 4, 9], _.map([0, 1, 2, 3], square)));
+			},
+			testSingle: function() {
+				tests.assert(_.equals([16], _.map(4, square)));
+			},
+			testNonArray: function() {
+				tests.assert(_.equals([9], _.map(3, square)));
 			}
 		}
 	});
