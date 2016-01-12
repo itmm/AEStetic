@@ -17,80 +17,80 @@
 		testAddClass: {
 			setup: function(ctx) { ctx['obj'] = document.createElement('div'); },
 			testNull: function() {
-				addClass(null, 'test');
+				dom.addClass(null, 'test');
 			},
 			testAdd: function(ctx) {
-				addClass(ctx.obj, 'bla');
+				dom.addClass(ctx.obj, 'bla');
 				tests.assertEquals('bla', ctx.obj.className);
 			},
 			testAddDouble: function(ctx) {
-				addClass(ctx.obj, 'bla');
-				addClass(ctx.obj, 'bla');
+				dom.addClass(ctx.obj, 'bla');
+				dom.addClass(ctx.obj, 'bla');
 				tests.assertEquals('bla', ctx.obj.className);
 			},
 			testAddDifferent: function(ctx) {
-				addClass(ctx.obj, 'a');
-				addClass(ctx.obj, 'b');
-				tests.assert(ctx.obj.className == 'a b' || ctx.obj.className == 'b a');
+				dom.addClass(ctx.obj, 'a');
+				dom.addClass(ctx.obj, 'b');
+				tests.assert(['a b', 'b a'].indexOf(ctx.obj.className) >= 0);
 			}
 		},
 		testRemoveClass: {
 			setup: function(ctx) {
 				ctx['obj'] = document.createElement('div');
-				addClass(ctx['obj'], 'foo');
-				addClass(ctx['obj'], 'bar');
+				dom.addClass(ctx['obj'], 'foo');
+				dom.addClass(ctx['obj'], 'bar');
 			},
 			testNull: function() {
-				removeClass(null, 'foo');
+				dom.removeClass(null, 'foo');
 			},
 			testRemoveFirst: function(ctx) {
-				removeClass(ctx.obj, 'foo');
+				dom.removeClass(ctx.obj, 'foo');
 				tests.assertEquals('bar', ctx.obj.className);
 			},
 			testRemoveSecond: function(ctx) {
-				removeClass(ctx.obj, 'bar');
+				dom.removeClass(ctx.obj, 'bar');
 				tests.assertEquals('foo', ctx.obj.className);
 			},
 			testRemoveBoth: function(ctx) {
-				removeClass(ctx.obj, 'foo');
-				removeClass(ctx.obj, 'bar');
+				dom.removeClass(ctx.obj, 'foo');
+				dom.removeClass(ctx.obj, 'bar');
 				tests.assertEquals('', ctx.obj.className);
 			},
 			testRemoveNonexisting: function(ctx) {
-				removeClass(ctx.obj, 'bla');
-				tests.assert(ctx.obj.className == 'foo bar' || ctx.obj.className == 'bar foo');
+				dom.removeClass(ctx.obj, 'bla');
+				tests.assert(['foo bar', 'bar foo'].indexOf(ctx.obj.className) >= 0);
 			},
 			testRemoveFromEmpty: function() {
 				var obj = document.createElement('div');
-				removeClass(obj, 'bla');
+				dom.removeClass(obj, 'bla');
 				tests.assertEquals('', obj.className);
 			}
 		},
 		testSetClass: {
 			setup: function(ctx) {
 				ctx['obj'] = document.createElement('div');
-				addClass(ctx['obj'], 'foo');
+				dom.addClass(ctx['obj'], 'foo');
 			},
 			testAddNull: function() {
-				setClass(null, 'bar', true);
+				dom.setClass(null, 'bar', true);
 			},
 			testRemoveVull: function() {
-				setClass(null, 'bar', false);
+				dom.setClass(null, 'bar', false);
 			},
 			testAddExisting: function(ctx) {
-				setClass(ctx.obj, 'foo', true);
+				dom.setClass(ctx.obj, 'foo', true);
 				tests.assertEquals('foo', ctx.obj.className);
 			},
 			testRemoveExisting: function(ctx) {
-				setClass(ctx.obj, 'foo', false);
+				dom.setClass(ctx.obj, 'foo', false);
 				tests.assertEquals('', ctx.obj.className);
 			},
 			testAddNonExisting: function(ctx) {
-				setClass(ctx.obj, 'bar', true);
-				tests.assert(ctx.obj.className == 'foo bar' || ctx.obj.className == 'bar foo');
+				dom.setClass(ctx.obj, 'bar', true);
+				tests.assert(['foo bar', 'bar foo'].indexOf(ctx.obj.className) >= 0);
 			},
 			testRemoveNoneExisting: function(ctx) {
-				setClass(ctx.obj, 'bar', false);
+				dom.setClass(ctx.obj, 'bar', false);
 				tests.assertEquals('foo', ctx.obj.className);
 			}
 		}

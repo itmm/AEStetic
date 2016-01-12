@@ -1,3 +1,5 @@
+'use strict';
+
 function mult(a, b) {
 	var result = 0;
 	while (a != 0) {
@@ -15,8 +17,8 @@ function expandKey(state) {
 	_.each(state.key, function(key, i) {
 		expandedKey[i] = key;
 		var idx = 'expanded-key-' + i;
-		addDependencies(idx, 'key-' + i);
-		addCalculations(idx, "key[" + i + "]");
+		aes.addDependencies(idx, 'key-' + i);
+		aes.addCalculations(idx, "key[" + i + "]");
 	});		
 
 	var rcon = 1;
@@ -27,8 +29,8 @@ function expandKey(state) {
 			var old = i - 4 + j;
 			expandedKey[i + j] = expandedKey[old];
 			var idx = 'expanded-key-' + (i + j);
-			addDependencies(idx, 'expanded-key-' + old);
-			addCalculations(idx,
+			aes.addDependencies(idx, 'expanded-key-' + old);
+			aes.addCalculations(idx,
 				"cur ← " + fb(expandedKey[old]) + " = key[" + old + "]"
 			);
 		}
@@ -39,22 +41,22 @@ function expandKey(state) {
 				expandedKey[i + j] = expandedKey[i + j + 1]; 
 			}
 			expandedKey[i + 3] = tempKey;
-			rotateDependencies('expanded-key-', i, i + 4);
+			aes.rotateDependencies('expanded-key-', i, i + 4);
 			for (var j = 0; j < 4; ++j) { 
 				var idx = i + j;
 				var jdx = 'expanded-key-' + idx;
-				addDependencies(jdx, 'sbox-' + expandedKey[idx]);
+				aes.addDependencies(jdx, 'sbox-' + expandedKey[idx]);
 				expandedKey[idx] = state.sbox[expandedKey[idx]]; 
-				addCalculations(jdx,
+				aes.addCalculations(jdx,
 					"cur ← " + fb(expandedKey[idx]) + " = S-Box[cur]"
 				);
 			}
 
-			addCalculations('expanded-key-' + i,
+			aes.addCalculations('expanded-key-' + i,
 				"rcon ← " + fb(rcon) + " = 0x02 ^ " + rconExp
 			);
 			expandedKey[i] ^= rcon;
-			addCalculations('expanded-key-' + i,
+			aes.addCalculations('expanded-key-' + i,
 				"cur ← " + fb(expandedKey[i]) + " = cur ⊕ rcon"
 			);
 			rcon = mult(rcon, 2);
@@ -63,9 +65,9 @@ function expandKey(state) {
 			for (var j = 0; j < 4; ++j) { 
 				var idx = i + j;
 				var jdx = 'expanded-key-' + idx;
-				addDependencies(jdx, 'sbox-' + expandedKey[idx]);
+				aes.addDependencies(jdx, 'sbox-' + expandedKey[idx]);
 				expandedKey[idx] = state.sbox[expandedKey[idx]]; 
-				addCalculations(jdx,
+				aes.addCalculations(jdx,
 					"cur ← " + fb(expandedKey[idx]) + " = S-Box[cur]"
 				);
 			}
@@ -76,8 +78,8 @@ function expandKey(state) {
 			var old = idx - state.key.length;
 			var jdx = 'expanded-key-' + idx;
 			expandedKey[idx] ^= expandedKey[old];
-			addDependencies(jdx, 'expanded-key-' + old);
-			addCalculations(jdx, [
+			aes.addDependencies(jdx, 'expanded-key-' + old);
+			aes.addCalculations(jdx, [
 				"old ← " + fb(expandedKey[old]) + " = key[" + old + "]",
 				fb(expandedKey[idx]) + " = cur ⊕ old"
 			]);

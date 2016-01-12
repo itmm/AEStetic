@@ -4,28 +4,32 @@
 
 function $(id) { return document.getElementById(id); }
 
-function addClass($elm, cls) {
-	if ($elm && $elm.classList) { $elm.classList.add(cls); }
-	return $elm;
-}
+var dom = {};
 
-function removeClass($elm, cls) {
-	if ($elm && $elm.classList) { $elm.classList.remove(cls); }
-	return $elm;
-}
-
-function setClass($elm, cls, set) {
-	if (set) {
-		return addClass($elm, cls);
-	} else {
-		return removeClass($elm, cls);
+(function() {
+	dom['addClass'] = function($elm, cls) {
+		if ($elm && $elm.classList) { $elm.classList.add(cls); }
+		return $elm;
 	}
-}
+
+	dom['removeClass'] = function($elm, cls) {
+		if ($elm && $elm.classList) { $elm.classList.remove(cls); }
+		return $elm;
+	}
+
+	dom['setClass'] = function($elm, cls, set) {
+		if (set) {
+			return dom.addClass($elm, cls);
+		} else {
+			return dom.removeClass($elm, cls);
+		}
+	}
+})();
 
 function newTag(tag, id, classes) {
 	var $elm = document.createElement(tag);
 	if (id) { $elm.setAttribute('id', id); }
-	_.each(classes, function(cls) { addClass($elm, cls); });
+	_.each(classes, function(cls) { dom.addClass($elm, cls); });
 	return $elm;
 }
 
@@ -58,9 +62,6 @@ function setTxt($elm, txt) {
 function par(text) {
 	return setTxt(newTag('p'), text);
 }
-function pars(texts) {
-	return _.map(texts.slice(), par);
-}
 
 function absoluteBox($elm) {
 	var box = $elm.getBoundingClientRect();
@@ -78,3 +79,62 @@ function center(box) {
 	return { x: box.left + box.width/2, y: box.top + box.height/2 };
 }
 
+	function toggleDiv($a, $span, $divs) {
+		var collapse = $span.classList.contains('icon-collapse');
+		dom.setClass($span, 'icon-collapse', !collapse);
+		dom.setClass($span, 'icon-expand', collapse);
+		_.each($divs, function($div) { dom.setHide($div, collapse); });
+		aes.relayout();
+	}
+
+
+	function writeBytes($dest, ary, prefix, activeCells) {
+		var grouping = 4;
+		var len = ary.length;
+
+		removeChilds($dest);
+
+		for (var i = 0; i < len; i += grouping) {
+			var $div = newTag('div');
+			for (var j = 0; j < grouping; ++j) {
+				var k = i + j;
+				var $span = newTag('span', prefix + k);
+				if (activeCells) {
+					$span.addEventListener('click', aes.doCellClick);
+				}
+				appendChild($div, setTxt($span, formatByte(ary[k])), j > 0);
+			}
+			appendChild($dest, $div, i);
+		}
+	}
+
+(function() {
+	function hideLevel($elm) {
+		var level = 0;
+		if ($elm.classList.contains('hidden')) {
+			level = 1;
+			while ($elm.classList.contains('hidden-' + (level + 1))) {
+				++level;
+			}
+		}
+		return level;
+	}
+
+	function hide($elm) {
+		var level = hideLevel($elm);
+		dom.addClass($elm, level <= 0 ? 'hidden' : 'hidden-' + (level + 1));
+	}
+
+	function unhide($elm) {
+		var level = hideLevel($elm);
+		dom.removeClass($elm, level <= 1 ? 'hidden' : 'hidden-' + level);
+	}
+
+	dom['setHide'] = function ($elm, doHide) {
+		if (doHide) {
+			hide($elm);
+		} else {
+			unhide($elm);
+		}
+	}
+})();
