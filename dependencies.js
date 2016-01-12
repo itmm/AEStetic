@@ -156,7 +156,7 @@
 			removeChilds(calc);
 			_.each(msg, function(elm) { calc.appendChild(elm); });
 		}
-		relayout();
+		aes.relayout();
 		evt.preventDefault();
 	}
 
