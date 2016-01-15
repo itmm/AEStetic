@@ -1,3 +1,4 @@
+'use strict';
 
 /*
 	This file implements a subset of array processing functions like in the underscore or lodash

@@ -1,3 +1,5 @@
+'use strict';
+
 /*
 	This file contains functions for manipulation the DOM.
 */

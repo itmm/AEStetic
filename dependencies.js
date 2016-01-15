@@ -1,3 +1,5 @@
+'use strict';
+
 /*
 	handling the dependencies between cells and the calculations
 */
