@@ -1,5 +1,7 @@
 'use strict';
 
+var refresh;
+
 window.addEventListener('load', function () {
 
 	var state = {
@@ -126,7 +128,7 @@ window.addEventListener('load', function () {
 
 // recalculate fields
 
-	function refresh() {
+	refresh = function() {
 		aes.relayout();
 		aes.resetDependencies();
 		refreshState();

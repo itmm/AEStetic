@@ -205,12 +205,61 @@ li.header > a {
 	margin: -6px -65px -6px -15px;	
 }
 
+li li {
+	position: relative;
+}
 li > a > span.icon-expand, li > a > span.icon-collapse, li > a > span.right {
 	position: absolute;
 	right: 15px;
 	top: 50%;
 	transform: translateY(-50%);
 	font-size: 21px;
+}
+div.toggle {
+	position: absolute;
+	right: 15px;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 21px;
+	cursor: pointer;
+	width: 74px;
+	height: 30px;
+	background-color: #fff;
+	border: 2px solid #ddd;
+	border-radius: 20px;
+}
+div.toggle.active {
+	background-color: #5a5;
+	border: solid 2px #5a5;
+}
+div.toggle:before {
+	position: absolute;
+	top: 3px;
+	right: 11px;
+	font-size: 13px;
+	color: #999;
+	content: "OFF";
+}
+div.toggle.active:before {
+	right: auto;
+	left: 15px;
+	color: #fff;
+	content: "ON";
+}
+div.toggle div.toggle-handle {
+	position: absolute;
+	top: -1px;
+	left: -1px;
+	z-index: 2;
+	width: 28px;
+	height: 28px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 100px;
+}
+div.toggle.active div.toggle-handle {
+	border-color: #5a5;
+	transform: translateX(44px);
 }
 span.icon-expand:before {
 	content: "\27e9";
