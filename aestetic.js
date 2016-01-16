@@ -28,7 +28,7 @@ window.addEventListener('load', function () {
 		is_aes256 = false;
 		usedTestcase = null;
 
-		if (_.equals(state.sbox, defaults.sbox) && _.equals(state.permute, defaults.permute)) {
+		if (disables_count == 0 && _.equals(state.sbox, defaults.sbox) && _.equals(state.permute, defaults.permute)) {
 			switch (state.key.length) {
 				case 16:
 					if (state.rounds >= 10 && state.rounds <= 14) {

@@ -3,6 +3,7 @@
 // create table DOM elements
 
 var disables = {};
+var disables_count = 0;
 
 function addRound(round, $parent, $before, prefix, headerClasses, contentClasses) {
 	var $header = newTag('li', prefix + 'hdr', headerClasses);
@@ -41,7 +42,13 @@ function addSubEntry(name, block, prefix, $container, key) {
 		appendChild($check, newTag('div', null, 'toggle-handle'));
 		appendChild($li, $check);
 		$check.addEventListener('click', function(evt) {
-			disables[key] = ! disables[key];
+			if (disables[key]) {
+				disables[key] = false;
+				--disables_count;
+			} else {
+				disables[key] = true;
+				++disables_count;
+			}
 			refresh();
 			evt.preventDefault();
 		});
