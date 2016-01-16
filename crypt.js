@@ -383,7 +383,7 @@ function decode(block, state, expandedKey) {
 		// mult
 
 		if (i > 0) {
-			var multKey = rrd + '-mult';
+			var multKey = 'r-' + i + '-mult';
 			if (! disables[multKey]) {
 				var rndMult = rnd + '-mult-';
 				dec = applyMults(dec, 0xe, 0xb, 0xd, 0x9, rndMult, lastPrefix);
