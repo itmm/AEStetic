@@ -7,7 +7,7 @@ var disables_count = 0;
 
 function addRound(round, $parent, $before, prefix, headerClasses, contentClasses) {
 	var $header = newTag('li', prefix + 'hdr', headerClasses);
-	var $a = setTxt(newTag('a'), 'round ' + round);
+	var $a = setTxt(newTag('a'), 'Round ' + round);
 	var $spn = newTag('span', null, 'icon-expand');
 	$a.appendChild($spn);
 	$header.appendChild($a);
