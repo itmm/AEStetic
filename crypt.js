@@ -266,7 +266,7 @@ function encode(state, expandedKey) {
 
 		var rndInput = rnd + '-input-';
 		block = applyInput(block, state, rndInput, lastPrefix);
-		addSubEntry('input to round ' + round, block, rndInput, $container);
+		addSubEntry('input to Round ' + round, block, rndInput, $container);
 		lastPrefix = rndInput;
 
 		// sbox
@@ -365,7 +365,7 @@ function decode(block, state, expandedKey) {
 
 		var rnd_input = rnd + '-input-';
 		dec = applyInput(dec, state, rnd_input, lastPrefix, expandedKey);
-		addSubEntry('input to round:', dec, rnd_input, $container);
+		addSubEntry('input to Round ' + (i + 1), dec, rnd_input, $container);
 		lastPrefix = rnd_input;
 
 		// permute
