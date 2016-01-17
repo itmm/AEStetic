@@ -64,20 +64,36 @@ function addSubEntry(name, block, prefix, $container, key) {
 
 // do encoding
 
-function applyInput(block, state, prefix, prevPrefix) {
+function applyInput(block, state, prefix, prevPrefix, expandedKey) {
 	_.each(block, function(val, i) {
 		var idx = prefix + i;
 		aes.addDependencies(idx, [prevPrefix + i]);
 		if (prevPrefix == 'input-') {
-			aes.addDependencies(idx, ['key-' + i, 'expanded-key-' + i]);
-			aes.addCalculations(idx, [
-				fb(val) + " = input[" + i + "] ⊕ key[" + i + "]"
-			]);
+			if (! disables['r-0-key']) {
+				aes.addDependencies(idx, ['input-' + i, 'key-' + i, 'expanded-key-' + i]);
+				aes.addCalculations(idx, [
+					fb(val) + " = input[" + i + "] ⊕ key[" + i + "]"
+				]);
+			} else {
+				aes.addDependencies(idx, 'input-' + i);
+				aes.addCalculations(idx, fb(val) + " = input[" + i + "]");
+			}
 		} else if (prevPrefix == 'out-') {
-			aes.addDependencies(idx, ['key-' + i, 'expanded-key-' + i]);
-			aes.addCalculations(idx, [
-				fb(val) + " = out[" + i + "] ⊕ key[" + (state.rounds * block.length + i) + "]"
-			]);				
+			if (! disables['r-' + state.rounds + '-key']) {
+				var j = state.rounds * block.length + i;
+				aes.addDependencies(idx, ['out-' + i, 'key-' + i, 'expanded-key-' + i]);
+				aes.addCalculations(idx, [
+					"bs ← " + block.length,
+					"rounds ← " + state.rounds,
+					"i ← " + i,
+					"j ← " + j + " = bs × round + i",
+					fb(expandedKey[j]) + " = key[j]",
+					fb(val) + " = out[i] ⊕ key[j]"
+				]);
+			} else {
+				aes.addDependencies(idx, 'out-' + i);
+				aes.addCalculations(idx, fb(val) + " = out[" + i + "]");
+			}
 		} else {
 			aes.addCalculations(idx, "block[" + i + "]");
 		}
@@ -225,10 +241,13 @@ function encode(state, expandedKey) {
 	var $parent = $computation.parentNode;
 	removeBetween($computation, $computation_end);
 
-	var block = _.map(Array(state.blockSize), function(_, i) {
-		return state.input[i] ^ expandedKey[i];
-	});
-
+	if (! disables['r-0-key']) {
+		var block = _.map(Array(state.blockSize), function(_, i) {
+			return state.input[i] ^ expandedKey[i];
+		});
+	} else {
+		block = state.input;
+	}
 	var roundHeaderClasses;
 	var roundContentClasses;
 	if ($('toggle-enc-label').classList.contains('icon-collapse')) {
@@ -321,10 +340,13 @@ function decode(block, state, expandedKey) {
 	_.each(state.permute, function(val, i) { inv_permute[val] = i; });
 	_.each(state.sbox, function(val, i) { inv_sbox[val] = i; });
 
-	dec = _.map(dec, function(_ ,i) {
-		return block[i] ^ expandedKey[state.rounds * state.blockSize + i];
-	});
-
+	if (! disables['r-' + state.rounds + '-key']) {
+		dec = _.map(dec, function(_ ,i) {
+			return block[i] ^ expandedKey[state.rounds * state.blockSize + i];
+		});
+	} else {
+		dec = block;
+	}
 	var roundHeaderClasses;
 	var roundContentClasses;
 	if ($('toggle-dec-label').classList.contains('icon-collapse')) {
@@ -342,7 +364,7 @@ function decode(block, state, expandedKey) {
 		var $container = addRound(i + 1, $parent, $computation_end, 'r-dec-' + (i + 1) + '-', roundHeaderClasses, roundContentClasses);
 
 		var rnd_input = rnd + '-input-';
-		dec = applyInput(dec, state, rnd_input, lastPrefix);
+		dec = applyInput(dec, state, rnd_input, lastPrefix, expandedKey);
 		addSubEntry('input to round:', dec, rnd_input, $container);
 		lastPrefix = rnd_input;
 
@@ -372,7 +394,7 @@ function decode(block, state, expandedKey) {
 		var key = applySubkey(dec, i, expandedKey, rnd_subkey, lastPrefix);
 		addSubEntry('used subkey:', key, rnd_subkey, $container);
 
-		var keyKey = rrd + '-key';
+		var keyKey = 'r-' + i + '-key';
 		if (! disables[keyKey]) {
 			var rnd_key = rnd + '-key-';
 			dec = applyMixWithKey(dec, key, rnd_key, lastPrefix, rnd_subkey);
