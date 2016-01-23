@@ -156,6 +156,7 @@ ul {
 li {
 	border-top: 1px solid #ddd;		
 	padding: 11px 65px 11px 15px;
+	position: relative;
 }
 li.sub {
 	border-top: 0;
@@ -208,18 +209,36 @@ li.header > a {
 li li {
 	position: relative;
 }
-li > a > span.icon-expand, li > a > span.icon-collapse, li > a > span.right {
+li > a > span.icon-expand, li > a > span.icon-collapse, li > a > span.right, li > div.segmented, div.toggle {
 	position: absolute;
 	right: 15px;
 	top: 50%;
 	transform: translateY(-50%);
 	font-size: 21px;
 }
+li > div.segmented {
+	height: 80%;
+	display: inline-block;
+	background-color: #fff;
+	border: #ccc 1px solid;
+	border-radius: 3px;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: -moz-none;
+    -o-user-select: none;
+    user-select: none;
+}
+div.segmented > a {
+	display: inline-block;
+	height: 100%;
+	text-decoration: none;
+	padding: 4px 15px;
+	border-left: #ccc 1px solid;
+}
+div.segmented > a:first-child {
+	border-left: none;
+}
 div.toggle {
-	position: absolute;
-	right: 15px;
-	top: 50%;
-	transform: translateY(-50%);
 	font-size: 21px;
 	cursor: pointer;
 	width: 74px;
