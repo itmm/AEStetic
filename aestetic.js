@@ -84,17 +84,17 @@ window.addEventListener('load', function () {
 		setTxt($('rounds-label'), state.rounds);
 		dom.setClass($('dec-rounds'), 'disabled', state.rounds <= 1);
 
-		writeBytes($('sbox'), state.sbox, 'sbox-', false);
-		writeBytes($('permute'), state.permute, 'permute-', false);
-		writeBytes($('key'), state.key, 'key-', false);
-		writeBytes($('input'), state.input, 'input-', false);
+		writeBytes($('sbox'), state.sbox, 'sbox-', false, state.colored);
+		writeBytes($('permute'), state.permute, 'permute-', false, state.colored);
+		writeBytes($('key'), state.key, 'key-', false, state.colored);
+		writeBytes($('input'), state.input, 'input-', false, state.colored);
 
 		checkForKnownConfigurations();
 
 		dom.setClass($('reference'), 'hidden', usedTestcase == null);
 		dom.setClass($('reference-bytes'), 'hidden', usedTestcase == null);
 		if (usedTestcase) {
-			writeBytes($('reference-bytes'), usedTestcase.encoded, false);
+			writeBytes($('reference-bytes'), usedTestcase.encoded, false, state.colored);
 		}
 	}
 
@@ -117,6 +117,7 @@ window.addEventListener('load', function () {
 				state.input = testcase.input.slice();
 				state.rounds = testcase.rounds;
 				state.blockSize = defaults.blockSize;
+				state.colored = testcase.colored;
 				refresh();
 				evt.preventDefault();
 			});
@@ -134,7 +135,7 @@ window.addEventListener('load', function () {
 		refreshState();
 		updateTestvectors();
 		var expandedKey = expandKey(state);
-		writeBytes($('expanded-key'), expandedKey, 'expanded-key-', true);
+		writeBytes($('expanded-key'), expandedKey, 'expanded-key-', true, state);
 		var encoded = encode(state, expandedKey);
 		decode(encoded, state, expandedKey);
 	}

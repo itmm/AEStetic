@@ -29,7 +29,7 @@ function addRound(round, $parent, $before, prefix, headerClasses, contentClasses
 	return $container;
 }
 
-function addSubEntry(name, block, prefix, $container, key) {
+function addSubEntry(name, block, prefix, $container, key, colored) {
 	var $li = setTxt(newTag('li'), name);
 	var skip = false;
 	if (key) {
@@ -56,7 +56,7 @@ function addSubEntry(name, block, prefix, $container, key) {
 	$container.appendChild($li);
 	if (!skip) {
 		var $entry = newTag('li', null, 'referable');
-		writeBytes($entry, block, prefix, true);
+		writeBytes($entry, block, prefix, true, colored);
 		$container.appendChild($entry);
 	}
 }
@@ -266,7 +266,7 @@ function encode(state, expandedKey) {
 
 		var rndInput = rnd + '-input-';
 		block = applyInput(block, state, rndInput, lastPrefix);
-		addSubEntry('input to Round ' + round, block, rndInput, $container);
+		addSubEntry('input to Round ' + round, block, rndInput, $container, null, state.colored);
 		lastPrefix = rndInput;
 
 		// sbox
@@ -277,7 +277,7 @@ function encode(state, expandedKey) {
 			block = applySBox(block, state.sbox, rndSBox, lastPrefix);
 			lastPrefix = rndSBox;
 		}
-		addSubEntry('after S-Box:', block, rndSBox, $container, sboxKey);
+		addSubEntry('after S-Box:', block, rndSBox, $container, sboxKey, state.colored);
 
 		// permute
 
@@ -287,7 +287,7 @@ function encode(state, expandedKey) {
 			block = applyPermute(block, state.permute, rndPermute, lastPrefix);
 			lastPrefix = rndPermute;
 		}
-		addSubEntry('after permutation:', block, rndPermute, $container, permuteKey);
+		addSubEntry('after permutation:', block, rndPermute, $container, permuteKey, state.colored);
 
 		// mult
 
@@ -298,14 +298,14 @@ function encode(state, expandedKey) {
 				block = applyMults(block, 0x2, 0x3, 0x1, 0x1, rndMult, lastPrefix);
 				lastPrefix = rndMult;
 			}
-			addSubEntry('after mult:', block, rndMult, $container, multKey);
+			addSubEntry('after mult:', block, rndMult, $container, multKey, state.colored);
 		}
 
 		// mix key
 
 		var rnd_subkey = rnd + '-subkey-';
 		var key = applySubkey(block, round, expandedKey, rnd_subkey, lastPrefix);
-		addSubEntry('used subkey:', key, rnd_subkey, $container);
+		addSubEntry('used subkey:', key, rnd_subkey, $container, null, state.colored);
 
 		var keyKey = rnd + '-key';
 		if (! disables[keyKey]) {
@@ -313,10 +313,10 @@ function encode(state, expandedKey) {
 			block = applyMixWithKey(block, key, rnd_key, lastPrefix, rnd_subkey);
 			lastPrefix = rnd_key;
 		}
-		addSubEntry('after mix with key:', block, rnd_key, $container, keyKey);
+		addSubEntry('after mix with key:', block, rnd_key, $container, keyKey, state.colored);
 	}
 
-	writeBytes($('output'), block, 'out-', true);
+	writeBytes($('output'), block, 'out-', true, state.colored);
 	_.each(block, function(val, i) {
 		aes.addDependencies('out-' + i, lastPrefix + i);
 	});
@@ -365,7 +365,7 @@ function decode(block, state, expandedKey) {
 
 		var rnd_input = rnd + '-input-';
 		dec = applyInput(dec, state, rnd_input, lastPrefix, expandedKey);
-		addSubEntry('input to Round ' + (i + 1), dec, rnd_input, $container);
+		addSubEntry('input to Round ' + (i + 1), dec, rnd_input, $container, null, state.colored);
 		lastPrefix = rnd_input;
 
 		// permute
@@ -376,7 +376,7 @@ function decode(block, state, expandedKey) {
 			dec = applyInvPermute(dec, inv_permute, rnd_permute, lastPrefix);
 			lastPrefix = rnd_permute;
 		}
-		addSubEntry('after permute:', dec, rnd_permute, $container, permuteKey);
+		addSubEntry('after permute:', dec, rnd_permute, $container, permuteKey, state.colored);
 
 		// sbox
 
@@ -386,13 +386,13 @@ function decode(block, state, expandedKey) {
 			dec = applyInvSBox(dec, inv_sbox, rnd_sbox, lastPrefix);
 			lastPrefix = rnd_sbox;
 		}
-		addSubEntry('after S-Box:', dec, rnd_sbox, $container, sboxKey);
+		addSubEntry('after S-Box:', dec, rnd_sbox, $container, sboxKey, state.colored);
 
 		// mix with key
 
 		var rnd_subkey = rnd + '-subkey-';
 		var key = applySubkey(dec, i, expandedKey, rnd_subkey, lastPrefix);
-		addSubEntry('used subkey:', key, rnd_subkey, $container);
+		addSubEntry('used subkey:', key, rnd_subkey, $container, null, state.colored);
 
 		var keyKey = 'r-' + i + '-key';
 		if (! disables[keyKey]) {
@@ -400,7 +400,7 @@ function decode(block, state, expandedKey) {
 			dec = applyMixWithKey(dec, key, rnd_key, lastPrefix, rnd_subkey);
 			lastPrefix = rnd_key;
 		}
-		addSubEntry('after mix with key:', dec, rnd_key, $container, keyKey);
+		addSubEntry('after mix with key:', dec, rnd_key, $container, keyKey, state.colored);
 
 		// mult
 
@@ -411,12 +411,12 @@ function decode(block, state, expandedKey) {
 				dec = applyMults(dec, 0xe, 0xb, 0xd, 0x9, rndMult, lastPrefix);
 				lastPrefix = rndMult;
 			}
-			addSubEntry('after mult:', dec, rndMult, $container, multKey);
+			addSubEntry('after mult:', dec, rndMult, $container, multKey, state.colored);
 		}
 
 	}
 
-	writeBytes($('decoded'), dec, 'dec-', true);
+	writeBytes($('decoded'), dec, 'dec-', true, state.colored);
 	_.each(dec, function(_, j) { aes.addDependencies('dec-' + j, lastPrefix + j); });
 }
 

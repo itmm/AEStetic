@@ -90,7 +90,7 @@ function center(box) {
 	}
 
 
-	function writeBytes($dest, ary, prefix, activeCells) {
+	function writeBytes($dest, ary, prefix, activeCells, colored) {
 		var grouping = 4;
 		var len = ary.length;
 
@@ -100,11 +100,12 @@ function center(box) {
 			var $div = newTag('div');
 			for (var j = 0; j < grouping; ++j) {
 				var k = i + j;
-				var $span = newTag('span', prefix + k);
+				var v = ary[k];
+				var $span = newTag('span', prefix + k, colored ? 'c' + defaults.colorRamp[v] : null);
 				if (activeCells) {
 					$span.addEventListener('click', aes.doCellClick);
 				}
-				appendChild($div, setTxt($span, formatByte(ary[k])), j > 0);
+				appendChild($div, setTxt($span, formatByte(v)), j > 0);
 			}
 			appendChild($dest, $div, i);
 		}
