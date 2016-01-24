@@ -5,6 +5,11 @@
 var disables = {};
 var disables_count = 0;
 
+function resetDisables() {
+	disables = {};
+	disables_count = 0;
+}
+
 function addRound(round, $parent, $before, prefix, headerClasses, contentClasses) {
 	var $header = newTag('li', prefix + 'hdr', headerClasses);
 	var $a = setTxt(newTag('a', prefix + 'hdr-a', 'collapsed'), 'Round ' + round);

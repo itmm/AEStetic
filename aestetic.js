@@ -118,6 +118,7 @@ window.addEventListener('load', function () {
 				state.rounds = testcase.rounds;
 				state.blockSize = defaults.blockSize;
 				state.colored = testcase.colored;
+				resetDisables();
 				refresh();
 				evt.preventDefault();
 			});
