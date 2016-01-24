@@ -81,15 +81,37 @@ function center(box) {
 	return { x: box.left + box.width/2, y: box.top + box.height/2 };
 }
 
-	var collapses = {};
+	var expanded = {
+		'toggle-configuration': true,
+		'toggle-key': true,
+		'toggle-input': true,
+		'toggle-enc-rounds': true,
+		'toggle-encoded': true,
+		'toggle-reference': true,
+		'toggle-dec-rounds': true,
+		'toggle-decoded':true
+	};
 
-	function toggleDiv(a, $span, $divs) {
-		var $a = $(a);
-		var collapse = ! $a.classList.contains('collapsed');
-		collapses[a] = collapse;
-		dom.setClass($a, 'collapsed', collapse);
-		_.each($divs, function($div) { dom.setHide($div, collapse); });
+	function toggleDiv(a, divs) {
+		var collapse = expanded[a];
+		expanded[a] = ! collapse;
+		dom.setClass($(a), 'collapsed', collapse);
+		_.each(divs, function(div) { dom.setHide($(div), collapse); });
 		aes.relayout();
+	}
+
+	function updateCollapseState() {
+		for (var key in expanded) {
+			if (! expanded.hasOwnProperty(key)) { continue; }
+			var $obj = $(key);
+			if (! $obj) { continue; }
+			var shouldBeExpanded = expanded[key];
+			var isExpanded = ! $obj.classList.contains('collapsed');
+			if (shouldBeExpanded != isExpanded) {
+				expanded[key] = isExpanded;
+				$obj.click();
+			}
+		}
 	}
 
 	function writeBytes($dest, ary, prefix, activeCells, colored) {

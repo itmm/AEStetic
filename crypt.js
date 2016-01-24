@@ -22,8 +22,8 @@ function addRound(round, $parent, $before, prefix, headerClasses, contentClasses
 	$parent.insertBefore($cell, $before);
 
 	$a.addEventListener('click', function(evt) {
-		toggleDiv(prefix + 'hdr-a', $spn, [$cell]);
-		evt.preventDefault();
+		toggleDiv(prefix + 'hdr-a', prefix + 'cnt');
+		if (evt) { evt.preventDefault(); }
 	});
 
 	return $container;
@@ -253,7 +253,6 @@ function encode(state, expandedKey) {
 	if ($('toggle-enc-rounds').classList.contains('collapsed')) {
 		roundHeaderClasses = 'hidden';
 		roundContentClasses = ['hidden', 'hidden-2', 'sub'];
-
 	} else {
 		roundHeaderClasses = null;
 		roundContentClasses = ['hidden', 'sub'];

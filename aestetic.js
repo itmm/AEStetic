@@ -138,6 +138,7 @@ window.addEventListener('load', function () {
 		writeBytes($('expanded-key'), expandedKey, 'expanded-key-', true, state);
 		var encoded = encode(state, expandedKey);
 		decode(encoded, state, expandedKey);
+		updateCollapseState();
 	}
 
 	refresh();
@@ -146,16 +147,14 @@ window.addEventListener('load', function () {
 // toggle collapse/expand
 
 
-	function addToggleDiv(a, divs, span) {
-		divs = _.map(divs, function(div) { return $(div); });
+	function addToggleDiv(a, divs) {
 		$(a).addEventListener('click', function(evt) {
-			var $span = span ? $(span) : this.lastChild;
-			toggleDiv(a, $span, divs);
-			evt.preventDefault();
+			toggleDiv(a, divs);
+			if (evt) { evt.preventDefault(); }
 		});
 	}
 
-	addToggleDiv('toggle-configuration', ['testvectors-toggler', 'testvectors', 'rounds-toggler', 'sbox-toggler', 'sbox', 'permute-toggler', 'permute'], 'conf-label')
+	addToggleDiv('toggle-configuration', ['testvectors-toggler', 'testvectors', 'rounds-toggler', 'sbox-toggler', 'sbox', 'permute-toggler', 'permute']);
 	addToggleDiv('toggle-testvectors', ['testvectors']);
 	addToggleDiv('toggle-sbox', ['sbox']);
 	addToggleDiv('toggle-permute', ['permute']);
@@ -168,13 +167,13 @@ window.addEventListener('load', function () {
 	function setRoundsToggle(a, prefix) {
 		var $a = $(a)
 		$a.addEventListener('click', function(evt) {
-			var $divs = [];
+			var divs = [];
 			for (var i = 1; i <= state.rounds; ++i) {
-				$divs.push($(prefix + i + '-hdr'));
-				$divs.push($(prefix + i + '-cnt'));
+				divs.push(prefix + i + '-hdr');
+				divs.push(prefix + i + '-cnt');
 			}
-			toggleDiv(a, this.lastChild, $divs);
-			evt.preventDefault();
+			toggleDiv(a, divs);
+			if (evt) { evt.preventDefault(); }
 		});
 	}
 
