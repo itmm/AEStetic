@@ -3,9 +3,15 @@ ALL_JS := $(wildcard *.js)
 ALL_CSS := $(wildcard *.css)
 SUB_HTML := $(filter-out index.html, $(ALL_HTML))
 SELF := Makefile
+COMMIT := $(shell git rev-parse --short HEAD)
+DATE := $(shell date "+%Y-%m-%d %H:%M:%S")
 
 index.html: $(SUB_HTML) $(ALL_JS) $(ALL_CSS) $(SELF)
-	inliner -s main.html | sed 's/<\/script> <script>"use strict";//g' >index.html
+	inliner -s main.html | sed -e 's/<\/script> <script>"use strict";//g' -e "s/\[LAST-COMMIT\]/$(COMMIT)/g" -e "s/\[DATE\]/$(DATE)/g" >index.html
+
+bla:
+	echo $(DATE)
+	echo "hiho $(COMMIT)"
 
 clean:
 	rm index.html

@@ -90,6 +90,19 @@ h1 {
 	line-height: 44px;
 	text-align: center;
 }
+h1 div {
+	position: absolute;
+	right: 15px;
+	top: 50%;
+	transform: translateY(-50%);
+	text-align: right;
+    font-size: 12px;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+    color: #777;
+    font-weight: normal;
+}
 .content {
 	position: absolute;
 	top: 0;
