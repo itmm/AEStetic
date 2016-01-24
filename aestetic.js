@@ -130,8 +130,8 @@ window.addEventListener('load', function () {
 // recalculate fields
 
 	refresh = function() {
-		aes.relayout();
 		aes.resetDependencies();
+		aes.relayout();
 		refreshState();
 		updateTestvectors();
 		var expandedKey = expandKey(state);

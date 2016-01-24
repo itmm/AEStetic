@@ -34,6 +34,7 @@
 	aes['resetDependencies'] = function() {
 		dependencies = {};
 		calculations = {};
+		tappedCell = null;
 	}
 
 
