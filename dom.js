@@ -81,14 +81,16 @@ function center(box) {
 	return { x: box.left + box.width/2, y: box.top + box.height/2 };
 }
 
-	function toggleDiv($a, $span, $divs) {
-		var collapse = $span.classList.contains('icon-collapse');
-		dom.setClass($span, 'icon-collapse', !collapse);
-		dom.setClass($span, 'icon-expand', collapse);
+	var collapses = {};
+
+	function toggleDiv(a, $span, $divs) {
+		var $a = $(a);
+		var collapse = ! $a.classList.contains('collapsed');
+		collapses[a] = collapse;
+		dom.setClass($a, 'collapsed', collapse);
 		_.each($divs, function($div) { dom.setHide($div, collapse); });
 		aes.relayout();
 	}
-
 
 	function writeBytes($dest, ary, prefix, activeCells, colored) {
 		var grouping = 4;

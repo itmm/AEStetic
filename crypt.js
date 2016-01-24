@@ -7,8 +7,8 @@ var disables_count = 0;
 
 function addRound(round, $parent, $before, prefix, headerClasses, contentClasses) {
 	var $header = newTag('li', prefix + 'hdr', headerClasses);
-	var $a = setTxt(newTag('a'), 'Round ' + round);
-	var $spn = newTag('span', null, 'icon-expand');
+	var $a = setTxt(newTag('a', prefix + 'hdr-a', 'collapsed'), 'Round ' + round);
+	var $spn = newTag('span', null, 'icon');
 	$a.appendChild($spn);
 	$header.appendChild($a);
 	$parent.insertBefore($header, $before);
@@ -22,7 +22,7 @@ function addRound(round, $parent, $before, prefix, headerClasses, contentClasses
 	$parent.insertBefore($cell, $before);
 
 	$a.addEventListener('click', function(evt) {
-		toggleDiv(this, $spn, [$cell]);
+		toggleDiv(prefix + 'hdr-a', $spn, [$cell]);
 		evt.preventDefault();
 	});
 
@@ -250,13 +250,13 @@ function encode(state, expandedKey) {
 	}
 	var roundHeaderClasses;
 	var roundContentClasses;
-	if ($('toggle-enc-label').classList.contains('icon-collapse')) {
-		roundHeaderClasses = null;
-		roundContentClasses = ['hidden', 'sub'];
-
-	} else {
+	if ($('toggle-enc-rounds').classList.contains('collapsed')) {
 		roundHeaderClasses = 'hidden';
 		roundContentClasses = ['hidden', 'hidden-2', 'sub'];
+
+	} else {
+		roundHeaderClasses = null;
+		roundContentClasses = ['hidden', 'sub'];
 	}
 
 	var lastPrefix = 'input-';
@@ -349,13 +349,12 @@ function decode(block, state, expandedKey) {
 	}
 	var roundHeaderClasses;
 	var roundContentClasses;
-	if ($('toggle-dec-label').classList.contains('icon-collapse')) {
-		roundHeaderClasses = null;
-		roundContentClasses = ['hidden', 'sub'];
-
-	} else {
+	if ($('toggle-dec-rounds').classList.contains('collapsed')) {
 		roundHeaderClasses = 'hidden';
 		roundContentClasses = ['hidden', 'hidden-2', 'sub'];
+	} else {
+		roundHeaderClasses = null;
+		roundContentClasses = ['hidden', 'sub'];
 	}
 	var lastPrefix = 'out-';
 	for (var i = state.rounds - 1; i >= 0; --i) {

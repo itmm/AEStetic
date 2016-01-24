@@ -150,7 +150,7 @@ window.addEventListener('load', function () {
 		divs = _.map(divs, function(div) { return $(div); });
 		$(a).addEventListener('click', function(evt) {
 			var $span = span ? $(span) : this.lastChild;
-			toggleDiv(this, $span, divs);
+			toggleDiv(a, $span, divs);
 			evt.preventDefault();
 		});
 	}
@@ -165,20 +165,21 @@ window.addEventListener('load', function () {
 
 	addToggleDiv('toggle-input', ['input']);
 
-	function setRoundsToggle($a, prefix) {
+	function setRoundsToggle(a, prefix) {
+		var $a = $(a)
 		$a.addEventListener('click', function(evt) {
 			var $divs = [];
 			for (var i = 1; i <= state.rounds; ++i) {
 				$divs.push($(prefix + i + '-hdr'));
 				$divs.push($(prefix + i + '-cnt'));
 			}
-			toggleDiv(this, this.lastChild, $divs);
+			toggleDiv(a, this.lastChild, $divs);
 			evt.preventDefault();
 		});
 	}
 
-	setRoundsToggle($('toggle-enc-rounds'), 'r-enc-');
-	setRoundsToggle($('toggle-dec-rounds'), 'r-dec-');
+	setRoundsToggle('toggle-enc-rounds', 'r-enc-');
+	setRoundsToggle('toggle-dec-rounds', 'r-dec-');
 
 	addToggleDiv('toggle-encoded', ['output']);
 	addToggleDiv('toggle-reference', ['reference-bytes']);
