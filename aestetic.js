@@ -135,7 +135,7 @@ window.addEventListener('load', function () {
 		refreshState();
 		updateTestvectors();
 		var expandedKey = expandKey(state);
-		writeBytes($('expanded-key'), expandedKey, 'expanded-key-', true, state);
+		writeBytes($('expanded-key'), expandedKey, 'expanded-key-', true, state.colored);
 		var encoded = encode(state, expandedKey);
 		decode(encoded, state, expandedKey);
 		updateCollapseState();
