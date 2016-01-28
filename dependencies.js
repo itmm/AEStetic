@@ -34,7 +34,6 @@
 	aes['resetDependencies'] = function() {
 		dependencies = {};
 		calculations = {};
-		tappedCell = null;
 	}
 
 
@@ -62,7 +61,8 @@
 
 	function repositionCalc() {
 		var $calc = $('calc');
-		if (tappedCell && $calc.firstChild) {
+		if (tappedCell && $(tappedCell) && $calc.firstChild) {
+
 			var box = absoluteBox($(tappedCell));
 			if (! box.width || ! box.height) {
 				processClosure([tappedCell], [], 1, false);
@@ -142,6 +142,12 @@
 	aes['relayout'] = function() {
 		repositionCalc();
 		updateConnections();
+	}
+
+	aes['refreshTappedCell'] = function() {
+		if (tappedCell) {
+			processClosure([tappedCell], [], 1, true);			
+		}
 	}
 
 	aes['doCellClick'] = function(evt) {

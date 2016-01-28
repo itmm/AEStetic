@@ -140,6 +140,7 @@ window.addEventListener('load', function () {
 		var encoded = encode(state, expandedKey);
 		decode(encoded, state, expandedKey);
 		updateCollapseState();
+		aes.refreshTappedCell();
 	}
 
 	refresh();

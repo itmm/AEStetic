@@ -99,7 +99,7 @@ h1 div {
     font-size: 12px;
     padding: 0;
     margin: 0;
-    line-height: 1;
+    line-height: 1.2;
     color: #777;
     font-weight: normal;
 }
@@ -171,8 +171,9 @@ li {
 	padding: 11px 65px 11px 15px;
 	position: relative;
 }
-li.sub {
+.sub {
 	border-top: 0;
+	margin-top: -10px;
 }
 .header {
 	padding-top: 6px;
@@ -183,7 +184,7 @@ li.sub {
 	font-weight: 500;
 	color: #999;
 	background-color: #fafafa;
-	border-top: 1px solid #ddd;
+	border-top: 2px solid #888;
 }
 .card {
 	overflow: hidden;
@@ -245,8 +246,9 @@ li li {
 	display: inline-block;
 	height: 100%;
 	text-decoration: none;
-	padding: 4px 15px;
+	padding: 2px 15px;
 	border-left: #ccc 1px solid;
+	font-size: 32px;
 }
 .segmented > a:first-child {
 	border-left: none;
