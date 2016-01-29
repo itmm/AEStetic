@@ -90,7 +90,7 @@ h1 {
 	line-height: 44px;
 	text-align: center;
 }
-h1 div {
+h1 span {
 	position: absolute;
 	right: 15px;
 	top: 50%;
@@ -118,8 +118,7 @@ h1 div {
 	z-index: 20;
 	top: 50%;
 	left: 50%;
-	transform: translateY(-50%);
-	transform: translateX(-50%);
+	transform: translateY(-50%) translateX(-50%);
 	background-color: #600;
 	color: #f00;
 	border: solid 3px #f00;
@@ -210,9 +209,7 @@ li > a {
 	text-decoration: none;
 
     -webkit-user-select: none;
-    -khtml-user-select: none;
     -moz-user-select: -moz-none;
-    -o-user-select: none;
     user-select: none;
 }
 .header > a {
@@ -237,9 +234,7 @@ li li {
 	border: #ccc 1px solid;
 	border-radius: 3px;
     -webkit-user-select: none;
-    -khtml-user-select: none;
     -moz-user-select: -moz-none;
-    -o-user-select: none;
     user-select: none;
 }
 .segmented > a {

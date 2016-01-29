@@ -41,14 +41,14 @@ tests['run'] = function(tsts) {
 	}
 
 	if (tsts['teardownOnce']) { tsts['teardownOnce'](); }
-}
+};
 
 tests['summary'] = function() {
 	var failed = tests.failed.length > 0;
 	var succeeded = ! failed && tests.passed > 0;
 	var $cnt = document.getElementById('count');
 	if ($cnt) {
-		$cnt.appendChild(document.createTextNode((tests.failed.length + tests.passed)));
+		$cnt.appendChild(document.createTextNode('' + (tests.failed.length + tests.passed)));
 	}
 	if (failed) {
 		document.body.classList.add('failed');
@@ -60,28 +60,28 @@ tests['summary'] = function() {
 		}
 	}
 	if (succeeded) { document.body.classList.add('succeeded'); }
-}
+};
 
 tests['assert'] = function(cond, msg) {
 	if (! cond) {
 		throw msg ? msg : 'assert failed';
 	}
-}
+};
 
 tests['assertEquals'] = function(a, b, msg) {
 	if (a != b) {
 		throw msg ? msg : a + ' is not equal to ' + b;
 	}
-}
+};
 
 tests['assertNull'] = function(obj, msg) {
 	if (obj !== null) {
 		throw msg ? msg : obj + ' is not null';
 	}
-}
+};
 
 tests['assertNotNull'] = function(obj, msg) {
 	if (obj === null) {
 		throw msg ? msg : 'null expected';
 	}
-}
+};

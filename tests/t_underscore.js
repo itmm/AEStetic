@@ -1,7 +1,7 @@
 'use strict';
 
 (function() {
-	function makeFn(ctx) { return function(v, i) { ++ctx.count; ctx.valSum += v; ctx.idxSum += i; }; };
+	function makeFn(ctx) { return function(v, i) { ++ctx.count; ctx.valSum += v; ctx.idxSum += i; }; }
 
 	function expectCtx(ctx, cnt, valSum, idxSum) {
 		tests.assertEquals(cnt, ctx.count);
@@ -9,7 +9,7 @@
 		tests.assertEquals(idxSum, ctx.idxSum);
 	}
 
-	function square(x) { return x * x; };
+	function square(x) { return x * x; }
 
 	tests.run({
 		name: 'underscore.js',

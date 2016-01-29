@@ -216,7 +216,7 @@ function applySubkey(block, round, expandedKey, prefix, prevPrefix) {
 	return _.map(block, function(_, i) {
 		var idx = prefix + i;
 		var j = block.length * round + i;
-		aes.addDependencies(idx, 'expanded-key-' + j);
+		aes.addDependencies(idx, 'expanded-key-' + j, prevPrefix + i);
 		aes.addCalculations(idx, [
 			"bs ← " + block.length,
 			"round ← " + round,
@@ -247,7 +247,7 @@ function encode(state, expandedKey) {
 	removeBetween($computation, $computation_end);
 
 	if (! disables['r-0-key']) {
-		var block = _.map(Array(state.blockSize), function(_, i) {
+		var block = _.map(new Array(state.blockSize), function(_, i) {
 			return state.input[i] ^ expandedKey[i];
 		});
 	} else {
@@ -336,10 +336,10 @@ function decode(block, state, expandedKey) {
 	var $parent = $computation.parentNode;
 	removeBetween($computation, $computation_end);
 
-	var dec = Array(state.blockSize);
+	var dec = new Array(state.blockSize);
 
-	var inv_permute = Array(state.blockSize);
-	var inv_sbox = Array(256);
+	var inv_permute = new Array(state.blockSize);
+	var inv_sbox = new Array(256);
 
 	_.each(state.permute, function(val, i) { inv_permute[val] = i; });
 	_.each(state.sbox, function(val, i) { inv_sbox[val] = i; });

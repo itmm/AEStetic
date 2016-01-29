@@ -12,12 +12,12 @@ var dom = {};
 	dom['addClass'] = function($elm, cls) {
 		if ($elm && $elm.classList) { $elm.classList.add(cls); }
 		return $elm;
-	}
+	};
 
 	dom['removeClass'] = function($elm, cls) {
 		if ($elm && $elm.classList) { $elm.classList.remove(cls); }
 		return $elm;
-	}
+	};
 
 	dom['setClass'] = function($elm, cls, set) {
 		if (set) {

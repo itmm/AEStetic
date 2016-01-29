@@ -92,9 +92,10 @@ window.addEventListener('load', function () {
 		checkForKnownConfigurations();
 
 		dom.setClass($('reference'), 'hidden', usedTestcase == null);
-		dom.setClass($('reference-bytes'), 'hidden', usedTestcase == null);
+		var referenceBytes = $('reference-bytes');
+		dom.setClass(referenceBytes, 'hidden', usedTestcase == null);
 		if (usedTestcase) {
-			writeBytes($('reference-bytes'), usedTestcase.encoded, false, state.colored);
+			writeBytes(referenceBytes, usedTestcase.encoded, false, state.colored);
 		}
 	}
 
@@ -141,7 +142,7 @@ window.addEventListener('load', function () {
 		decode(encoded, state, expandedKey);
 		updateCollapseState();
 		aes.refreshTappedCell();
-	}
+	};
 
 	refresh();
 
@@ -167,7 +168,7 @@ window.addEventListener('load', function () {
 	addToggleDiv('toggle-input', ['input']);
 
 	function setRoundsToggle(a, prefix) {
-		var $a = $(a)
+		var $a = $(a);
 		$a.addEventListener('click', function(evt) {
 			var divs = [];
 			for (var i = 1; i <= state.rounds; ++i) {
@@ -247,9 +248,9 @@ window.addEventListener('load', function () {
 		}
 
 		if (validator(result, bytes)) {
-			for (var i = 0; i < bytes.length; ++i) { bytes[i] = result[i]; }
+			for (i = 0; i < bytes.length; ++i) { bytes[i] = result[i]; }
 			while (bytes.length > result.length) { bytes.pop(); }
-			for (var i = bytes.length; i < result.length; ++i) { bytes.push(result[i]); }
+			for (i = bytes.length; i < result.length; ++i) { bytes.push(result[i]); }
 			refresh();
 		} else {
 			alert("invalid byte sequence entered");

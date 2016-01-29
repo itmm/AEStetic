@@ -12,13 +12,13 @@
 		var val = dependencies[key];
 		if (val == null) { val = []; dependencies[key] = val; }
 		_.each(ids, function(id) { val.push(id); });
-	}
+	};
 
 	aes['addCalculations'] = function(key, lines) {
 		var val = calculations[key];
 		if (val == null) { val = []; calculations[key] = val; }
 		_.each(lines, function(line) { val.push(par(line)); });
-	}
+	};
 
 	aes['rotateDependencies'] = function(prefix, start, end) {
 		var firstDependency = dependencies[prefix + start];
@@ -29,12 +29,12 @@
 		}
 		dependencies[end - 1] = firstDependency;
 		calculations[end - 1] = firstCalculation;
-	}
+	};
 
 	aes['resetDependencies'] = function() {
 		dependencies = {};
 		calculations = {};
-	}
+	};
 
 
 	var tappedCell = null;
@@ -68,10 +68,10 @@
 				processClosure([tappedCell], [], 1, false);
 				tappedCell = null;
 				removeChilds($calc);
-				relayout();
+				aes.relayout();
 			}
-			calc.style['left'] = (box.right + 4) + "px";
-			calc.style['top'] = (box.bottom + 4) + "px";
+			$calc.style['left'] = (box.right + 4) + "px";
+			$calc.style['top'] = (box.bottom + 4) + "px";
 			dom.removeClass($calc, 'hidden');
 		} else {
 			dom.addClass($calc, 'hidden');
@@ -101,7 +101,7 @@
 			y1 = fromCenter.y - slope * (fromCenter.x - x1);
 			y2 = fromCenter.y - slope * (fromCenter.x - x2);
 		} else {
-			var slope = (toCenter.x - fromCenter.x)/(toCenter.y - fromCenter.y);
+			slope = (toCenter.x - fromCenter.x)/(toCenter.y - fromCenter.y);
 			if (fromCenter.y < toCenter.y) {
 				y1 = fromBox.bottom + 1;
 				y2 = toBox.top - 1;
@@ -142,13 +142,13 @@
 	aes['relayout'] = function() {
 		repositionCalc();
 		updateConnections();
-	}
+	};
 
 	aes['refreshTappedCell'] = function() {
 		if (tappedCell) {
 			processClosure([tappedCell], [], 1, true);			
 		}
-	}
+	};
 
 	aes['doCellClick'] = function(evt) {
 		if (tappedCell) { 

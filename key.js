@@ -3,8 +3,10 @@
 function mult(a, b) {
 	var result = 0;
 	while (a != 0) {
+		//noinspection JSBitwiseOperatorUsage
 		if (a & 0x01) { result ^= b; }
 		a >>= 1;
+		//noinspection JSBitwiseOperatorUsage
 		b = (b << 1) ^ (b & 0x80? 0x1b: 0x00);
 	}
 	return result & 0xff;
@@ -12,7 +14,7 @@ function mult(a, b) {
 
 
 function expandKey(state) {
-	var expandedKey = Array((state.rounds + 1) * state.blockSize);
+	var expandedKey = new Array((state.rounds + 1) * state.blockSize);
 
 	_.each(state.key, function(key, i) {
 		expandedKey[i] = key;
@@ -42,8 +44,8 @@ function expandKey(state) {
 			}
 			expandedKey[i + 3] = tempKey;
 			aes.rotateDependencies('expanded-key-', i, i + 4);
-			for (var j = 0; j < 4; ++j) { 
-				var idx = i + j;
+			for (j = 0; j < 4; ++j) {
+				idx = i + j;
 				var jdx = 'expanded-key-' + idx;
 				aes.addDependencies(jdx, 'sbox-' + expandedKey[idx]);
 				expandedKey[idx] = state.sbox[expandedKey[idx]]; 
@@ -62,9 +64,9 @@ function expandKey(state) {
 			rcon = mult(rcon, 2);
 			++rconExp;
 		} else if (state.key.length > 24 && i % state.key.length == 16) {
-			for (var j = 0; j < 4; ++j) { 
-				var idx = i + j;
-				var jdx = 'expanded-key-' + idx;
+			for (j = 0; j < 4; ++j) {
+				idx = i + j;
+				jdx = 'expanded-key-' + idx;
 				aes.addDependencies(jdx, 'sbox-' + expandedKey[idx]);
 				expandedKey[idx] = state.sbox[expandedKey[idx]]; 
 				aes.addCalculations(jdx,
@@ -73,10 +75,10 @@ function expandKey(state) {
 			}
 		}
 
-		for (var j = 0; j < 4; ++j) {
-			var idx = i + j;
-			var old = idx - state.key.length;
-			var jdx = 'expanded-key-' + idx;
+		for (j = 0; j < 4; ++j) {
+			idx = i + j;
+			old = idx - state.key.length;
+			jdx = 'expanded-key-' + idx;
 			expandedKey[idx] ^= expandedKey[old];
 			aes.addDependencies(jdx, 'expanded-key-' + old);
 			aes.addCalculations(jdx, [
