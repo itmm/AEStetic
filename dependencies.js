@@ -1,5 +1,6 @@
 'use strict';
 
+var aes = {};
 /*
 	handling the dependencies between cells and the calculations
 */

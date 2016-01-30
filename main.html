@@ -10,7 +10,9 @@
         <link href="aestetic.css" rel="stylesheet">
     </head>
     <body>
-        <h1>AEStetic<span>Build: <a target="_blank" href="https://github.com/itmm/AEStetic/commit/[LAST-COMMIT]">[LAST-COMMIT]</a><br/>Date: [DATE]</span></h1>
+        <h1>AEStetic<span>Build: <a target="_blank" href="https://github.com/itmm/AEStetic/commit/c176a6f
+">c176a6f
+</a><br/>Date: 2016-01-30 18:33:10</span></h1>
         <div id="no-javascript" class="error-overlay">
             <h2>No JavaScript active</h2>
             <p>
@@ -18,6 +20,7 @@
             </p>
         </div>
         <script>
+            'use strict';
             document.getElementById('no-javascript').classList.add('hidden');
         </script>
         <div id="main" class="content hidden">
@@ -35,7 +38,7 @@
                             <div class="card"><ul id="testvectors-container"></ul></div>
                         </li>
                     <li id="rounds-toggler">Number of Rounds:
-                        <span id="rounds-label">??</span>
+                        <span id="rounds-label"></span>
                         <div class="segmented">
                         <a id="dec-rounds" href="">–</a><a id="inc-rounds" href="">+</a>
                         </div>
@@ -73,16 +76,15 @@
                 width="100%" height="100%">
             </svg>
         </div>
-        <script>
-            document.getElementById('main').classList.remove('hidden');
-        </script>
+        <!-- jstart -->
+        <script src="show.js"></script>
         <script src="config.js"></script>
         <script src="underscore.js"></script>
         <script src="dom.js"></script>
-        <script>'use strict'; var aes = {};</script>
         <script src="dependencies.js"></script>
         <script src="key.js"></script>
         <script src="crypt.js"></script>
         <script src="aestetic.js"></script>
+        <!-- jsend -->
     </body>
 </html>
