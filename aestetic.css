@@ -20,36 +20,47 @@
 	display: inline-block;
 	padding: 0 12px 0 0;
 }
+/*noinspection CssUnusedSymbol*/
 .active-1 {
 	background-color: rgba(255, 0, 0, 0.5);
 }
+/*noinspection CssUnusedSymbol*/
 .active-2 {
 	background-color: rgba(255, 0, 0, 0.25);
 }
+/*noinspection CssUnusedSymbol*/
 .active-3 {
 	background-color: rgba(255, 0, 0, 0.125);
 }
+/*noinspection CssUnusedSymbol*/
 .active-4 {
 	background-color: rgba(255, 0, 0, 0.115);
 }
+/*noinspection CssUnusedSymbol*/
 .active-5 {
 	background-color: rgba(255, 0, 0, 0.105);
 }
+/*noinspection CssUnusedSymbol*/
 .active-6 {
 	background-color: rgba(255, 0, 0, 0.095);
 }
+/*noinspection CssUnusedSymbol*/
 .active-7 {
 	background-color: rgba(255, 0, 0, 0.085);
 }
+/*noinspection CssUnusedSymbol*/
 .active-8 {
 	background-color: rgba(255, 0, 0, 0.075);
 }
+/*noinspection CssUnusedSymbol*/
 .active-9 {
 	background-color: rgba(255, 0, 0, 0.065);
 }
+/*noinspection CssUnusedSymbol*/
 .active-10 {
 	background-color: rgba(255, 0, 0, 0.055);
 }
+/*noinspection CssUnusedSymbol*/
 .disabled {
 	color: rgba(0, 0, 0, .2) !important;
 	pointer-events: none;
@@ -216,6 +227,7 @@ li > a {
 li li {
 	position: relative;
 }
+/*noinspection CssUnusedSymbol*/
 .right, .segmented, .toggle, a > .icon {
 	position: absolute;
 	right: 15px;
@@ -244,6 +256,7 @@ li li {
 .segmented > a:first-child {
 	border-left: none;
 }
+/*noinspection CssUnusedSymbol*/
 .toggle {
 	font-size: 21px;
 	cursor: pointer;
@@ -253,10 +266,12 @@ li li {
 	border: 2px solid #ddd;
 	border-radius: 20px;
 }
+/*noinspection CssUnusedSymbol*/
 .toggle.active {
 	background-color: #5a5;
 	border: solid 2px #5a5;
 }
+/*noinspection CssUnusedSymbol*/
 .toggle:before {
 	position: absolute;
 	top: 3px;
@@ -265,12 +280,14 @@ li li {
 	color: #999;
 	content: "OFF";
 }
+/*noinspection CssUnusedSymbol*/
 .toggle.active:before {
 	right: auto;
 	left: 15px;
 	color: #fff;
 	content: "ON";
 }
+/*noinspection CssUnusedSymbol*/
 .toggle .toggle-handle {
 	position: absolute;
 	top: -1px;
@@ -282,6 +299,7 @@ li li {
 	border: 1px solid #ddd;
 	border-radius: 100px;
 }
+/*noinspection CssUnusedSymbol*/
 .toggle.active .toggle-handle {
 	border-color: #5a5;
 	transform: translateX(44px);
@@ -292,6 +310,7 @@ li li {
 .collapsed .icon:before {
 	content: "\27e9";
 }
+/*noinspection CssUnusedSymbol*/
 .badge-aes256, .badge-aes192, .badge-aes128, .badge-rijndael, .badge-unknown {
 	display: inline-block;
 	padding: 2px 9px 3px;
@@ -301,33 +320,41 @@ li li {
 	margin-right: 6px;
 	transform: translateY(-2px);
 }
+/*noinspection CssUnusedSymbol*/
 .badge-aes256, .badge-aes192, .badge-aes128 {
 	color: #060;
 	background-color: rgba(0, 255, 0, 0.15);
 	border: solid 1px #060;
 }
+/*noinspection CssUnusedSymbol*/
 .badge-rijndael {
 	color: #550;
 	background-color: rgba(255, 255, 0, 0.15);
 	border: solid 1px #550;
 }
+/*noinspection CssUnusedSymbol*/
 .badge-unknown {
 	color: #600;
 	background-color: rgba(255, 0, 0, 0.15);
 	border: solid 1px #600;
 }
+/*noinspection CssUnusedSymbol*/
 .badge-aes256:before {
 	content: "AES-256";
 }
+/*noinspection CssUnusedSymbol*/
 .badge-aes192:before {
 	content: "AES-192";
 }
+/*noinspection CssUnusedSymbol*/
 .badge-aes128:before {
 	content: "AES-128";
 }
+/*noinspection CssUnusedSymbol*/
 .badge-rijndael:before {
 	content: "Rijndael";
 }
+/*noinspection CssUnusedSymbol*/
 .badge-unknown:before {
 	content: "Non-Standard Configuration";
 }
@@ -339,30 +366,39 @@ li li {
 	right: 0;
 	pointer-events: none;
 }
+/*noinspection CssUnusedSymbol*/
 .c0 {
 	color: #000;
 }
+/*noinspection CssUnusedSymbol*/
 .c1 {
 	color: #022;
 }
+/*noinspection CssUnusedSymbol*/
 .c2 {
 	color: #044;
 }
+/*noinspection CssUnusedSymbol*/
 .c3 {
 	color: #066;
 }
+/*noinspection CssUnusedSymbol*/
 .c4 {
 	color: #088;
 }
+/*noinspection CssUnusedSymbol*/
 .c5 {
 	color: #0aa;
 }
+/*noinspection CssUnusedSymbol*/
 .c6 {
 	color: #0cc;
 }
+/*noinspection CssUnusedSymbol*/
 .c7 {
 	color: #0ee;
 }
+/*noinspection CssUnusedSymbol*/
 .c8 {
 	color: #1ff;
 }

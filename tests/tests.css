@@ -11,11 +11,13 @@ body.failed .failed-only {
 	display: block;
 }
 
+/*noinspection CssUnusedSymbol*/
 body.succeeded {
 	background-color: #dfd;
 	color: #060;
 }
 
+/*noinspection CssUnusedSymbol*/
 body.failed {
 	background-color: #f88;
 	color: #800;

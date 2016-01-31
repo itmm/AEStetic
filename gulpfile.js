@@ -1,9 +1,9 @@
-var gulp = require('gulp')
+var gulp = require('gulp');
 var concat = require('gulp-concat');
 var html = require('gulp-htmlmin');
 var gif = require('gulp-if');
-var inline = require('gulp-inline')
-var rename = require('gulp-rename')
+var inline = require('gulp-inline');
+var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 var resources = require('gulp-resources');
 
@@ -37,8 +37,8 @@ gulp.task('default', function () {
         .pipe(gulp.dest, './');
 
     gulp.src('main.html')
-        .pipe(replace(/\[DATE\]/g, formattedDate))
-        .pipe(replace(/\[LAST-COMMIT\]/g, commit))
+        .pipe(replace(/\[DATE]/g, formattedDate))
+        .pipe(replace(/\[LAST-COMMIT]/g, commit))
         .pipe(resources())
         .pipe(gif('**/*.js', jspipe()))
         .pipe(gif('**/*.css', csspipe()))
