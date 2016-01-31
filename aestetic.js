@@ -206,55 +206,23 @@ window.addEventListener('load', function () {
 
 // update parameters
 
-	function isValidHexDigit(digit) {
-		return ('0' <= digit) && ('9' >= digit) || ('a' <= digit) && ('f' >= digit) || ('A' <= digit) && ('F' >= digit);
-	}
-
 	function updateBytes(message, bytes, validator) {
 		var current = '';
 		_.each(bytes, function(byte) {
 			current += formatByte(byte);			
 		});
-		var entered = prompt(message, current);
-		if (entered == '') { return; }
-
-		var result = [];
-		var lastNibble = 0;
-		var hasLastNibble = false;
-		for (var i = 0; i < entered.length; ++i) {
-			if (i < entered.length && entered[i] <= ' ') {
-				if (hasLastNibble) {
-					result.push(lastNibble);
-					lastNibble = 0;
-					hasLastNibble = false;
-				}
-			} else if (isValidHexDigit(entered[i])) {
-				var value = lastNibble * 16 + parseInt(entered[i], 16);
-				if (hasLastNibble) {
-					result.push(value);
-					lastNibble = 0;
-					hasLastNibble = false;
-				} else {
-					lastNibble = value;
-					hasLastNibble = true;
-				}
+		txt.show(message, bytes, function(result) {
+			if (validator(result, bytes)) {
+				while (bytes.length > result.length) { bytes.pop(); }
+				for (var i = 0; i < bytes.length; ++i) { bytes[i] = result[i]; }
+				for (i = bytes.length; i < result.length; ++i) { bytes.push(result[i]); }
+				refresh();
+				return true;
 			} else {
-				alert("'" + entered[i] + "' is not a valid hex digit");
-				return;
+				alert("invalid byte sequence entered");
+				return false;
 			}
-		}
-		if (hasLastNibble) {
-			result.push(lastNibble);
-		}
-
-		if (validator(result, bytes)) {
-			for (i = 0; i < bytes.length; ++i) { bytes[i] = result[i]; }
-			while (bytes.length > result.length) { bytes.pop(); }
-			for (i = bytes.length; i < result.length; ++i) { bytes.push(result[i]); }
-			refresh();
-		} else {
-			alert("invalid byte sequence entered");
-		}
+		});
 	}
 
 	function addUpdateBytes(elm, message, bytes, validator) {

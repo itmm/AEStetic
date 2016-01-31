@@ -126,7 +126,7 @@ h1 span {
 }
 #calc {
 	position: absolute;
-	z-index: 20;
+	z-index: 30;
 	top: 0;
 	left: 0;
 	background-color: #fff;
@@ -369,4 +369,55 @@ li li {
 }
 .c8 {
 	color: #1ff;
+}
+#dimmer {
+	z-index: 20;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	background-color: rgba(1, 1, 1, 0.5);
+}
+#textbox {
+	position: absolute;
+	width: 70%;
+	height: 70%;
+	left: 15%;
+	top: 15%;
+	background-color: #fff;
+	border: solid 1px #ddd;
+	border-radius: 20px;
+}
+#textbox-header, #textbox-footer {
+	position: relative;
+	width: 100%;
+	height: 10%;
+}
+#textbox-header {
+	text-align: center;
+}
+#textbox-footer a {
+	display: inline-block;
+	position: relative;
+	margin: 0;
+	padding: 0;
+	width: 50%;
+	height: 100%;
+	text-decoration: none;
+	text-align: center;
+}
+#textbox-content {
+	position: relative;
+	width: 100%;
+	height: 80%;
+}
+#textarea {
+	position: relative;
+	left: 5%;
+	top: 5%;
+	width: 90%;
+	height: 90%;
+	font-family: monospace;
+	font-size: 17px;
 }
