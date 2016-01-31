@@ -12,7 +12,7 @@ var shell = require('shelljs');
 
 var now = new Date().toISOString();
 var formattedDate = now.substring(0, 10) + ' ' + now.substring(11, 19);
-var commit = shell.exec('git rev-parse --short HEAD', {silent: true}).output;
+var commit = shell.exec('git rev-parse --short HEAD', {silent: true}).output.trim();
 
 gulp.task('default', function () {
     var jspipe = lazypipe()
