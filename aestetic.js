@@ -157,7 +157,9 @@ window.addEventListener('load', function () {
 		});
 	}
 
-	addToggleDiv('toggle-configuration', ['testvectors-toggler', 'testvectors', 'rounds-toggler', 'sbox-toggler', 'sbox', 'permute-toggler', 'permute']);
+	addToggleDiv('toggle-configuration', [
+		'testvectors-toggler', 'testvectors', 'rounds-toggler', 'sbox-toggler', 'sbox', 'permute-toggler', 'permute'
+	]);
 	addToggleDiv('toggle-testvectors', ['testvectors']);
 	addToggleDiv('toggle-sbox', ['sbox']);
 	addToggleDiv('toggle-permute', ['permute']);

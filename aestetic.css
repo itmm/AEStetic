@@ -422,6 +422,7 @@ li li {
 	border-radius: 20px;
 }
 #textbox-header, #textbox-footer {
+	display: inline-block;
 	position: relative;
 	width: 100%;
 	height: 10%;

@@ -75,4 +75,11 @@ window.addEventListener('load', function () {
         txt.hide();
         evt.preventDefault();
     });
+
+    $('textarea').addEventListener('keydown', function(evt) {
+        if (evt.keyCode == 13) {
+            txt.commit();
+            evt.preventDefault();
+        }
+    });
 });
