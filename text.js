@@ -77,8 +77,19 @@ window.addEventListener('load', function () {
     });
 
     $('textarea').addEventListener('keydown', function(evt) {
-        if (evt.keyCode == 13) {
+        var c = evt.keyCode;
+        if (c == 13) {
+            $('textarea').blur();
             txt.commit();
+            evt.preventDefault();
+        } else if (c == 8) {
+            // delete
+        } else if (c >= 37 && c <= 40) {
+            // cursor keys
+        } else if (c >= 48 && c <= 57 || c >= 65 && c <= 70 || c >= 97 && c <= 102) {
+            // hex digits
+        } else {
+            alert('code ' + c);
             evt.preventDefault();
         }
     });
