@@ -12,9 +12,11 @@ window.addEventListener('load', function () {
             else { current += ' '; }
             current += formatByte(byte);
         });
-        setTxt($('textarea'), current);
+        var ta = $('textare');
+        setTxt(ta, current);
         dom.removeClass($('dimmer'), 'hidden');
         txt['callback'] = callback;
+        ta.focus();
     };
 
     function isValidHexDigit(digit) {
@@ -76,20 +78,47 @@ window.addEventListener('load', function () {
         evt.preventDefault();
     });
 
-    $('textarea').addEventListener('keydown', function(evt) {
+    function repairSelection(textarea) {
+        var ta = textarea;
+        if (ta.selectionStart == ta.selectionEnd && ta.selectionEnd < ta.value.length) {
+            ta.selectionEnd = ta.selectionStart + 1;
+        }
+    }
+    var textarea = $('textarea');
+    textarea.addEventListener('focus', function(evt) {
+        if (this.value.length > 0) {
+            this.selectionStart = 0;
+            this.selectionEnd = 1;
+        }
+    });
+    textarea.addEventListener('select', function(evt) {
+        repairSelection(this);
+    });
+    textarea.addEventListener('keydown', function(evt) {
         var c = evt.keyCode;
         if (c == 13) {
-            $('textarea').blur();
+            this.blur();
             txt.commit();
             evt.preventDefault();
         } else if (c == 8) {
             // delete
-        } else if (c >= 37 && c <= 40) {
+        } else if (c == 37) {
+            var next = Math.max(0, this.selectionStart - 1);
+            this.selectionStart = next;
+            this.selectionEnd = Math.min(next + 1, this.value.length);
+            evt.preventDefault();
+        } else if (c >= 38 && c <= 40) {
             // cursor keys
         } else if (c >= 48 && c <= 57 || c >= 65 && c <= 70 || c >= 97 && c <= 102) {
             // hex digits
         } else {
             evt.preventDefault();
         }
+    });
+    textarea.addEventListener('keyup', function(evt) {
+        repairSelection(this);
+    });
+    textarea.addEventListener('click', function(evt) {
+        repairSelection(this);
     });
 });
