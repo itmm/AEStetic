@@ -10,7 +10,9 @@ window.addEventListener('load', function () {
 		'key': testcases[0].key.slice(),
 		'input': testcases[0].input.slice(),
 		'rounds': testcases[0].rounds,
-		'blockSize': defaults.blockSize
+		'blockSize': defaults.blockSize,
+		'chaining': testcases[0].chaining,
+        'iv': testcases[0].iv ? testcases[0].iv.slice() : null
 	};
 
 // handle state
@@ -97,6 +99,10 @@ window.addEventListener('load', function () {
 		if (usedTestcase) {
 			writeBytes(referenceBytes, usedTestcase.encoded, false, state.colored);
 		}
+
+        dom.setClass($('chaining-none'), 'active', state.chaining == Chaining.None);
+        dom.setClass($('chaining-cbc'), 'active', state.chaining == Chaining.CBC);
+        dom.setClass($('chaining-ecb'), 'active', state.chaining == Chaining.ECB);
 	}
 
 
@@ -119,6 +125,7 @@ window.addEventListener('load', function () {
 				state.rounds = testcase.rounds;
 				state.blockSize = defaults.blockSize;
 				state.colored = testcase.colored;
+				state.chaining = testcase.chaining;
 				resetDisables();
 				refresh();
 				evt.preventDefault();
@@ -138,8 +145,8 @@ window.addEventListener('load', function () {
 		updateTestvectors();
 		var expandedKey = expandKey(state);
 		writeBytes($('expanded-key'), expandedKey, 'expanded-key-', true, state.colored);
-		var encoded = encode(state, expandedKey);
-		decode(encoded, state, expandedKey);
+		var encoded = encode_chain(state, expandedKey);
+		decode_chain(encoded, state, expandedKey);
 		updateCollapseState();
 		aes.refreshTappedCell();
 	};
@@ -158,7 +165,7 @@ window.addEventListener('load', function () {
 	}
 
 	addToggleDiv('toggle-configuration', [
-		'testvectors-toggler', 'testvectors', 'rounds-toggler', 'sbox-toggler', 'sbox', 'permute-toggler', 'permute'
+		'testvectors-toggler', 'testvectors', 'rounds-toggler', 'sbox-toggler', 'sbox', 'permute-toggler', 'permute', 'chain-selector'
 	]);
 	addToggleDiv('toggle-testvectors', ['testvectors']);
 	addToggleDiv('toggle-sbox', ['sbox']);
@@ -245,4 +252,24 @@ window.addEventListener('load', function () {
 	addUpdateBytes('sbox', 'change S-Box', 'sbox', sameLength);
 	addUpdateBytes('permute', 'change permutation', 'permute', sameLength);
 	addUpdateBytes('input', 'change input', 'input', sameLength);
+
+    $('chaining-none').addEventListener('click', function(evt) {
+        if (state.blockSize != state.input.length) {
+            alert("input must be " + state.blockSize + " bytes long");
+            return;
+        }
+        state.chaining = Chaining.None;
+        refresh();
+        evt.preventDefault();
+    });
+    $('chaining-cbc').addEventListener('click', function(evt) {
+        state.chaining = Chaining.CBC;
+        refresh();
+        evt.preventDefault();
+    });
+    $('chaining-ecb').addEventListener('click', function(evt) {
+        state.chaining = Chaining.ECB;
+        refresh();
+        evt.preventDefault();
+    });
 });

@@ -38,7 +38,7 @@
                     <li id="rounds-toggler">Number of Rounds:
                         <span id="rounds-label"></span>
                         <div class="segmented">
-                        <a id="dec-rounds" href="">–</a><a id="inc-rounds" href="">+</a>
+                        <a class="big" id="dec-rounds" href="">–</a><a class="big" id="inc-rounds" href="">+</a>
                         </div>
                     </li>
                     <li id="sbox-toggler"><a id="toggle-sbox" href="" class="collapsed">S-Box
@@ -47,6 +47,11 @@
                     <li id="permute-toggler"><a id="toggle-permute" href="" class="collapsed">Permutation
                         <span class="icon"></span></a></li>
                         <li class="editable hidden sub" id="permute"></li>
+                    <li id="chain-selector">Chaining:
+                        <div class="segmented">
+                            <a class="active" id="chaining-none" href="">None</a><a id="chaining-cbc" href="">CBC</a><a href="" id="chaining-ecb">ECB</a>
+                        </div>
+                    </li>
                 <li class="header"><a id="toggle-key" href="" >Key<span class="icon"></span></a></li>
                     <li class="editable" id="key"></li>
                     <li id="expanded-key-toggler"><a id="toggle-expanded-key" class="collapsed" href="">Expanded Key
@@ -91,6 +96,7 @@
         <script src="dependencies.js"></script>
         <script src="key.js"></script>
         <script src="crypt.js"></script>
+        <script src="chaining.js"></script>
         <script src="aestetic.js"></script>
         <script src="text.js"></script>
         <!-- jsend -->

@@ -12,7 +12,7 @@ window.addEventListener('load', function () {
             else { current += ' '; }
             current += formatByte(byte);
         });
-        var ta = $('textare');
+        var ta = $('textarea');
         setTxt(ta, current);
         dom.removeClass($('dimmer'), 'hidden');
         txt['callback'] = callback;

@@ -247,11 +247,17 @@ li li {
 }
 .segmented > a {
 	display: inline-block;
-	height: 100%;
+	height: 32px;
 	text-decoration: none;
 	padding: 2px 15px;
 	border-left: #ccc 1px solid;
-	font-size: 32px;
+	font-size: 17px;
+}
+.segmented > a.big {
+    font-size: 32px;
+}
+.segmented > a.active {
+    background-color: #ddf;
 }
 .segmented > a:first-child {
 	border-left: none;
