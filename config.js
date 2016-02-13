@@ -102,11 +102,18 @@ var defaults = {
 	]
 };
 
-
+/*
+    Define the standard rounds used for AES
+ */
 var std_rounds = {
+    minRijndael16: 10,
+    minRijndael20: 11,
+    minRijndael24: 12,
+    minRijndael28: 13,
 	aes128: 10,
 	aes192: 12,
-	aes256: 14
+	aes256: 14,
+    maxRijndael: 14
 };
 
 /*

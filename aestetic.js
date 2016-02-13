@@ -33,29 +33,29 @@ window.addEventListener('load', function () {
 		if (disables_count == 0 && _.equals(state.sbox, defaults.sbox) && _.equals(state.permute, defaults.permute)) {
 			switch (state.key.length) {
 				case 16:
-					if (state.rounds >= 10 && state.rounds <= 14) {
+					if (state.rounds >= std_rounds.minRijndael16 && state.rounds <= std_rounds.maxRijndael) {
 						is_rijndael = true;
-						is_aes128 = (state.rounds == 10);
+						is_aes128 = (state.rounds == std_rounds.aes128);
 					}
 					break;
 				case 20:
-					if (state.rounds >= 11 && state.rounds <= 14) {
+					if (state.rounds >= std_rounds.minRijndael20 && state.rounds <= std_rounds.maxRijndael) {
 						is_rijndael = true;
 					}
 					break;
 				case 24:
-					if (state.rounds >= 12 && state.rounds <= 14) {
+					if (state.rounds >= std_rounds.minRijndael24 && state.rounds <= std_rounds.maxRijndael) {
 						is_rijndael = true;
-						is_aes192 = (state.rounds == 12);
+						is_aes192 = (state.rounds == std_rounds.aes192);
 					}
 					break;
 				case 28:
-					if (state.rounds >= 13 && state.rounds <= 14) {
+					if (state.rounds >= std_rounds.minRijndael28 && state.rounds <= std_rounds.maxRijndael) {
 						is_rijndael = true;
 					}
 					break;
 				case 32:
-					if (state.rounds == 14) {
+					if (state.rounds == std_rounds.aes256) {
 						is_rijndael = true;
 						is_aes256 = true;
 

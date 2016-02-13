@@ -1,6 +1,7 @@
 'use strict';
 
 (function() {
+	//noinspection JSUnusedGlobalSymbols
 	tests.run({
 		name: 'dom.js',
 		test$: {

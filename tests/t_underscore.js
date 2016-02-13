@@ -11,6 +11,7 @@
 
 	function square(x) { return x * x; }
 
+	//noinspection JSUnusedGlobalSymbols
 	tests.run({
 		name: 'underscore.js',
 		testEach: {

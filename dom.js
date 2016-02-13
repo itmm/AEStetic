@@ -25,10 +25,11 @@ var dom = {};
 		} else {
 			return dom.removeClass($elm, cls);
 		}
-	}
+	};
+
     dom['hasClass'] = function($elm, cls) {
         return $elm && $elm.classList && $elm.classList.contains(cls);
-    }
+    };
 })();
 
 function newTag(tag, id, classes) {

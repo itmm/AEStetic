@@ -10,6 +10,7 @@ tests['run'] = function(tsts) {
 
 	if (tsts['setupOnce']) { tsts['setupOnce'](); }
 	for (var key in tsts) {
+        if (! tsts.hasOwnProperty(key)) { continue; }
   		if (key.startsWith('test')) {
   			var test = tsts[key];
   			if (typeof test == 'function') {
@@ -82,7 +83,7 @@ tests['assertEqualArrays'] = function(a, b, msg) {
     if (! _.equals(a, b)) {
         throw msg ? msg : a + ' is not equal to ' + b;
     }
-}
+};
 
 tests['assertNull'] = function(obj, msg) {
 	if (obj !== null) {
