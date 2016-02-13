@@ -85,13 +85,13 @@ window.addEventListener('load', function () {
         }
     }
     var textarea = $('textarea');
-    textarea.addEventListener('focus', function(evt) {
+    textarea.addEventListener('focus', function() {
         if (this.value.length > 0) {
             this.selectionStart = 0;
             this.selectionEnd = 1;
         }
     });
-    textarea.addEventListener('select', function(evt) {
+    textarea.addEventListener('select', function() {
         repairSelection(this);
     });
     textarea.addEventListener('keydown', function(evt) {
@@ -115,10 +115,10 @@ window.addEventListener('load', function () {
             evt.preventDefault();
         }
     });
-    textarea.addEventListener('keyup', function(evt) {
+    textarea.addEventListener('keyup', function() {
         repairSelection(this);
     });
-    textarea.addEventListener('click', function(evt) {
+    textarea.addEventListener('click', function() {
         repairSelection(this);
     });
 });

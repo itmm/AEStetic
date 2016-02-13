@@ -68,7 +68,11 @@ window.addEventListener('load', function () {
 					var tc = testcases[i];
 					var isTestcaseKey = _.equals(state.key, tc.key);
 					var isTestcaseInput = _.equals(state.input, tc.input);
-					if (state.rounds == tc.rounds && isTestcaseKey && isTestcaseInput) {
+                    var isTestcaseChaining = state.chaining == tc.chaining;
+                    var currentIV = state.iv ? state.iv : new Array(state.blockSize);
+                    var testcaseIV = tc.iv ? tc.iv : new Array(state.blockSize);
+                    var isTestcaseIV = _.equals(currentIV, testcaseIV);
+					if (state.rounds == tc.rounds && isTestcaseKey && isTestcaseInput && isTestcaseChaining && isTestcaseIV) {
 						usedTestcase = tc;
 					}
 				}
@@ -88,6 +92,8 @@ window.addEventListener('load', function () {
 
 		writeBytes($('sbox'), state.sbox, 'sbox-', false, state.colored);
 		writeBytes($('permute'), state.permute, 'permute-', false, state.colored);
+        if (! state.iv) { state.iv = new Array(state.blockSize); }
+        writeBytes($('iv'), state.iv, 'iv-', false, state.colored);
 		writeBytes($('key'), state.key, 'key-', false, state.colored);
 		writeBytes($('input'), state.input, 'input-', false, state.colored);
 
@@ -165,11 +171,12 @@ window.addEventListener('load', function () {
 	}
 
 	addToggleDiv('toggle-configuration', [
-		'testvectors-toggler', 'testvectors', 'rounds-toggler', 'sbox-toggler', 'sbox', 'permute-toggler', 'permute', 'chain-selector'
+		'testvectors-toggler', 'testvectors', 'rounds-toggler', 'sbox-toggler', 'sbox', 'permute-toggler', 'permute', 'chain-selector', 'iv-toggler', 'iv'
 	]);
 	addToggleDiv('toggle-testvectors', ['testvectors']);
 	addToggleDiv('toggle-sbox', ['sbox']);
 	addToggleDiv('toggle-permute', ['permute']);
+    addToggleDiv('toggle-iv', ['iv']);
 
 	addToggleDiv('toggle-key', ['key', 'expanded-key-toggler', 'expanded-key']);
 	addToggleDiv('toggle-expanded-key', ['expanded-key']);
@@ -249,9 +256,18 @@ window.addEventListener('load', function () {
 
 	function sameLength(newArray, oldArray) { return newArray.length == oldArray.length; }
 
+    function validInputLength(newArray) {
+        if (state.chaining == Chaining.None) {
+            return newArray.length == state.blockSize;
+        } else {
+            return true;
+        }
+    }
+
 	addUpdateBytes('sbox', 'change S-Box', 'sbox', sameLength);
 	addUpdateBytes('permute', 'change permutation', 'permute', sameLength);
-	addUpdateBytes('input', 'change input', 'input', sameLength);
+    addUpdateBytes('iv', 'change initial vector', 'iv', sameLength);
+	addUpdateBytes('input', 'change input', 'input', validInputLength);
 
     $('chaining-none').addEventListener('click', function(evt) {
         if (state.blockSize != state.input.length) {

@@ -240,18 +240,17 @@ function applyMixWithKey(block, subkey, prefix, prevPrefix, keyPrefix) {
 	});	
 }
 
-function encode(step, state, expandedKey) {
+function encode(step, input, state, expandedKey) {
 	var $computation = $('rounds');
-	var $computation_end = $('rounds-end');
 	var $parent = $computation.parentNode;
-	removeBetween($computation, $computation_end);
+    var $computation_end = $('rounds-end');
 
 	if (! disables['s-' + step + '-r-0-key']) {
 		var block = _.map(new Array(state.blockSize), function(_, i) {
-			return state.input[i] ^ expandedKey[i];
+			return input[i] ^ expandedKey[i];
 		});
 	} else {
-		block = state.input;
+		block = input;
 	}
 	var roundHeaderClasses;
 	var roundContentClasses;
@@ -320,10 +319,6 @@ function encode(step, state, expandedKey) {
 		addSubEntry('after mix with key:', block, rnd_key, $container, keyKey, state.colored);
 	}
 
-	writeBytes($('output'), block, 'out-', true, state.colored);
-	_.each(block, function(val, i) {
-		aes.addDependencies('out-' + i, lastPrefix + i);
-	});
 	return block;
 }
 
@@ -334,7 +329,6 @@ function decode(step, block, state, expandedKey) {
 	var $computation = $('decode-rounds');
 	var $computation_end = $('decode-rounds-end');
 	var $parent = $computation.parentNode;
-	removeBetween($computation, $computation_end);
 
 	var dec = new Array(state.blockSize);
 
@@ -419,7 +413,6 @@ function decode(step, block, state, expandedKey) {
 
 	}
 
-	writeBytes($('decoded'), dec, 's-' + step + '-dec-', true, state.colored);
-	_.each(dec, function(_, j) { aes.addDependencies('dec-' + j, lastPrefix + j); });
+    return dec;
 }
 

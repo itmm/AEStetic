@@ -61,6 +61,7 @@ var _ = {
 };
 
 function formatByte(byte) {
+	if (! byte) { return '00'; }
 	var formatted = byte.toString(16);
 	return byte < 16 ? '0' + formatted : formatted;
 }
