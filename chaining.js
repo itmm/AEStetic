@@ -4,15 +4,17 @@ function encode_cbc(state, expandedKey) {
     var current = state.iv ? state.iv.slice() : new Array(state.blockSize);
     var result = [];
     for (var i = 0, j = 0; i + state.blockSize <= state.input.length; i += state.blockSize, ++j) {
-        current = _.map(current, function (val, idx) { return val ^ state.input[i + idx]; });
+        current = _.map(current, function(val, idx) { return val ^ state.input[i + idx]; });
         current = encode(j, current, state, expandedKey);
         _.each(current, function(val) { result.push(val); });
     }
+    var tmp = [];
     for (var k = 0; i < state.input.length; ++i, ++k) {
-        current[k] = state.input[i];
+        tmp.push(state.input[i]);
     }
     var pad = state.blockSize - k;
-    for (; k < state.blockSize; ++k) { current[k] = pad; }
+    for (; k < state.blockSize; ++k) { tmp.push(pad); }
+    current = _.map(current, function(val, idx) { return val ^ tmp[idx]; });
     current = encode(j, current, state, expandedKey);
     _.each(current, function(val) { result.push(val); });
     return result;

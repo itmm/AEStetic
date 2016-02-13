@@ -132,6 +132,7 @@ window.addEventListener('load', function () {
 				state.blockSize = defaults.blockSize;
 				state.colored = testcase.colored;
 				state.chaining = testcase.chaining;
+                state.iv = testcase.iv ? testcase.iv.slice() : null;
 				resetDisables();
 				refresh();
 				evt.preventDefault();
@@ -165,7 +166,7 @@ window.addEventListener('load', function () {
 
 	function addToggleDiv(a, divs) {
 		$(a).addEventListener('click', function(evt) {
-			toggleDiv(a, divs);
+            toggleDiv(a, divs);
 			if (evt) { evt.preventDefault(); }
 		});
 	}
@@ -186,12 +187,15 @@ window.addEventListener('load', function () {
 	function setRoundsToggle(a, prefix) {
 		var $a = $(a);
 		$a.addEventListener('click', function(evt) {
-			var divs = [];
-			for (var i = 1; i <= state.rounds; ++i) {
-				divs.push(prefix + i + '-hdr');
-				divs.push(prefix + i + '-cnt');
-			}
-			toggleDiv(a, divs);
+            var divs = [];
+            var steps = state.chaining == Chaining.None ? 1 : state.input.length / state.blockSize + 1;
+            for (var j = 0; j < steps; ++j) {
+                for (var i = 1; i <= state.rounds; ++i) {
+                    divs.push('s-' + j + '-' + prefix + i + '-hdr');
+                    divs.push('s-' + j + '-' + prefix + i + '-cnt');
+                }
+            }
+            toggleDiv(a, divs);
 			if (evt) { evt.preventDefault(); }
 		});
 	}

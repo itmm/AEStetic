@@ -26,6 +26,9 @@ var dom = {};
 			return dom.removeClass($elm, cls);
 		}
 	}
+    dom['hasClass'] = function($elm, cls) {
+        return $elm && $elm.classList && $elm.classList.contains(cls);
+    }
 })();
 
 function newTag(tag, id, classes) {
@@ -38,17 +41,19 @@ function newTag(tag, id, classes) {
 function newTxt(txt) { return document.createTextNode(txt); }
 
 function appendChild($parent, $child, addSpace) {
+    if (! $parent) { return $parent; }
 	if (addSpace) { $parent.appendChild(newTxt(' ')); }
 	$parent.appendChild($child);
 	return $parent;
 }
 
 function removeChilds($parent) {
-	while ($parent.hasChildNodes()) { $parent.removeChild($parent.firstChild); }
+	while ($parent && $parent.hasChildNodes()) { $parent.removeChild($parent.firstChild); }
 	return $parent;
 }
 
 function removeBetween($from, $to) {
+	if (! $from || ! $to) { return; }
 	var $parent = $from.parentNode;
 	for (;;) {
 		var $next = $from.nextSibling;

@@ -50,6 +50,10 @@ tests['summary'] = function() {
 	if ($cnt) {
 		$cnt.appendChild(document.createTextNode('' + (tests.failed.length + tests.passed)));
 	}
+    var $failed = document.getElementById('failed');
+    if ($failed) {
+        $failed.appendChild(document.createTextNode('' + tests.failed.length));
+    }
 	if (failed) {
 		document.body.classList.add('failed');
 		var $failedTests = document.getElementById('failed-tests');
@@ -73,6 +77,12 @@ tests['assertEquals'] = function(a, b, msg) {
 		throw msg ? msg : a + ' is not equal to ' + b;
 	}
 };
+
+tests['assertEqualArrays'] = function(a, b, msg) {
+    if (! _.equals(a, b)) {
+        throw msg ? msg : a + ' is not equal to ' + b;
+    }
+}
 
 tests['assertNull'] = function(obj, msg) {
 	if (obj !== null) {

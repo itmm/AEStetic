@@ -11,6 +11,7 @@ function resetDisables() {
 }
 
 function addRound(round, $parent, $before, prefix, headerClasses, contentClasses) {
+    if (! $parent) { return; }
 	var $header = newTag('li', prefix + 'hdr', headerClasses);
 	var $a = setTxt(newTag('a', prefix + 'hdr-a', 'collapsed'), 'Round ' + round);
 	var $spn = newTag('span', null, 'icon');
@@ -35,6 +36,7 @@ function addRound(round, $parent, $before, prefix, headerClasses, contentClasses
 }
 
 function addSubEntry(name, block, prefix, $container, key, colored) {
+    if (! $container) { return; }
 	var $li = setTxt(newTag('li'), name);
 	var skip = false;
 	if (key) {
@@ -242,7 +244,7 @@ function applyMixWithKey(block, subkey, prefix, prevPrefix, keyPrefix) {
 
 function encode(step, input, state, expandedKey) {
 	var $computation = $('rounds');
-	var $parent = $computation.parentNode;
+	var $parent = $computation? $computation.parentNode : null;
     var $computation_end = $('rounds-end');
 
 	if (! disables['s-' + step + '-r-0-key']) {
@@ -254,7 +256,7 @@ function encode(step, input, state, expandedKey) {
 	}
 	var roundHeaderClasses;
 	var roundContentClasses;
-	if ($('toggle-enc-rounds').classList.contains('collapsed')) {
+	if (dom.hasClass($('toggle-enc-rounds'), 'collapsed')) {
 		roundHeaderClasses = 'hidden';
 		roundContentClasses = ['hidden', 'hidden-2', 'sub'];
 	} else {
@@ -328,7 +330,7 @@ function encode(step, input, state, expandedKey) {
 function decode(step, block, state, expandedKey) {
 	var $computation = $('decode-rounds');
 	var $computation_end = $('decode-rounds-end');
-	var $parent = $computation.parentNode;
+	var $parent = $computation ? $computation.parentNode : null;
 
 	var dec = new Array(state.blockSize);
 
@@ -347,7 +349,7 @@ function decode(step, block, state, expandedKey) {
 	}
 	var roundHeaderClasses;
 	var roundContentClasses;
-	if ($('toggle-dec-rounds').classList.contains('collapsed')) {
+	if (dom.hasClass($('toggle-dec-rounds'), 'collapsed')) {
 		roundHeaderClasses = 'hidden';
 		roundContentClasses = ['hidden', 'hidden-2', 'sub'];
 	} else {
