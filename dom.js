@@ -170,4 +170,5 @@ function center(box) {
 			unhide($elm);
 		}
 	}
+
 })();

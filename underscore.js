@@ -70,3 +70,7 @@ function fb(byte) {
 	return '0x' + formatByte(byte);
 }
 
+exports.each = _.each;
+exports.equals = _.equals;
+exports.map = _.map;
+exports.fb = fb;

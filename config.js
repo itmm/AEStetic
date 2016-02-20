@@ -589,3 +589,7 @@ var testcases = [
 		chaining: Chaining.CBC
 	}
 ];
+
+exports.defaults = defaults;
+exports.testcases = testcases;
+exports.Chaining = Chaining;

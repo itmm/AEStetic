@@ -91,3 +91,5 @@ function expandKey(state) {
 	return expandedKey;
 }
 
+exports.mult = mult;
+exports.expandKey = expandKey;

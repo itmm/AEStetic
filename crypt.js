@@ -418,3 +418,5 @@ function decode(step, block, state, expandedKey) {
     return dec;
 }
 
+exports.encode = encode;
+exports.decode = decode;

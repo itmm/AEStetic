@@ -121,3 +121,6 @@ function decode_chain(input, state, expandedKey) {
 
     return result;
 }
+
+exports.encode_chain = encode_chain;
+exports.decode_chain = decode_chain;

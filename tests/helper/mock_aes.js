@@ -1,6 +1,6 @@
 'use strict';
 
-var aes = {
+global.aes = {
     addDependencies: function() {},
     addCalculations: function() {},
     rotateDependencies: function() {},
