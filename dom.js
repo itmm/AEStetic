@@ -74,10 +74,10 @@ function par(text) {
 function absoluteBox($elm) {
 	var box = $elm.getBoundingClientRect();
 	return {
-		left: box.left + window.scrollX,
-		right: box.right + window.scrollX,
-		top: box.top + window.scrollY,
-		bottom: box.bottom + window.scrollY,
+		left: box.left + window.pageXOffset,
+		right: box.right + window.pageXOffset,
+		top: box.top + window.pageYOffset,
+		bottom: box.bottom + window.pageYOffset,
 		width: box.width,
 		height: box.height
 	};
